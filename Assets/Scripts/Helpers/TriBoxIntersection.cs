@@ -238,4 +238,9 @@ public class TriBoxIntersection
 
         return (ulong)InOut.OUTSIDE;
     }
+
+    public ulong triCubeIntersection(Vector3[] t,Transform cube){
+        for(int i=0;i<3;i++) t[i]=cube.InverseTransformPoint(t[i]);
+        return triCubeIntersection(t);
+    }
 }
