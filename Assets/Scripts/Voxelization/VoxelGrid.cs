@@ -5,15 +5,21 @@ using UnityEngine;
 public class VoxelGrid : MonoBehaviour
 {
     public GameObject voxel;
-    [SerializeField]
     private Vector3 origin;
+    private float length, width, depth;
     [SerializeField]
-    private float length, width, depth, density; //Density is an approx of voxels in the grid
+    private float density; //Density is an approx of voxels in the grid
     private float voxelLen; //each voxel side length
     private GameObject[][][] voxels;
     // Start is called before the first frame update
     void Start()
     {
+        Renderer renderer=GetComponent<Renderer>();
+        var bounds = renderer.bounds;
+        length=bounds.extents.x*2;
+        width=bounds.extents.y*2;
+        depth=bounds.extents.z*2;
+        origin=bounds.center-bounds.extents;
         buildGrid();
     }
 
