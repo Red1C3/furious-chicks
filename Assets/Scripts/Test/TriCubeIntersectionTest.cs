@@ -6,7 +6,6 @@ public class TriCubeIntersectionTest : MonoBehaviour
 {
     public Transform cube;
     private Vector3[] vertices;
-    private TriBoxIntersection intersection=new TriBoxIntersection();
     void Start()
     {
         vertices=GetComponent<MeshFilter>().mesh.vertices;
@@ -17,7 +16,7 @@ public class TriCubeIntersectionTest : MonoBehaviour
     {
         Vector3[] transformedVertices=new Vector3[3];
         for(int i=0;i<3;i++) transformedVertices[i]=transform.TransformPoint(vertices[i]);
-        ulong res=intersection.triCubeIntersection(transformedVertices,cube);
+        ulong res=TriCubeIntersection.triCubeIntersection(transformedVertices,cube);
         if (res==0) Debug.Log("is intersecting");
         else Debug.Log("NOT intersecting");
     }

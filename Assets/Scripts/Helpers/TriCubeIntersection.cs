@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriBoxIntersection
+public static class TriCubeIntersection
 {
     private const double EPS = 10e-5;
     public enum InOut { INSIDE = 0, OUTSIDE = 1 }
 
-    private ulong sign3(Vector3 point)
+    private static ulong sign3(Vector3 point)
     {
         ulong res = 0;
         res |= (point.x < EPS) ? (ulong)4 : 0;
@@ -20,7 +20,7 @@ public class TriBoxIntersection
     }
 
     //Determind which of the cube's faces is the point outside of 
-    private ulong facePlane(Vector3 point)
+    private static ulong facePlane(Vector3 point)
     {
         ulong res = 0;
         if (point.x > 0.5f) res |= 0x01;
@@ -33,7 +33,7 @@ public class TriBoxIntersection
     }
 
     //Determine which of the cube's 12 edges is the point outside of
-    private ulong bevel2D(Vector3 point)
+    private static ulong bevel2D(Vector3 point)
     {
         ulong res = 0;
         if (point.x + point.y > 1.0f) res |= 0x001;
@@ -52,7 +52,7 @@ public class TriBoxIntersection
     }
 
     //Determine which of the cube's 8 faces the point is outside of
-    private ulong bevel3D(Vector3 point)
+    private static ulong bevel3D(Vector3 point)
     {
         ulong res = 0;
         if ((point.x + point.y + point.z) > 1.5f) res |= 0x01;
@@ -69,7 +69,7 @@ public class TriBoxIntersection
     //Test if the point on the tip of the
     //vector Co*P1P2 is on a face of the cube
     //consider faces only in the bitmask
-    private ulong checkPoint(Vector3 p1, Vector3 p2, float co, ulong mask)
+    private static ulong checkPoint(Vector3 p1, Vector3 p2, float co, ulong mask)
     {
         Vector3 planePoint;
         planePoint.x = Mathf.Lerp(p1.x, p2.x, co);
@@ -83,7 +83,7 @@ public class TriBoxIntersection
     //the *cube* face
     //consider only face planes in mask
     //Note: zero bits in mask means face line is outside (weird note, anyway I think it means always outside)
-    private ulong checkLine(Vector3 p1, Vector3 p2, ulong mask)
+    private static ulong checkLine(Vector3 p1, Vector3 p2, ulong mask)
     {
         if ((0x01 & mask) != 0)
             if (checkPoint(p1, p2, (0.5f - p1.x) / (p2.x - p1.x), 0x3e) == (ulong)InOut.INSIDE) return (ulong)InOut.INSIDE;
@@ -101,7 +101,7 @@ public class TriBoxIntersection
     }
 
     //Test if a 3D point is INSIDE a 3D triangle
-    private ulong pointTriIntersection(Vector3 p, Vector3[] t)
+    private static ulong pointTriIntersection(Vector3 p, Vector3[] t)
     {
         ulong sign12, sign23, sign31;
         Vector3 vect12, vect23, vect31, vect1h, vect2h, vect3h;
@@ -145,7 +145,7 @@ public class TriBoxIntersection
     //CENTERED ON THE ORIGIN
     //returns INSIDE or OUTSIDE
     //if the triangle intersect or not
-    public ulong triCubeIntersection(Vector3[] t){
+    public static ulong triCubeIntersection(Vector3[] t){
         ulong v1Test,v2Test,v3Test;
         float d,denom;
         Vector3 vect12,vect13,norm;
@@ -239,7 +239,7 @@ public class TriBoxIntersection
         return (ulong)InOut.OUTSIDE;
     }
 
-    public ulong triCubeIntersection(Vector3[] t,Transform cube){
+    public static ulong triCubeIntersection(Vector3[] t,Transform cube){
         for(int i=0;i<3;i++) t[i]=cube.InverseTransformPoint(t[i]);
         return triCubeIntersection(t);
     }
