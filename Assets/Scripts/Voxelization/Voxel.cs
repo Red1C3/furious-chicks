@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Voxel : MonoBehaviour
 {
-    public enum Type{NEUTRAL,SURFACE,INTERIOR}
+    public enum Type{NEUTRAL,SURFACE,INTERIOR,EXTERIOR}
 
     public Type type=Type.NEUTRAL;
+
+    public Vector3Int coords;
     
     // Start is called before the first frame update
     void Start()
