@@ -21,6 +21,27 @@ public class BoxCullider : MonoBehaviour, Cullider
         updateBoundaries();
     }
 
+    public Bounds getBounds(){
+        //REQUIRES mesh,otherwise use the commented code
+        return GetComponent<Renderer>().bounds;
+        /*float minX,maxX,minY,maxY,minZ,maxZ;
+        minX=minY=minZ=float.MaxValue;
+        maxX=maxY=maxZ=float.MinValue;
+        for(int i=0;i<vertices.Length;i++){
+            if(vertices[i].x<minX) minX=vertices[i].x;
+            if(vertices[i].x>maxX) maxX=vertices[i].x;
+            if(vertices[i].y<minY) minY=vertices[i].y;
+            if(vertices[i].y>maxY) maxY=vertices[i].y;
+            if(vertices[i].z<minZ) minZ=vertices[i].z;
+            if(vertices[i].z>maxZ) maxZ=vertices[i].z;
+        }
+
+        Bounds bounds=new Bounds();
+        bounds.center=new Vector3((minX+maxX)/2.0f,(minY+maxY)/2.0f,(minZ+maxZ)/2.0f);
+        bounds.extents=(new Vector3(maxX,maxY,maxZ))-bounds.center;
+        return bounds;*/
+    }
+
     public CullisionInfo cullideWith(Cullider other)
     {
         if (other is BoxCullider)

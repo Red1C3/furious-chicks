@@ -18,6 +18,10 @@ public class SphereCullider : MonoBehaviour, Cullider
         center = transform.position;
     }
 
+    public Bounds getBounds(){
+        //REQUIRES mesh, otherwise bounds oughta be calculated manually
+        return GetComponent<Renderer>().bounds;
+    }
     public CullisionInfo cullideWith(Cullider other)
     {
         if (other is SphereCullider)

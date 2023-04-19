@@ -5,6 +5,7 @@ using UnityEngine;
 public interface Cullider
 {
     CullisionInfo cullideWith(Cullider other);
+    Bounds getBounds();
 }
 
 public struct CullisionInfo
