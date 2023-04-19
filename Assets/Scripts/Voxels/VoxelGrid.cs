@@ -42,7 +42,7 @@ public class VoxelGrid : MonoBehaviour
                     , Quaternion.identity, transform);
                     voxels[i][j][k].transform.localScale = new Vector3(voxelLen, voxelLen, voxelLen);
                     voxels[i][j][k].GetComponent<Voxel>().coords = new Vector3Int(i, j, k);
-                    voxels[i][j][k].GetComponent<Voxel>().grid=this;
+                    voxels[i][j][k].GetComponent<Voxel>().grid = this;
                 }
             }
         }
@@ -72,12 +72,36 @@ public class VoxelGrid : MonoBehaviour
         }
     }
 
-    public Bounds getBounds(){
-        Bounds bounds=new Bounds();
-        foreach(Voxel v in surfaceVoxels){
-            BoxCullider cullider=v.GetComponent<BoxCullider>();
+    public Bounds getBounds()
+    {
+        Bounds bounds = new Bounds();
+        foreach (Voxel v in surfaceVoxels)
+        {
+            BoxCullider cullider = v.GetComponent<BoxCullider>();
             bounds.Encapsulate(cullider.getBounds());
         }
         return bounds;
+    }
+
+    private void connectVoxels()
+    {
+        for (int i = 0; i < voxels.Length; i++)
+        {
+            for (int j = 0; j < voxels[i].Length; j++)
+            {
+                for (int k = 0; k < voxels[i][j].Length; k++)
+                {
+                    //check if voxel exists and not connected then add spring
+
+                }
+            }
+        }
+    }
+
+    private bool voxelExists(Vector3Int coords)
+    {
+        return coords.x >= 0 && coords.y >= 0 && coords.z >= 0
+            && coords.x < voxels.Length && coords.y < voxels[0].Length && coords.z < voxels[0][0].Length
+            && voxels[coords.x][coords.y][coords.z] != null;
     }
 }
