@@ -14,6 +14,10 @@ public struct CullisionInfo
     public float depth;
     public bool hasContactPointA, hasContactPointB;
     public Vector3 contactPointA, contactPointB;
+
+
+    public static readonly CullisionInfo NO_CULLISION=new CullisionInfo(false,Vector3.zero,0,false,false,Vector3.zero,Vector3.zero);
+    
     public CullisionInfo(bool cullided, Vector3 normal, float depth, bool hasContactPointA,
                     bool hasContactPointB, Vector3 contactPointA, Vector3 contactPointB)
     {
