@@ -25,21 +25,30 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         if (other is BoxCullider)
         {
+            //If both are voxels and both belong to the same grid, don't check collision
+            Voxel thisVoxel, otherVoxel;
+            if (TryGetComponent<Voxel>(out thisVoxel) && (other as BoxCullider).TryGetComponent<Voxel>(out otherVoxel))
+            {
+                if (thisVoxel.grid == otherVoxel.grid)
+                {
+                    return CullisionInfo.NO_CULLISION;
+                }
+            }
             return cullideWithBox(other as BoxCullider);
         }
-        if(other is SphereCullider){
-            CullisionInfo cullision=(other as SphereCullider).cullideWithBox(this);
-            cullision.normal*=-1;
-            cullision.hasContactPointA=cullision.hasContactPointB;
-            cullision.contactPointA=cullision.contactPointB;
-            cullision.hasContactPointB=false;
-            cullision.contactPointB=Vector3.zero;
+        if (other is SphereCullider)
+        {
+            CullisionInfo cullision = (other as SphereCullider).cullideWithBox(this);
+            cullision.normal *= -1;
+            cullision.hasContactPointA = cullision.hasContactPointB;
+            cullision.contactPointA = cullision.contactPointB;
+            cullision.hasContactPointB = false;
+            cullision.contactPointB = Vector3.zero;
             return cullision;
         }
         return CullisionInfo.NO_CULLISION;
     }
 
-    //TODO if of the same voxel grid return no collision
     private CullisionInfo cullideWithBox(BoxCullider other)
     {
         float overlap = float.MaxValue;
@@ -238,8 +247,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     }
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)
     {
-        Vector3 otherToSelf=center-other.center;
-        if(Vector3.Dot(axis,otherToSelf)>=0)
+        Vector3 otherToSelf = center - other.center;
+        if (Vector3.Dot(axis, otherToSelf) >= 0)
             return axis;
         return -axis;
     }
