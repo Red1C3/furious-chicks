@@ -37,20 +37,20 @@ public class SimpleSolver : MonoBehaviour
 
         if (cullision.hasContactPointA)
         {
-            A.AddForceAtPosition(cullision.normal * cullision.depth, cullision.contactPointA, ForceMode.Impulse);
+            A.AddForceAtPosition(cullision.normal.normalized * cullision.depth, cullision.contactPointA, ForceMode.Impulse);
         }
         else
         {
-            A.AddForce(cullision.normal * cullision.depth, ForceMode.Impulse);
+            A.AddForce(cullision.normal.normalized * cullision.depth, ForceMode.Impulse);
         }
 
         if (cullision.hasContactPointB)
         {
-            B.AddForceAtPosition(-cullision.normal * cullision.depth, cullision.contactPointB, ForceMode.Impulse);
+            B.AddForceAtPosition(-cullision.normal.normalized * cullision.depth, cullision.contactPointB, ForceMode.Impulse);
         }
         else
         {
-            B.AddForce(-cullision.normal * cullision.depth, ForceMode.Impulse);
+            B.AddForce(-cullision.normal.normalized * cullision.depth, ForceMode.Impulse);
         }
     }
 }
