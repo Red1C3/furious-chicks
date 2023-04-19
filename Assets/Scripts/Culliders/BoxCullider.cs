@@ -273,4 +273,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             return axis;
         return -axis;
     }
+    public bool isVoxel(){
+        Voxel voxel;
+        return TryGetComponent<Voxel>(out voxel);
+    }
 }

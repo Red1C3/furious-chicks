@@ -71,4 +71,13 @@ public class VoxelGrid : MonoBehaviour
             }
         }
     }
+
+    public Bounds getBounds(){
+        Bounds bounds=new Bounds();
+        foreach(Voxel v in surfaceVoxels){
+            BoxCullider cullider=v.GetComponent<BoxCullider>();
+            bounds.Encapsulate(cullider.getBounds());
+        }
+        return bounds;
+    }
 }
