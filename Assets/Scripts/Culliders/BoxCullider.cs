@@ -236,20 +236,11 @@ public class BoxCullider : MonoBehaviour, Cullider
         up = rotation * Vector3.up;
         forward = rotation * Vector3.forward;
     }
-    //FIXME
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)
     {
-        Vector3 pos = transform.position;
-        transform.position += axis.normalized * depth;
-        if (calculateOverlap(other, axis) < depth)
-        {
-            transform.position = pos;
+        Vector3 otherToSelf=center-other.center;
+        if(Vector3.Dot(axis,otherToSelf)>=0)
             return axis;
-        }
-        else
-        {
-            transform.position = pos;
-            return -axis;
-        }
+        return -axis;
     }
 }
