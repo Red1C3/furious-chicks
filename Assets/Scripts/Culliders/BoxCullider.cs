@@ -210,7 +210,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         return new Vector3(0.5f, local.y, local.z);
     }
 
-    void updateBoundaries()
+    public void updateBoundaries()
     {
 
         center = transform.position;
@@ -236,7 +236,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         up = rotation * Vector3.up;
         forward = rotation * Vector3.forward;
     }
-
+    //FIXME
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)
     {
         Vector3 pos = transform.position;
