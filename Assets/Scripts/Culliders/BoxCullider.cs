@@ -198,8 +198,8 @@ public class BoxCullider : MonoBehaviour, Cullider
         );
 
         //Side Note: May cause problems if one box's center got inside the other, report if happened
-        return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
-                                 transform.TransformPoint(closestB), other.transform.TransformPoint(closestA));
+        return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, false, false,
+                                 transform.TransformPoint(closestB)*0, other.transform.TransformPoint(closestA)*0);
     }
 
     private float calculateOverlap(BoxCullider other, Vector3 axis)
