@@ -8,6 +8,8 @@ public class VoxelGrid : MonoBehaviour
     private Vector3 origin;
     [SerializeField]
     private float density, length, width, depth;
+    [SerializeField]
+    private float totalMass;
     private float voxelLen;
     private GameObject[][][] voxels;
     private List<Voxel> surfaceVoxels, interiorVoxels;
@@ -20,6 +22,7 @@ public class VoxelGrid : MonoBehaviour
         buildGrid();
         typeVoxels();
         connectVoxels();
+        distributeMass();
     }
 
     private void buildGrid()
@@ -64,10 +67,12 @@ public class VoxelGrid : MonoBehaviour
                     {
                         voxels[i][j][k].GetComponent<Voxel>().type = Voxel.Type.SURFACE;
                         voxels[i][j][k].AddComponent<BoxCullider>().updateBoundaries();
+                        surfaceVoxels.Add(voxels[i][j][k].GetComponent<Voxel>());
                     }
                     else
                     {
                         voxels[i][j][k].GetComponent<Voxel>().type = Voxel.Type.INTERIOR;
+                        interiorVoxels.Add(voxels[i][j][k].GetComponent<Voxel>());
                     }
                 }
             }
@@ -264,6 +269,17 @@ public class VoxelGrid : MonoBehaviour
 
 
             voxel.GetComponent<Voxel>().addSpring(spring);
+        }
+    }
+
+    private void distributeMass(){
+        int voxelsCount=surfaceVoxels.Count+interiorVoxels.Count;
+        float massPerVoxel=totalMass/(float)voxelsCount;
+        foreach(Voxel v in surfaceVoxels){
+            v.rb.mass=massPerVoxel;
+        }
+        foreach(Voxel v in interiorVoxels){
+            v.rb.mass=massPerVoxel;
         }
     }
 }
