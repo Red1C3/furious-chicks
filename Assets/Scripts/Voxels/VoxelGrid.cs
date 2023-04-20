@@ -257,6 +257,9 @@ public class VoxelGrid : MonoBehaviour
             SpringJoint spring = voxel.AddComponent<SpringJoint>();
             spring.connectedBody = otherRb;
             spring.anchor = localConnectingPoint;
+            spring.tolerance=0;
+            spring.spring=250;//Increase to reduce gap between voxels
+
             //change other properties as well here
 
 

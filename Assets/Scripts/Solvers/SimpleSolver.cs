@@ -35,6 +35,8 @@ public class SimpleSolver : MonoBehaviour
     {
         if (!cullision.cullided) return;
 
+        cullision.depth*=10;
+
         if (cullision.hasContactPointA)
         {
             A.AddForceAtPosition(cullision.normal.normalized * cullision.depth, cullision.contactPointA, ForceMode.Impulse);
