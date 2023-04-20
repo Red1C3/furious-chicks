@@ -19,6 +19,7 @@ public class VoxelGrid : MonoBehaviour
         origin = transform.position;
         buildGrid();
         typeVoxels();
+        connectVoxels();
     }
 
     private void buildGrid()
@@ -43,6 +44,7 @@ public class VoxelGrid : MonoBehaviour
                     voxels[i][j][k].transform.localScale = new Vector3(voxelLen, voxelLen, voxelLen);
                     voxels[i][j][k].GetComponent<Voxel>().coords = new Vector3Int(i, j, k);
                     voxels[i][j][k].GetComponent<Voxel>().grid = this;
+                    voxels[i][j][k].GetComponent<Voxel>().init();
                 }
             }
         }
@@ -85,99 +87,156 @@ public class VoxelGrid : MonoBehaviour
 
     private void connectVoxels()
     {
+        Vector3 ruf = new Vector3(0.5f, 0.5f, 0.5f), rdf = new Vector3(0.5f, -0.5f, 0.5f), luf = new Vector3(-0.5f, 0.5f, 0.5f),
+        ldf = new Vector3(-0.5f, -0.5f, 0.5f), rub = new Vector3(0.5f, 0.5f, -0.5f), rdb = new Vector3(0.5f, -0.5f, -0.5f),
+        lub = new Vector3(-0.5f, 0.5f, -0.5f), ldb = new Vector3(-0.5f, -0.5f, -0.5f);
+
         for (int i = 0; i < voxels.Length; i++)
         {
             for (int j = 0; j < voxels[i].Length; j++)
             {
                 for (int k = 0; k < voxels[i][j].Length; k++)
                 {
-                    Vector3 c=voxels[i][j][k].GetComponent<Voxel>().coords;
-                    Voxel v=voxels[i][j][k].GetComponent<Voxel>();
+                    Vector3 c = voxels[i][j][k].GetComponent<Voxel>().coords;
+                    Voxel v = voxels[i][j][k].GetComponent<Voxel>();
                     //check if voxel exists and not connected then add spring
-                    if(voxelExists(new Vector3Int(i+1,j,k)) && !v.isConnected(voxels[i+1][j][k].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j, k)) && !v.isConnected(voxels[i + 1][j][k].GetComponent<Voxel>()))
+                    {
                         //Connect right voxel
+                        addSprings(v.gameObject, voxels[i + 1][j][k], new[] { ruf, rdf, rub, rdb });
+
                     }
-                    if(voxelExists(new Vector3Int(i-1,j,k))&& !v.isConnected(voxels[i-1][j][k].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j, k)) && !v.isConnected(voxels[i - 1][j][k].GetComponent<Voxel>()))
+                    {
                         //Connect left voxel
+                        addSprings(v.gameObject, voxels[i - 1][j][k], new[] { luf, ldf, lub, ldb });
                     }
-                    if(voxelExists(new Vector3Int(i,j+1,k))&&!v.isConnected(voxels[i][j+1][k].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j + 1, k)) && !v.isConnected(voxels[i][j + 1][k].GetComponent<Voxel>()))
+                    {
                         //Connect above voxel
+                        addSprings(v.gameObject, voxels[i][j + 1][k], new[] { ruf, rub, luf, lub });
                     }
-                    if(voxelExists(new Vector3Int(i,j-1,k)) && !v.isConnected(voxels[i][j-1][k].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j - 1, k)) && !v.isConnected(voxels[i][j - 1][k].GetComponent<Voxel>()))
+                    {
                         //Connect below voxel
+                        addSprings(v.gameObject, voxels[i][j - 1][k], new[] { rdf, rdb, ldf, ldb });
                     }
-                    if(voxelExists(new Vector3Int(i,j,k+1))&&!v.isConnected(voxels[i][j][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j, k + 1)) && !v.isConnected(voxels[i][j][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connect forward voxel
+                        addSprings(v.gameObject, voxels[i][j][k + 1], new[] { ruf, rdf, luf, ldf });
                     }
-                    if(voxelExists(new Vector3Int(i,j,k-1))&&!v.isConnected(voxels[i][j][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j, k - 1)) && !v.isConnected(voxels[i][j][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect backward voxel
+                        addSprings(v.gameObject, voxels[i][j][k - 1], new[] { rub, rdb, lub, ldb });
                     }
 
-                    if(voxelExists(new Vector3Int(i+1,j+1,k))&&!v.isConnected(voxels[i+1][j+1][k].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j + 1, k)) && !v.isConnected(voxels[i + 1][j + 1][k].GetComponent<Voxel>()))
+                    {
                         //Connect up-right voxel
+                        addSprings(v.gameObject, voxels[i + 1][j + 1][k], new[] { ruf, rub });
                     }
-                    if(voxelExists(new Vector3Int(i+1,j-1,k))&&!v.isConnected(voxels[i+1][j-1][k].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j - 1, k)) && !v.isConnected(voxels[i + 1][j - 1][k].GetComponent<Voxel>()))
+                    {
                         //Connect down-right voxel
+                        addSprings(v.gameObject, voxels[i + 1][j - 1][k], new[] { rdf, rdb });
                     }
-                    if(voxelExists(new Vector3Int(i+1,j,k+1))&&!v.isConnected(voxels[i+1][j][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j, k + 1)) && !v.isConnected(voxels[i + 1][j][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connnect right-forward voxel
+                        addSprings(v.gameObject, voxels[i + 1][j][k + 1], new[] { ruf, rdf });
                     }
-                    if(voxelExists(new Vector3Int(i+1,j,k-1))&&!v.isConnected(voxels[i+1][j][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j, k - 1)) && !v.isConnected(voxels[i + 1][j][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect right-back voxel
+                        addSprings(v.gameObject, voxels[i + 1][j][k - 1], new[] { rub, rdb });
                     }
-                    
-                    if(voxelExists(new Vector3Int(i-1,j+1,k))&&!v.isConnected(voxels[i-1][j+1][k].GetComponent<Voxel>())){
+
+                    if (voxelExists(new Vector3Int(i - 1, j + 1, k)) && !v.isConnected(voxels[i - 1][j + 1][k].GetComponent<Voxel>()))
+                    {
                         //Connect up-left voxel
+                        addSprings(v.gameObject, voxels[i - 1][j + 1][k], new[] { luf, lub });
                     }
-                    if(voxelExists(new Vector3Int(i-1,j-1,k))&&!v.isConnected(voxels[i-1][j-1][k].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j - 1, k)) && !v.isConnected(voxels[i - 1][j - 1][k].GetComponent<Voxel>()))
+                    {
                         //Connect down-left voxel
+                        addSprings(v.gameObject, voxels[i - 1][j - 1][k], new[] { ldf, ldb });
                     }
-                    if(voxelExists(new Vector3Int(i-1,j,k+1))&&!v.isConnected(voxels[i-1][j][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j, k + 1)) && !v.isConnected(voxels[i - 1][j][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connnect left-forward voxel
+                        addSprings(v.gameObject, voxels[i - 1][j][k + 1], new[] { luf, ldf });
                     }
-                    if(voxelExists(new Vector3Int(i-1,j,k-1))&&!v.isConnected(voxels[i-1][j][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j, k - 1)) && !v.isConnected(voxels[i - 1][j][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect left-back voxel
+                        addSprings(v.gameObject, voxels[i - 1][j][k - 1], new[] { lub, ldb });
                     }
 
-                    if(voxelExists(new Vector3Int(i,j+1,k+1))&&!v.isConnected(voxels[i][j+1][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j + 1, k + 1)) && !v.isConnected(voxels[i][j + 1][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connect up-forward
+                        addSprings(v.gameObject, voxels[i][j + 1][k + 1], new[] { ruf, luf });
                     }
-                    if(voxelExists(new Vector3Int(i,j+1,k-1))&&!v.isConnected(voxels[i][j+1][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j + 1, k - 1)) && !v.isConnected(voxels[i][j + 1][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect up-backward
+                        addSprings(v.gameObject, voxels[i][j + 1][k - 1], new[] { rub, lub });
                     }
-                    if(voxelExists(new Vector3Int(i,j-1,k+1))&&!v.isConnected(voxels[i][j-1][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j - 1, k + 1)) && !v.isConnected(voxels[i][j - 1][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connect down-forward
+                        addSprings(v.gameObject, voxels[i][j - 1][k + 1], new[] { rdf, ldf });
                     }
-                    if(voxelExists(new Vector3Int(i,j-1,k-1))&&!v.isConnected(voxels[i][j-1][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i, j - 1, k - 1)) && !v.isConnected(voxels[i][j - 1][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect down-backward
+                        addSprings(v.gameObject, voxels[i][j - 1][k - 1], new[] { rdb, ldb });
                     }
 
-                    if(voxelExists(new Vector3Int(i+1,j+1,k+1))&&!v.isConnected(voxels[i+1][j+1][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j + 1, k + 1)) && !v.isConnected(voxels[i + 1][j + 1][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connect up-right-forward
+                        addSprings(v.gameObject, voxels[i + 1][j + 1][k + 1], new[] { ruf });
                     }
-                    if(voxelExists(new Vector3Int(i-1,j+1,k+1))&&!v.isConnected(voxels[i-1][j+1][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j + 1, k + 1)) && !v.isConnected(voxels[i - 1][j + 1][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connect left-up-forward
+                        addSprings(v.gameObject, voxels[i - 1][j + 1][k + 1], new[] { luf });
                     }
-                    if(voxelExists(new Vector3Int(i+1,j-1,k+1))&&!v.isConnected(voxels[i+1][j-1][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j - 1, k + 1)) && !v.isConnected(voxels[i + 1][j - 1][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connect right-down-forward
+                        addSprings(v.gameObject, voxels[i + 1][j - 1][k + 1], new[] { rdf });
                     }
-                    if(voxelExists(new Vector3Int(i-1,j-1,k+1))&&!v.isConnected(voxels[i-1][j-1][k+1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j - 1, k + 1)) && !v.isConnected(voxels[i - 1][j - 1][k + 1].GetComponent<Voxel>()))
+                    {
                         //Connect left-down-forward
+                        addSprings(v.gameObject, voxels[i - 1][j - 1][k + 1], new[] { ldf });
                     }
-                    
-                    if(voxelExists(new Vector3Int(i+1,j+1,k-1))&&!v.isConnected(voxels[i+1][j+1][k-1].GetComponent<Voxel>())){
+
+                    if (voxelExists(new Vector3Int(i + 1, j + 1, k - 1)) && !v.isConnected(voxels[i + 1][j + 1][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect up-right-back
+                        addSprings(v.gameObject, voxels[i + 1][j + 1][k - 1], new[] { rub });
                     }
-                    if(voxelExists(new Vector3Int(i-1,j+1,k-1))&&!v.isConnected(voxels[i-1][j+1][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j + 1, k - 1)) && !v.isConnected(voxels[i - 1][j + 1][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect left-up-back
+                        addSprings(v.gameObject, voxels[i - 1][j + 1][k - 1], new[] { lub });
                     }
-                    if(voxelExists(new Vector3Int(i+1,j-1,k-1))&&!v.isConnected(voxels[i+1][j-1][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i + 1, j - 1, k - 1)) && !v.isConnected(voxels[i + 1][j - 1][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect right-down-back
+                        addSprings(v.gameObject, voxels[i + 1][j - 1][k - 1], new[] { rdb });
                     }
-                    if(voxelExists(new Vector3Int(i-1,j-1,k-1))&&!v.isConnected(voxels[i-1][j-1][k-1].GetComponent<Voxel>())){
+                    if (voxelExists(new Vector3Int(i - 1, j - 1, k - 1)) && !v.isConnected(voxels[i - 1][j - 1][k - 1].GetComponent<Voxel>()))
+                    {
                         //Connect left-down-back
+                        addSprings(v.gameObject, voxels[i - 1][j - 1][k - 1], new[] { ldb });
                     }
-                    
+
                 }
             }
         }
@@ -188,5 +247,20 @@ public class VoxelGrid : MonoBehaviour
         return coords.x >= 0 && coords.y >= 0 && coords.z >= 0
             && coords.x < voxels.Length && coords.y < voxels[0].Length && coords.z < voxels[0][0].Length
             && voxels[coords.x][coords.y][coords.z] != null;
+    }
+
+    private void addSprings(GameObject voxel, GameObject other, Vector3[] localConnectingPoints)
+    {
+        foreach (Vector3 localConnectingPoint in localConnectingPoints)
+        {
+            Rigidbody otherRb = other.GetComponent<Rigidbody>();
+            SpringJoint spring = voxel.AddComponent<SpringJoint>();
+            spring.connectedBody = otherRb;
+            spring.anchor = localConnectingPoint;
+            //change other properties as well here
+
+
+            voxel.GetComponent<Voxel>().addSpring(spring);
+        }
     }
 }
