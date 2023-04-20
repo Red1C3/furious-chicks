@@ -91,8 +91,93 @@ public class VoxelGrid : MonoBehaviour
             {
                 for (int k = 0; k < voxels[i][j].Length; k++)
                 {
+                    Vector3 c=voxels[i][j][k].GetComponent<Voxel>().coords;
+                    Voxel v=voxels[i][j][k].GetComponent<Voxel>();
                     //check if voxel exists and not connected then add spring
+                    if(voxelExists(new Vector3Int(i+1,j,k)) && !v.isConnected(voxels[i+1][j][k].GetComponent<Voxel>())){
+                        //Connect right voxel
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j,k))&& !v.isConnected(voxels[i-1][j][k].GetComponent<Voxel>())){
+                        //Connect left voxel
+                    }
+                    if(voxelExists(new Vector3Int(i,j+1,k))&&!v.isConnected(voxels[i][j+1][k].GetComponent<Voxel>())){
+                        //Connect above voxel
+                    }
+                    if(voxelExists(new Vector3Int(i,j-1,k)) && !v.isConnected(voxels[i][j-1][k].GetComponent<Voxel>())){
+                        //Connect below voxel
+                    }
+                    if(voxelExists(new Vector3Int(i,j,k+1))&&!v.isConnected(voxels[i][j][k+1].GetComponent<Voxel>())){
+                        //Connect forward voxel
+                    }
+                    if(voxelExists(new Vector3Int(i,j,k-1))&&!v.isConnected(voxels[i][j][k-1].GetComponent<Voxel>())){
+                        //Connect backward voxel
+                    }
 
+                    if(voxelExists(new Vector3Int(i+1,j+1,k))&&!v.isConnected(voxels[i+1][j+1][k].GetComponent<Voxel>())){
+                        //Connect up-right voxel
+                    }
+                    if(voxelExists(new Vector3Int(i+1,j-1,k))&&!v.isConnected(voxels[i+1][j-1][k].GetComponent<Voxel>())){
+                        //Connect down-right voxel
+                    }
+                    if(voxelExists(new Vector3Int(i+1,j,k+1))&&!v.isConnected(voxels[i+1][j][k+1].GetComponent<Voxel>())){
+                        //Connnect right-forward voxel
+                    }
+                    if(voxelExists(new Vector3Int(i+1,j,k-1))&&!v.isConnected(voxels[i+1][j][k-1].GetComponent<Voxel>())){
+                        //Connect right-back voxel
+                    }
+                    
+                    if(voxelExists(new Vector3Int(i-1,j+1,k))&&!v.isConnected(voxels[i-1][j+1][k].GetComponent<Voxel>())){
+                        //Connect up-left voxel
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j-1,k))&&!v.isConnected(voxels[i-1][j-1][k].GetComponent<Voxel>())){
+                        //Connect down-left voxel
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j,k+1))&&!v.isConnected(voxels[i-1][j][k+1].GetComponent<Voxel>())){
+                        //Connnect left-forward voxel
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j,k-1))&&!v.isConnected(voxels[i-1][j][k-1].GetComponent<Voxel>())){
+                        //Connect left-back voxel
+                    }
+
+                    if(voxelExists(new Vector3Int(i,j+1,k+1))&&!v.isConnected(voxels[i][j+1][k+1].GetComponent<Voxel>())){
+                        //Connect up-forward
+                    }
+                    if(voxelExists(new Vector3Int(i,j+1,k-1))&&!v.isConnected(voxels[i][j+1][k-1].GetComponent<Voxel>())){
+                        //Connect up-backward
+                    }
+                    if(voxelExists(new Vector3Int(i,j-1,k+1))&&!v.isConnected(voxels[i][j-1][k+1].GetComponent<Voxel>())){
+                        //Connect down-forward
+                    }
+                    if(voxelExists(new Vector3Int(i,j-1,k-1))&&!v.isConnected(voxels[i][j-1][k-1].GetComponent<Voxel>())){
+                        //Connect down-backward
+                    }
+
+                    if(voxelExists(new Vector3Int(i+1,j+1,k+1))&&!v.isConnected(voxels[i+1][j+1][k+1].GetComponent<Voxel>())){
+                        //Connect up-right-forward
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j+1,k+1))&&!v.isConnected(voxels[i-1][j+1][k+1].GetComponent<Voxel>())){
+                        //Connect left-up-forward
+                    }
+                    if(voxelExists(new Vector3Int(i+1,j-1,k+1))&&!v.isConnected(voxels[i+1][j-1][k+1].GetComponent<Voxel>())){
+                        //Connect right-down-forward
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j-1,k+1))&&!v.isConnected(voxels[i-1][j-1][k+1].GetComponent<Voxel>())){
+                        //Connect left-down-forward
+                    }
+                    
+                    if(voxelExists(new Vector3Int(i+1,j+1,k-1))&&!v.isConnected(voxels[i+1][j+1][k-1].GetComponent<Voxel>())){
+                        //Connect up-right-back
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j+1,k-1))&&!v.isConnected(voxels[i-1][j+1][k-1].GetComponent<Voxel>())){
+                        //Connect left-up-back
+                    }
+                    if(voxelExists(new Vector3Int(i+1,j-1,k-1))&&!v.isConnected(voxels[i+1][j-1][k-1].GetComponent<Voxel>())){
+                        //Connect right-down-back
+                    }
+                    if(voxelExists(new Vector3Int(i-1,j-1,k-1))&&!v.isConnected(voxels[i-1][j-1][k-1].GetComponent<Voxel>())){
+                        //Connect left-down-back
+                    }
+                    
                 }
             }
         }
