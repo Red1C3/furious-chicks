@@ -16,7 +16,8 @@ public class Voxel : MonoBehaviour
 
     private List<SpringJoint> springs;
 
-    void Start(){
+    //gets called from voxelgrid
+    public void init(){
         springs=new List<SpringJoint>();
         rb=GetComponent<Rigidbody>();
     }
@@ -25,6 +26,13 @@ public class Voxel : MonoBehaviour
         foreach(SpringJoint spring in springs){
             if(spring.connectedBody==other.rb) return true;
         }
+        foreach(SpringJoint spring in other.springs){
+            if(spring.connectedBody==rb) return true;
+        }
         return false;
+    }
+
+    public void addSpring(SpringJoint spring){
+        springs.Add(spring);
     }
 }
