@@ -181,7 +181,25 @@ public class BoxCullider : MonoBehaviour, Cullider
             overlap = tempOverlap;
             axis = Vector3.Cross(forward, other.forward);
         }
-        return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, false, false, Vector3.zero, Vector3.zero);
+        Vector3 BinALocal=transform.InverseTransformPoint(other.center);
+        
+        Vector3 closestB=new Vector3(
+            Mathf.Max(-0.5f,Mathf.Min(BinALocal.x,0.5f)),
+            Mathf.Max(-0.5f,Mathf.Min(BinALocal.y,0.5f)),
+            Mathf.Max(-0.5f,Mathf.Min(BinALocal.z,0.5f))
+        );
+
+        Vector3 AinBLocal=other.transform.InverseTransformPoint(center);
+        
+        Vector3 closestA=new Vector3(
+            Mathf.Max(-0.5f,Mathf.Min(AinBLocal.x,0.5f)),
+            Mathf.Max(-0.5f,Mathf.Min(AinBLocal.y,0.5f)),
+            Mathf.Max(-0.5f,Mathf.Min(AinBLocal.z,0.5f))
+        );
+
+        //Side Note: May cause problems if one box's center got inside the other, report if happened
+        return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
+                                 transform.TransformPoint(closestB), other.transform.TransformPoint(closestA));
     }
 
     private float calculateOverlap(BoxCullider other, Vector3 axis)
