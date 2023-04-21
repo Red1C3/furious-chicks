@@ -12,9 +12,9 @@ public class VoxelGrid : MonoBehaviour
     private float totalMass;
     private float voxelLen;
     private GameObject[][][] voxels;
-    private List<Voxel> surfaceVoxels, interiorVoxels;
+    public List<Voxel> surfaceVoxels, interiorVoxels;
 
-    void Start()
+    void Awake()
     {
         surfaceVoxels = new List<Voxel>();
         interiorVoxels = new List<Voxel>();

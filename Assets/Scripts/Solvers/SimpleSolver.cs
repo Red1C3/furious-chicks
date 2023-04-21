@@ -18,7 +18,7 @@ public class SimpleSolver : MonoBehaviour
             }
         }
     }
-
+/*
     void FixedUpdate()
     {
         for (int i = 0; i < cullidingObject.Count; i++)
@@ -30,8 +30,8 @@ public class SimpleSolver : MonoBehaviour
             }
         }
     }
-
-    void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
+*/
+    public void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
 
