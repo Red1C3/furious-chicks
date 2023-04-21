@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 285853659}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -378,9 +378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13edd4fa4d498d54ebf0828499f70bf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  world:
-  - {fileID: 1149229478}
-  - {fileID: 462061688}
   player: {fileID: 285853658}
   nodeMinSize: 10
   solver: {fileID: 1203251365}
