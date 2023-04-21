@@ -4,33 +4,6 @@ using UnityEngine;
 
 public class SimpleSolver : MonoBehaviour
 {
-    private List<GameObject> cullidingObject;
-    void Start()
-    {
-        cullidingObject = new List<GameObject>();
-        GameObject[] gameObjects = FindObjectsOfType<GameObject>();
-        foreach (GameObject gameObject in gameObjects)
-        {
-            Cullider cullider;
-            if (gameObject.TryGetComponent<Cullider>(out cullider))
-            {
-                cullidingObject.Add(gameObject);
-            }
-        }
-    }
-/*
-    void FixedUpdate()
-    {
-        for (int i = 0; i < cullidingObject.Count; i++)
-        {
-            for (int j = i + 1; j < cullidingObject.Count; j++)
-            {
-                resolveCullision(cullidingObject[i].GetComponent<Cullider>().cullideWith(cullidingObject[j].GetComponent<Cullider>()),
-                cullidingObject[i].GetComponent<Rigidbody>(), cullidingObject[j].GetComponent<Rigidbody>());
-            }
-        }
-    }
-*/
     public void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
