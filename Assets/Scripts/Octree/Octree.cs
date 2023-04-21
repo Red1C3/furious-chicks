@@ -6,11 +6,11 @@ public class Octree
 {
     public OctreeNode rootNode;
 
-    public Octree(GameObject[] world,float minNodeSize){
+    public Octree(List<GameObject> world,float minNodeSize){
         Update(world,minNodeSize);
     }
 
-    public void AddObj(GameObject[] world){
+    public void AddObj(List<GameObject> world){
         foreach (GameObject go in world)
         {
             rootNode.AddObj(go);
@@ -21,16 +21,11 @@ public class Octree
         rootNode.search(player,solver);
     }
 
-    public void Update(GameObject[] world,float minNodeSize){
+    public void Update(List<GameObject> world,float minNodeSize){
         Bounds bounds = new Bounds();
         foreach (GameObject go in world)
         {
-            if(go.tag=="VoxelGrid"){
-                bounds.Encapsulate(go.GetComponent<VoxelGrid>().getBounds());
-            }
-            else{
-                bounds.Encapsulate(go.GetComponent<Cullider>().getBounds());
-            }
+            bounds.Encapsulate(go.GetComponent<Cullider>().getBounds());
         }
         float maxSize = Mathf.Max(new float[] {bounds.size.x,bounds.size.y,bounds.size.z});
         Vector3 sizeVector = new Vector3(maxSize,maxSize,maxSize) * 0.5f;

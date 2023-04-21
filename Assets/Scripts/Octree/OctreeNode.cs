@@ -50,11 +50,7 @@ public class OctreeNode
             if(child[i]==null){
                 child[i]=new OctreeNode(childBounds[i],minSize);
             }
-            if(go.tag=="VoxelGrid" && childBounds[i].Intersects(go.GetComponent<VoxelGrid>().getBounds())){
-                dividing=true;
-                child[i].DivideAndAdd(go);
-            }
-            else if(go.tag!="VoxelGrid" && childBounds[i].Intersects(go.GetComponent<Cullider>().getBounds())){
+            if(childBounds[i].Intersects(go.GetComponent<Cullider>().getBounds())){
                 dividing=true;
                 child[i].DivideAndAdd(go);
             }
@@ -75,6 +71,8 @@ public class OctreeNode
         }      
         if(child==null){
             foreach(GameObject go in gos){
+                if(go == player)
+                    continue;
                 solver.resolveCullision(player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>()),
                 player.GetComponent<Rigidbody>(), go.GetComponent<Rigidbody>());
             } 
