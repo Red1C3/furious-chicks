@@ -31,20 +31,20 @@ public class SphereCullider : MonoBehaviour, Cullider
             float disBetweenCenters = Vector3.Distance(center, otherSphere.center);
             if (disBetweenCenters > radius + otherSphere.radius)
             {
-                return new CullisionInfo(false, Vector3.zero, 0, false, false, Vector3.zero, Vector3.zero);
+                return CullisionInfo.NO_CULLISION;
             }
             else
             {
                 float depth = radius + otherSphere.radius - disBetweenCenters;
                 Vector3 normal = (center - otherSphere.center).normalized;
 
-                return new CullisionInfo(true, normal, depth, false, false, Vector3.zero, Vector3.zero);
+                return new CullisionInfo(true, normal, depth, false, false, Vector3.zero, Vector3.zero,this,other);
             }
         }
         if(other is BoxCullider){
             return cullideWithBox(other as BoxCullider);
         }
-        return new CullisionInfo(false, Vector3.zero, 0, false, false, Vector3.zero, Vector3.zero);
+        return CullisionInfo.NO_CULLISION;
     }
 
     public CullisionInfo cullideWithBox(BoxCullider other){
@@ -72,7 +72,7 @@ public class SphereCullider : MonoBehaviour, Cullider
                 contactPoint=boxTransform.TransformPoint(closestFacePoint);
             }
 
-            return new CullisionInfo(true,mtv.normalized,mtv.magnitude,false,true,Vector3.zero,contactPoint);
+            return new CullisionInfo(true,mtv.normalized,mtv.magnitude,false,true,Vector3.zero,contactPoint,this,other);
         }else{
             return CullisionInfo.NO_CULLISION;
         }
