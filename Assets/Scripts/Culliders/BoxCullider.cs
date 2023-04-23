@@ -295,4 +295,13 @@ public class BoxCullider : MonoBehaviour, Cullider
         Voxel voxel;
         return TryGetComponent<Voxel>(out voxel);
     }
+
+    public override string ToString()
+    {
+        Voxel v;
+        if(TryGetComponent<Voxel>(out v)){
+            return v.ToString();
+        }
+        return base.ToString();
+    }
 }

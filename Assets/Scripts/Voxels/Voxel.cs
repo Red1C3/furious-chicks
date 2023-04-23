@@ -35,4 +35,9 @@ public class Voxel : MonoBehaviour
     public void addSpring(SpringJoint spring){
         springs.Add(spring);
     }
+
+    public override string ToString()
+    {
+        return "Voxel("+coords.x+","+coords.y+","+coords.z+")";
+    }
 }
