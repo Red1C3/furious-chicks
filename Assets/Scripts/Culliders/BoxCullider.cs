@@ -11,6 +11,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     private Vector3[] vertices;
     private Vector3 right, up, forward;
 
+    public static readonly float axisThreshold=0.01f;
+
     void Start()
     {
         updateBoundaries();
@@ -206,7 +208,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         // Handles the cross product = {0,0,0} case
         // Infinite cuz we'll take the smallest overlap 
-        if (axis == Vector3.zero)
+        float axisMagnitude=axis.magnitude;
+        if (axisMagnitude<=axisThreshold)
             return float.MaxValue;
 
         var aMin = float.MaxValue;
