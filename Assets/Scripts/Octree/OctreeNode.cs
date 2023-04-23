@@ -8,7 +8,7 @@ public class OctreeNode
     float minSize;
     Bounds[] childBounds;
     OctreeNode[] child = null;
-    List<GameObject> gos = null;
+    List<GameObject> gos=new List<GameObject>();
 
     public OctreeNode(Bounds b, float m){
         nodeBounds=b;
@@ -36,9 +36,6 @@ public class OctreeNode
 
     public void DivideAndAdd(GameObject go){
         if(nodeBounds.size.y <= minSize){
-            if(gos == null){
-                gos = new List<GameObject>();
-            }
             gos.Add(go);
             return;
         }
