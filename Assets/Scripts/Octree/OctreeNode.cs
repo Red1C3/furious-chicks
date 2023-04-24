@@ -70,8 +70,15 @@ public class OctreeNode
             foreach(GameObject go in gos){
                 if(go == player)
                     continue;
-                solver.resolveCullision(player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>()),
-                player.GetComponent<Rigidbody>(), go.GetComponent<Rigidbody>());
+                CullisionInfo returned = player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>());
+                CullisionInfo swaped = CreateOctree.culls.Find(x => (x.first==returned.second && returned.first==x.second));
+                CullisionInfo duplicated = CreateOctree.culls.Find(x => (x.first==returned.first && returned.second==x.second));
+                Debug.Log("_______________________________");
+                Debug.Log(returned.ToString());
+                Debug.Log(swaped.ToString());
+                Debug.Log(duplicated.ToString());
+                
+                CreateOctree.culls.Add(returned);
             } 
         }
         else

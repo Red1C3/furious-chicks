@@ -10,6 +10,7 @@ public class CreateOctree : MonoBehaviour
     Octree octree;
 
     private List<GameObject> cullidingObject;
+    public static List<CullisionInfo> culls = new List<CullisionInfo>();
 
     // Start is called before the first frame update
     void Start()
@@ -37,10 +38,15 @@ public class CreateOctree : MonoBehaviour
     }
 
     void FixedUpdate(){
+        culls.Clear();
         octree.search(player,solver);
         foreach(GameObject go in cullidingObject){
             octree.search(go,solver);
         }
         octree.Update(cullidingObject,nodeMinSize);
+        foreach(CullisionInfo cullision in culls){
+            // FIX THIS
+            solver.resolveCullision(cullision,cullision.first.getRigidbody(), cullision.second.getRigidbody());
+        }
     }
 }
