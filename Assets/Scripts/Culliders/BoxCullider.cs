@@ -13,8 +13,11 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     public static readonly float axisThreshold=0.01f;
 
+    private Rigidbody rb;
+
     void Start()
     {
+        rb=GetComponent<Rigidbody>();
         updateBoundaries();
     }
 
@@ -23,6 +26,9 @@ public class BoxCullider : MonoBehaviour, Cullider
         updateBoundaries();
     }
 
+    public Rigidbody getRigidbody(){
+        return rb;
+    }
     public Bounds getBounds(){
         //REQUIRES mesh,otherwise use the commented code
         return GetComponent<Renderer>().bounds;

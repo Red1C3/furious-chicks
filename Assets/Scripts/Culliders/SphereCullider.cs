@@ -6,9 +6,11 @@ public class SphereCullider : MonoBehaviour, Cullider
 {
     private float radius;
     private Vector3 center;
+    private Rigidbody rb;
 
     void Start()
     {
+        rb=GetComponent<Rigidbody>();
         radius = transform.localScale.x / 2.0f;
         center = transform.position;
     }
@@ -16,6 +18,10 @@ public class SphereCullider : MonoBehaviour, Cullider
     void FixedUpdate()
     {
         center = transform.position;
+    }
+
+    public Rigidbody getRigidbody(){
+        return rb;
     }
 
     public Bounds getBounds(){

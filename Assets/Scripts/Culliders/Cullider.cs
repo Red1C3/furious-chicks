@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface Cullider
 {
+    Rigidbody getRigidbody();
     CullisionInfo cullideWith(Cullider other);
     Bounds getBounds();
 }
