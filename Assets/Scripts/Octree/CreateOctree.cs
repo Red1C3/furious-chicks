@@ -45,8 +45,8 @@ public class CreateOctree : MonoBehaviour
         }
         octree.Update(cullidingObject,nodeMinSize);
         foreach(CullisionInfo cullision in culls){
-            // FIX THIS
             solver.resolveCullision(cullision,cullision.first.getRigidbody(), cullision.second.getRigidbody());
+            Debug.Log("Count: "+culls.Count);
         }
     }
 }

@@ -17,7 +17,7 @@ public struct CullisionInfo
     public bool hasContactPointA, hasContactPointB;
     public Vector3 contactPointA, contactPointB;
 
-    private Cullider first,second;
+    public Cullider first,second;
 
     public static readonly CullisionInfo NO_CULLISION=new CullisionInfo(false,Vector3.zero,0,false,false,Vector3.zero,Vector3.zero,null,null);
     
@@ -25,7 +25,7 @@ public struct CullisionInfo
                     bool hasContactPointB, Vector3 contactPointA, Vector3 contactPointB,
                     Cullider first,Cullider second)
     {
-        bool debug=true;
+        bool debug=false;
 
         this.cullided = cullided;
         this.normal = normal;

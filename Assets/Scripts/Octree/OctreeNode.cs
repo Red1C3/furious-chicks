@@ -61,6 +61,10 @@ public class OctreeNode
         return nodeBounds.Intersects(bounds);
     }
 
+    public bool notNull(CullisionInfo c){
+        return (c.first!=null && c.second!=null);
+    }
+
     public void search(GameObject player,SimpleSolver solver){
         Bounds bounds = player.GetComponent<Cullider>().getBounds();  
         if(!Intersects(bounds)){
@@ -73,12 +77,16 @@ public class OctreeNode
                 CullisionInfo returned = player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>());
                 CullisionInfo swaped = CreateOctree.culls.Find(x => (x.first==returned.second && returned.first==x.second));
                 CullisionInfo duplicated = CreateOctree.culls.Find(x => (x.first==returned.first && returned.second==x.second));
-                Debug.Log("_______________________________");
-                Debug.Log(returned.ToString());
-                Debug.Log(swaped.ToString());
-                Debug.Log(duplicated.ToString());
-                
-                CreateOctree.culls.Add(returned);
+                // if(notNull(returned)){
+                //     Debug.Log("_______________________________");
+                //     Debug.Log("RET: "+returned.ToString());
+                // }
+                // if(notNull(swaped))
+                //     Debug.Log("SWA: "+swaped.ToString());
+                // if(notNull(duplicated))
+                //     Debug.Log("DUP: "+duplicated.ToString());
+                if(notNull(returned) && !notNull(swaped)&& !notNull(duplicated))
+                    CreateOctree.culls.Add(returned);
             } 
         }
         else
