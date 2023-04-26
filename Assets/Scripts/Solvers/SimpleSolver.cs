@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimpleSolver : MonoBehaviour
+public class SimpleSolver : Solver
 {
-    public void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
+    public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
 

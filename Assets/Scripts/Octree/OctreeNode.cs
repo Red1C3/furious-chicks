@@ -65,7 +65,7 @@ public class OctreeNode
         return (c.first!=null && c.second!=null);
     }
 
-    public void search(GameObject player,SimpleSolver solver){
+    public void search(GameObject player,Solver solver){
         Bounds bounds = player.GetComponent<Cullider>().getBounds();  
         if(!Intersects(bounds)){
             return;

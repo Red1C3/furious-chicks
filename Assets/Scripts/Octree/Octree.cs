@@ -17,7 +17,7 @@ public class Octree
         }
     }
 
-    public void search(GameObject player,SimpleSolver solver){
+    public void search(GameObject player,Solver solver){
         rootNode.search(player,solver);
     }
 

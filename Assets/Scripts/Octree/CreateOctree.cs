@@ -6,7 +6,7 @@ public class CreateOctree : MonoBehaviour
 {
     public GameObject player;
     public int nodeMinSize = 5;  
-    public SimpleSolver solver;
+    public Solver solver;
     Octree octree;
 
     private List<GameObject> cullidingObject;
