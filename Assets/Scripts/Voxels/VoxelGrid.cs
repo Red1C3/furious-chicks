@@ -21,8 +21,8 @@ public class VoxelGrid : MonoBehaviour
         origin = transform.position;
         buildGrid();
         typeVoxels();
-        connectVoxels();
-        distributeMass();
+        //connectVoxels();
+        //distributeMass();
     }
 
     private void buildGrid()
