@@ -21,10 +21,37 @@ public class VoxelGrid : MonoBehaviour
         origin = transform.position;
         buildGrid();
         typeVoxels();
+        centerVoxels();
         //connectVoxels();
         //distributeMass();
     }
 
+    private void centerVoxels(){
+        Vector3 avg=Vector3.zero;
+        int count=0;
+        for (int i = 0; i < voxels.Length; i++)
+        {
+            for (int j = 0; j < voxels[i].Length; j++)
+            {
+                for (int k = 0; k < voxels[i][j].Length; k++)
+                {
+                    avg+=voxels[i][j][k].transform.position;
+                    count++;
+                }
+            }
+        }
+        avg/=count;
+        for (int i = 0; i < voxels.Length; i++)
+        {
+            for (int j = 0; j < voxels[i].Length; j++)
+            {
+                for (int k = 0; k < voxels[i][j].Length; k++)
+                {
+                    voxels[i][j][k].transform.Translate(-avg+transform.position,Space.World);
+                }
+            }
+        }
+    }
     private void buildGrid()
     {
         voxelLen = Mathf.Pow(((length * width * depth) / density), 1.0f / 3.0f);
