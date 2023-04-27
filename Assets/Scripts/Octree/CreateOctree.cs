@@ -15,7 +15,6 @@ public class CreateOctree : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Time.timeScale=0.5f;
         cullidingObject = new List<GameObject>();
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
         foreach (GameObject gameObject in gameObjects)
