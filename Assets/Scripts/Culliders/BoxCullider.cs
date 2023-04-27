@@ -11,13 +11,13 @@ public class BoxCullider : MonoBehaviour, Cullider
     private Vector3[] vertices;
     private Vector3 right, up, forward;
 
-    public static readonly float axisThreshold=0.01f;
+    public static readonly float axisThreshold = 0.01f;
 
     private Rigidbody rb;
 
     void Start()
     {
-        rb=GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         updateBoundaries();
     }
 
@@ -26,10 +26,17 @@ public class BoxCullider : MonoBehaviour, Cullider
         updateBoundaries();
     }
 
-    public Rigidbody getRigidbody(){
+    public Rigidbody getRigidbody()
+    {
+        Voxel voxel;
+        if (TryGetComponent<Voxel>(out voxel))
+        {
+            return voxel.grid.GetComponent<Rigidbody>();
+        }
         return rb;
     }
-    public Bounds getBounds(){
+    public Bounds getBounds()
+    {
         //REQUIRES mesh,otherwise use the commented code
         return GetComponent<Renderer>().bounds;
         /*float minX,maxX,minY,maxY,minZ,maxZ;
@@ -52,6 +59,7 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     public CullisionInfo cullideWith(Cullider other)
     {
+        CullisionInfo cullisionInfo;
         if (other is BoxCullider)
         {
             //If both are voxels and both belong to the same grid, don't check collision
@@ -63,21 +71,37 @@ public class BoxCullider : MonoBehaviour, Cullider
                     return CullisionInfo.NO_CULLISION;
                 }
             }
-            return cullideWithBox(other as BoxCullider);
+            cullisionInfo = cullideWithBox(other as BoxCullider);
+            return addContactPoint(cullisionInfo);
         }
         if (other is SphereCullider)
         {
-            CullisionInfo cullision = (other as SphereCullider).cullideWithBox(this);
-            cullision.normal *= -1;
-            cullision.hasContactPointA = cullision.hasContactPointB;
-            cullision.contactPointA = cullision.contactPointB;
-            cullision.hasContactPointB = false;
-            cullision.contactPointB = Vector3.zero;
-            return cullision;
+            cullisionInfo = (other as SphereCullider).cullideWithBox(this);
+            cullisionInfo.normal *= -1;
+            cullisionInfo.hasContactPointA = cullisionInfo.hasContactPointB;
+            cullisionInfo.contactPointA = cullisionInfo.contactPointB;
+            cullisionInfo.hasContactPointB = false;
+            cullisionInfo.contactPointB = Vector3.zero;
+            //addContactPoint(cullisionInfo);
+            return cullisionInfo;
         }
         return CullisionInfo.NO_CULLISION;
     }
-
+    private CullisionInfo addContactPoint(CullisionInfo ci)
+    {
+        Voxel voxel;
+        if (TryGetComponent<Voxel>(out voxel))
+        {
+            ci.hasContactPointA = true;
+            ci.contactPointA = center;
+        }
+        if (ci.second is BoxCullider && (ci.second as BoxCullider).TryGetComponent<Voxel>(out voxel))
+        {
+            ci.hasContactPointB = true;
+            ci.contactPointB = (ci.second as BoxCullider).center;
+        }
+        return ci;
+    }
     private CullisionInfo cullideWithBox(BoxCullider other)
     {
         float overlap = float.MaxValue;
@@ -189,33 +213,33 @@ public class BoxCullider : MonoBehaviour, Cullider
             overlap = tempOverlap;
             axis = Vector3.Cross(forward, other.forward);
         }
-        Vector3 BinALocal=transform.InverseTransformPoint(other.center);
-        
-        Vector3 closestB=new Vector3(
-            Mathf.Max(-0.5f,Mathf.Min(BinALocal.x,0.5f)),
-            Mathf.Max(-0.5f,Mathf.Min(BinALocal.y,0.5f)),
-            Mathf.Max(-0.5f,Mathf.Min(BinALocal.z,0.5f))
+        Vector3 BinALocal = transform.InverseTransformPoint(other.center);
+
+        Vector3 closestB = new Vector3(
+            Mathf.Max(-0.5f, Mathf.Min(BinALocal.x, 0.5f)),
+            Mathf.Max(-0.5f, Mathf.Min(BinALocal.y, 0.5f)),
+            Mathf.Max(-0.5f, Mathf.Min(BinALocal.z, 0.5f))
         );
 
-        Vector3 AinBLocal=other.transform.InverseTransformPoint(center);
-        
-        Vector3 closestA=new Vector3(
-            Mathf.Max(-0.5f,Mathf.Min(AinBLocal.x,0.5f)),
-            Mathf.Max(-0.5f,Mathf.Min(AinBLocal.y,0.5f)),
-            Mathf.Max(-0.5f,Mathf.Min(AinBLocal.z,0.5f))
+        Vector3 AinBLocal = other.transform.InverseTransformPoint(center);
+
+        Vector3 closestA = new Vector3(
+            Mathf.Max(-0.5f, Mathf.Min(AinBLocal.x, 0.5f)),
+            Mathf.Max(-0.5f, Mathf.Min(AinBLocal.y, 0.5f)),
+            Mathf.Max(-0.5f, Mathf.Min(AinBLocal.z, 0.5f))
         );
 
         //Side Note: May cause problems if one box's center got inside the other, report if happened
         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, false, false,
-                                 transform.TransformPoint(closestB)*0, other.transform.TransformPoint(closestA)*0,this,other);
+                                 transform.TransformPoint(closestB) * 0, other.transform.TransformPoint(closestA) * 0, this, other);
     }
 
     private float calculateOverlap(BoxCullider other, Vector3 axis)
     {
         // Handles the cross product = {0,0,0} case
         // Infinite cuz we'll take the smallest overlap 
-        float axisMagnitude=axis.magnitude;
-        if (axisMagnitude<=axisThreshold)
+        float axisMagnitude = axis.magnitude;
+        if (axisMagnitude <= axisThreshold)
             return float.MaxValue;
 
         var aMin = float.MaxValue;
@@ -300,7 +324,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             return axis;
         return -axis;
     }
-    public bool isVoxel(){
+    public bool isVoxel()
+    {
         Voxel voxel;
         return TryGetComponent<Voxel>(out voxel);
     }
@@ -308,7 +333,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     public override string ToString()
     {
         Voxel v;
-        if(TryGetComponent<Voxel>(out v)){
+        if (TryGetComponent<Voxel>(out v))
+        {
             return v.ToString();
         }
         return base.ToString();

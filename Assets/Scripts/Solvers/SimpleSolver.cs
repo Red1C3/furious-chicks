@@ -8,8 +8,9 @@ public class SimpleSolver : Solver
     {
         if (!cullision.cullided) return;
 
-        cullision.depth*=10;
-
+        Debug.Log(cullision);
+        //cullision.depth+=cullision.depth*(A.velocity.magnitude+B.velocity.magnitude);
+        cullision.depth*=100;
         if (cullision.hasContactPointA)
         {
             A.AddForceAtPosition(cullision.normal.normalized * cullision.depth, cullision.contactPointA, ForceMode.Impulse);
