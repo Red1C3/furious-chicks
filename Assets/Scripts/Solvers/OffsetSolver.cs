@@ -4,6 +4,9 @@ public class OffsetSolver : Solver
 {
     public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
-        B.transform.position+=-cullision.normal.normalized*cullision.depth;
+        float AmassFactor = A.mass / (A.mass + B.mass);
+        float BmassFactor = B.mass / (A.mass + B.mass);
+        A.transform.position += BmassFactor * cullision.normal.normalized * cullision.depth;
+        B.transform.position += -AmassFactor * cullision.normal.normalized * cullision.depth;
     }
 }
