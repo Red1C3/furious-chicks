@@ -8,5 +8,7 @@ public class OffsetSolver : Solver
         float BmassFactor = B.mass / (A.mass + B.mass);
         A.transform.position += BmassFactor * cullision.normal.normalized * cullision.depth;
         B.transform.position += -AmassFactor * cullision.normal.normalized * cullision.depth;
+
+        A.GetComponent<RigidbodyDriver>().applyLinearMomentum(B.GetComponent<RigidbodyDriver>());
     }
 }

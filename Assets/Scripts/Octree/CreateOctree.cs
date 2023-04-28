@@ -46,7 +46,11 @@ public class CreateOctree : MonoBehaviour
         octree.Update(cullidingObject,nodeMinSize);
         foreach(CullisionInfo cullision in culls){
             solver.resolveCullision(cullision,cullision.first.getRigidbody(), cullision.second.getRigidbody());
-            Debug.Log("Count: "+culls.Count);
+            //Debug.Log("Count: "+culls.Count);
+        }
+        RigidbodyDriver[] rigidbodies=FindObjectsOfType<RigidbodyDriver>();
+        foreach(RigidbodyDriver rb in rigidbodies){
+            rb.physicsUpdate();
         }
     }
 }
