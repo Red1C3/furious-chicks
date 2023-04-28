@@ -13,7 +13,8 @@ public class RigidbodyDriver : MonoBehaviour
     }
 
     void FixedUpdate(){
-        velocity+=gravity*Time.fixedDeltaTime;
+        if(rb.useGravity)
+            velocity+=gravity*Time.fixedDeltaTime;
         transform.position+=velocity*Time.fixedDeltaTime;
     }
 }
