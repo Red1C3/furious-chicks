@@ -71,9 +71,9 @@ public class RigidbodyDriver : MonoBehaviour
         float3x3 inertiaTensor = shape.getTensorInertia();
         float3x3 otherInertiaTensor = shape.getTensorInertia();
 
-        float3x3 alpha = (inertiaTensor - otherInertiaTensor) / (inertiaTensor + otherInertiaTensor);
-        float3x3 beta = otherInertiaTensor / (inertiaTensor + otherInertiaTensor);
-        float3x3 gamma = inertiaTensor / (inertiaTensor + otherInertiaTensor);
+        float3x3 alpha = (inertiaTensor - otherInertiaTensor) * math.inverse(inertiaTensor + otherInertiaTensor);
+        float3x3 beta = otherInertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
+        float3x3 gamma = inertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
 
         float3 newVelocity = math.mul(alpha, vecAngVelocity) + math.mul(2 * beta, otherVecAngVelocity);
         float3 newOtherVelocity = math.mul(2 * gamma, vecAngVelocity) - math.mul(alpha, otherVecAngVelocity);
