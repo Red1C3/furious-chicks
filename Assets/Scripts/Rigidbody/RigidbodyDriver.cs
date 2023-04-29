@@ -6,6 +6,7 @@ public class RigidbodyDriver : MonoBehaviour
 {
     private Rigidbody rb;
     private Vector3 velocity;
+    //w component is always 0
     private Quaternion angularVelocity;
     private static Vector3 gravity = new Vector3(0, -9.8f, 0);
     void Start()
