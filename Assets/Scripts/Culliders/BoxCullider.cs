@@ -339,4 +339,21 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         return base.ToString();
     }
+
+    public Matrix4x4 getTensorInertia()
+    {
+        Matrix4x4 tensor=Matrix4x4.identity;
+        float mass=rb.mass;
+        float h=transform.localScale.y;
+        float d=transform.localScale.z;
+        float w=transform.localScale.x;
+
+        mass=mass/12.0f;
+
+        tensor.m00=mass*(h*h+d*d);
+        tensor.m11=mass*(w*w+d*d);
+        tensor.m22=mass*(w*w+h*h);
+
+        return tensor;
+    }
 }

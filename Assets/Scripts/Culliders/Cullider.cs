@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface Cullider
+public interface Cullider : Shape
 {
     Rigidbody getRigidbody();
     CullisionInfo cullideWith(Cullider other);

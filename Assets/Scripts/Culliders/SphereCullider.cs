@@ -83,4 +83,9 @@ public class SphereCullider : MonoBehaviour, Cullider
             return CullisionInfo.NO_CULLISION;
         }
     }
+
+    public Matrix4x4 getTensorInertia()
+    {
+        throw new System.NotImplementedException();
+    }
 }
