@@ -92,4 +92,13 @@ public class RigidbodyDriver : MonoBehaviour
         angularVelocity = new Quaternion(newVelocity.x, newVelocity.y, newVelocity.z, 0);
         other.angularVelocity = new Quaternion(newOtherVelocity.x, newOtherVelocity.y, newOtherVelocity.z, 0);
     }
+
+    public void addAngularVelocity(Vector3 vector3){
+        angularVelocity.x+=vector3.x;
+        angularVelocity.y+=vector3.y;
+        angularVelocity.z+=vector3.z;
+    }
+    public void addLinearVelocity(Vector3 vector3){
+        velocity+=vector3;
+    }
 }
