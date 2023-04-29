@@ -5,7 +5,8 @@ public class OffsetSolver : Solver
     public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         A.GetComponent<RigidbodyDriver>().applyLinearMomentum(B.GetComponent<RigidbodyDriver>());
-        //apply angular momentum
+        //TODO test and do a math review
+        //A.GetComponent<RigidbodyDriver>().applyAngularMomentum(B.GetComponent<RigidbodyDriver>());
 
         float depthA = cullision.depth;
         float depthB = cullision.depth;

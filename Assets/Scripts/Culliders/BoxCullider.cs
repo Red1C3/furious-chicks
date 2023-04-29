@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class BoxCullider : MonoBehaviour, Cullider
@@ -340,9 +341,9 @@ public class BoxCullider : MonoBehaviour, Cullider
         return base.ToString();
     }
 
-    public Matrix4x4 getTensorInertia()
+    public float3x3 getTensorInertia()
     {
-        Matrix4x4 tensor=Matrix4x4.identity;
+        float3x3 tensor=float3x3.identity;
         float mass=rb.mass;
         float h=transform.localScale.y;
         float d=transform.localScale.z;
@@ -350,9 +351,9 @@ public class BoxCullider : MonoBehaviour, Cullider
 
         mass=mass/12.0f;
 
-        tensor.m00=mass*(h*h+d*d);
-        tensor.m11=mass*(w*w+d*d);
-        tensor.m22=mass*(w*w+h*h);
+        tensor[0][0]=mass*(h*h+d*d);
+        tensor[1][1]=mass*(w*w+d*d);
+        tensor[2][2]=mass*(w*w+h*h);
 
         return tensor;
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class RigidbodyDriver : MonoBehaviour
@@ -9,9 +10,12 @@ public class RigidbodyDriver : MonoBehaviour
     //w component is always 0
     private Quaternion angularVelocity;
     private static Vector3 gravity = new Vector3(0, -9.8f, 0);
+
+    private Shape shape;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        shape = GetComponent<Shape>();
     }
 
     public void physicsUpdate()
@@ -50,7 +54,31 @@ public class RigidbodyDriver : MonoBehaviour
         float beta = other.rb.mass / (rb.mass + other.rb.mass);
         float gamma = rb.mass / (rb.mass + other.rb.mass);
 
-        velocity = alpha * velocity + 2 * beta * other.velocity;
-        other.velocity = 2 * gamma * velocity - alpha * other.velocity;
+        Vector3 newVelocity = alpha * velocity + 2 * beta * other.velocity;
+        Vector3 newOtherVelocity = 2 * gamma * velocity - alpha * other.velocity;
+
+        velocity = newVelocity;
+        other.velocity = newOtherVelocity;
+    }
+
+    public void applyAngularMomentum(RigidbodyDriver other)
+    {
+        float3 vecAngVelocity = new Vector3(angularVelocity.x, angularVelocity.y, angularVelocity.z);
+        float3 otherVecAngVelocity = new Vector3(other.angularVelocity.x,
+                                            other.angularVelocity.y, other.angularVelocity.z);
+
+
+        float3x3 inertiaTensor = shape.getTensorInertia();
+        float3x3 otherInertiaTensor = shape.getTensorInertia();
+
+        float3x3 alpha = (inertiaTensor - otherInertiaTensor) / (inertiaTensor + otherInertiaTensor);
+        float3x3 beta = otherInertiaTensor / (inertiaTensor + otherInertiaTensor);
+        float3x3 gamma = inertiaTensor / (inertiaTensor + otherInertiaTensor);
+
+        float3 newVelocity = math.mul(alpha, vecAngVelocity) + math.mul(2 * beta, otherVecAngVelocity);
+        float3 newOtherVelocity = math.mul(2 * gamma, vecAngVelocity) - math.mul(alpha, otherVecAngVelocity);
+
+        angularVelocity = new Quaternion(newVelocity.x, newVelocity.y, newVelocity.z, 0);
+        other.angularVelocity = new Quaternion(newOtherVelocity.x, newOtherVelocity.y, newOtherVelocity.z, 0);
     }
 }

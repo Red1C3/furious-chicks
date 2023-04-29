@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class SphereCullider : MonoBehaviour, Cullider
@@ -84,8 +85,16 @@ public class SphereCullider : MonoBehaviour, Cullider
         }
     }
 
-    public Matrix4x4 getTensorInertia()
+    public float3x3 getTensorInertia()
     {
-        throw new System.NotImplementedException();
+        float diag=(2.0f/5.0f)*rb.mass*radius*radius;
+
+        float3x3 tensor=float3x3.identity;
+
+        tensor[0][0]=diag;
+        tensor[1][1]=diag;
+        tensor[2][2]=diag;
+
+        return tensor;
     }
 }

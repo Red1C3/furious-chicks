@@ -1,5 +1,6 @@
 using UnityEngine;
+using Unity.Mathematics;
 
 public interface Shape{
-    Matrix4x4 getTensorInertia();
+    float3x3 getTensorInertia();
 }
