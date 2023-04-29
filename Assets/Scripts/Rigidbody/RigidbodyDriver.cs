@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class RigidbodyDriver : MonoBehaviour
 {
+    public Vector3 initialAngularVelocity; //In radians
     private Rigidbody rb;
     private Vector3 velocity;
     //w component is always 0
@@ -16,10 +17,12 @@ public class RigidbodyDriver : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         shape = GetComponent<Shape>();
+        angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
     }
 
     public void physicsUpdate()
     {
+        //Debug.Log(string.Format("{0}, {1}, {2}, {3}",angularVelocity.x,angularVelocity.y,angularVelocity.z,angularVelocity.w));
         if (rb.useGravity)
             velocity += gravity * Time.fixedDeltaTime;
         transform.position += velocity * Time.fixedDeltaTime;
@@ -71,12 +74,20 @@ public class RigidbodyDriver : MonoBehaviour
         float3x3 inertiaTensor = shape.getTensorInertia();
         float3x3 otherInertiaTensor = shape.getTensorInertia();
 
-        float3x3 alpha = (inertiaTensor - otherInertiaTensor) * math.inverse(inertiaTensor + otherInertiaTensor);
-        float3x3 beta = otherInertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
-        float3x3 gamma = inertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
+        //Analogus implmentation
+        //float3x3 alpha = (inertiaTensor - otherInertiaTensor) * math.inverse(inertiaTensor + otherInertiaTensor);
+        //float3x3 beta = otherInertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
+        //float3x3 gamma = inertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
 
-        float3 newVelocity = math.mul(alpha, vecAngVelocity) + math.mul(2 * beta, otherVecAngVelocity);
-        float3 newOtherVelocity = math.mul(2 * gamma, vecAngVelocity) - math.mul(alpha, otherVecAngVelocity);
+        //float3 newVelocity = math.mul(alpha, vecAngVelocity) + math.mul(2 * beta, otherVecAngVelocity);
+        //float3 newOtherVelocity = math.mul(2 * gamma, vecAngVelocity) - math.mul(alpha, otherVecAngVelocity);
+
+        //Issawi's implementation (it looks like it gives the same results as above :/)
+        float3 newOtherVelocity = math.mul(math.inverse(inertiaTensor + otherInertiaTensor),
+                                math.mul(otherInertiaTensor, otherVecAngVelocity) + math.mul(inertiaTensor, 2 * vecAngVelocity) -
+                                math.mul(inertiaTensor, otherVecAngVelocity));
+
+        float3 newVelocity = otherVecAngVelocity + newOtherVelocity - vecAngVelocity;
 
         angularVelocity = new Quaternion(newVelocity.x, newVelocity.y, newVelocity.z, 0);
         other.angularVelocity = new Quaternion(newOtherVelocity.x, newOtherVelocity.y, newOtherVelocity.z, 0);
