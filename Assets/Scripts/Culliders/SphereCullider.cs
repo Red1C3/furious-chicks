@@ -43,6 +43,7 @@ public class SphereCullider : MonoBehaviour, Cullider
             else
             {
                 float depth = radius + otherSphere.radius - disBetweenCenters;
+                //From other sphere to base
                 Vector3 normal = (center - otherSphere.center).normalized;
 
                 return new CullisionInfo(true, normal, depth, false, false, Vector3.zero, Vector3.zero,this,other);
@@ -69,6 +70,7 @@ public class SphereCullider : MonoBehaviour, Cullider
 
         Vector3 offset=localSphereCenter-closest;
         if(boxTransform.TransformVector(offset).magnitude<radius){
+            //From other to base
             mtv=(radius-boxTransform.TransformVector(offset).magnitude)*boxTransform.TransformVector(offset).normalized;
             contactPoint=boxTransform.TransformPoint(closest);
             if(mtv==Vector3.zero){

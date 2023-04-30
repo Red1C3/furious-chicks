@@ -78,6 +78,8 @@ public class BoxCullider : MonoBehaviour, Cullider
         if (other is SphereCullider)
         {
             cullisionInfo = (other as SphereCullider).cullideWithBox(this);
+            cullisionInfo.first=this;
+            cullisionInfo.second=other;
             cullisionInfo.normal *= -1;
             cullisionInfo.hasContactPointA = cullisionInfo.hasContactPointB;
             cullisionInfo.contactPointA = cullisionInfo.contactPointB;
@@ -106,6 +108,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     private CullisionInfo cullideWithBox(BoxCullider other)
     {
         float overlap = float.MaxValue;
+        //From other to base
         Vector3 axis = Vector3.zero;
         float tempOverlap;
 
