@@ -101,4 +101,7 @@ public class RigidbodyDriver : MonoBehaviour
     public void addLinearVelocity(Vector3 vector3){
         velocity+=vector3;
     }
+    public float3x3 getInertiaTensor(){
+        return shape.getTensorInertia();
+    }
 }

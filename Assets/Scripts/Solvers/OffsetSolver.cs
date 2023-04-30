@@ -1,47 +1,67 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class OffsetSolver : Solver
 {
     public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
+        if(!cullision.cullided) return;
         A.GetComponent<RigidbodyDriver>().applyLinearMomentum(B.GetComponent<RigidbodyDriver>());
         A.GetComponent<RigidbodyDriver>().applyAngularMomentum(B.GetComponent<RigidbodyDriver>());
 
         float depthA = cullision.depth;
         float depthB = cullision.depth;
-        
-        //TODO take tensor value into account when adding angular velocity
-        if (cullision.hasContactPointA)
+
+        if (cullision.hasContactPointA || cullision.hasContactPointB)
         {
-            Vector3 correctPoint = cullision.contactPointA + cullision.normal.normalized * cullision.depth / 2.0f;//Split the depth linear and angular
-            Vector3 currentPos = cullision.contactPointA - A.transform.position;
-            Vector3 correctPos = correctPoint - A.transform.position;
+            float3 normal = Vector3.zero;
+            float inertiaScalarA, inertiaScalarB;
+            float angleA=.0f,angleB=.0f;
 
-            Vector3 normal = Vector3.Cross(currentPos, correctPos);
-
-            if (normal != Vector3.zero)
+            if (cullision.hasContactPointA)
             {
-                depthA /= 2.0f;
-                //A.transform.Rotate(normal, Vector3.Angle(currentPos, correctPos), Space.Self);
-                A.GetComponent<RigidbodyDriver>().addAngularVelocity(normal*Vector3.Angle(currentPos,correctPos)/Time.fixedDeltaTime);
+                Vector3 correctPoint = cullision.contactPointA + cullision.normal.normalized * cullision.depth / 2.0f;//Split the depth linear and angular
+                Vector3 currentPos = cullision.contactPointA - A.transform.position;
+                Vector3 correctPos = correctPoint - A.transform.position;
+
+                normal = Vector3.Cross(currentPos, correctPos);
+                angleA=Vector3.Angle(currentPos,correctPos);
             }
+            if (cullision.hasContactPointB)
+            {
+                Vector3 correctPoint = cullision.contactPointB - cullision.normal.normalized * cullision.depth / 2.0f;
+                Vector3 currentPos = cullision.contactPointB - B.transform.position;
+                Vector3 correctPos = correctPoint - B.transform.position;
+
+                angleB=Vector3.Angle(currentPos,correctPos);
+                if(math.all(normal==float3.zero))
+                    normal = -Vector3.Cross(currentPos, correctPos);
+            }
+
+            if (math.any(normal != float3.zero))
+            {
+                normal = math.normalize(normal);
+                inertiaScalarA = math.mul(normal, math.mul(A.GetComponent<RigidbodyDriver>().getInertiaTensor(), normal));
+                inertiaScalarB = math.mul(-normal, math.mul(B.GetComponent<RigidbodyDriver>().getInertiaTensor(), -normal));
+
+                float AInertiaFactor = inertiaScalarA / (inertiaScalarA + inertiaScalarB);
+                float BInertiaFactor = inertiaScalarB / (inertiaScalarA + inertiaScalarB);
+
+                //A.transform.Rotate(normal, angleA*BInertiaFactor, Space.Self);
+                A.GetComponent<RigidbodyDriver>().addAngularVelocity(BInertiaFactor*normal * angleA * Time.fixedDeltaTime);
+
+                //B.transform.Rotate(-normal,angleB*AInertiaFactor, Space.Self);
+                B.GetComponent<RigidbodyDriver>().addAngularVelocity(-AInertiaFactor*normal * angleB * Time.fixedDeltaTime);
+            }
+
+            if(angleA!=0) depthA/=2.0f;
+            if(angleB!=0) depthB/=2.0f;
+
+            //Debug.Log(angleA);
+            //Debug.Log(angleB);
+            //Debug.Log(normal);
         }
 
-        if (cullision.hasContactPointB)
-        {
-            Vector3 correctPoint = cullision.contactPointB - cullision.normal.normalized * cullision.depth / 2.0f;
-            Vector3 currentPos = cullision.contactPointB - B.transform.position;
-            Vector3 correctPos = correctPoint - B.transform.position;
-
-            Vector3 normal = Vector3.Cross(currentPos, correctPos);
-
-            if (normal != Vector3.zero)
-            {
-                depthB /= 2.0f;
-                //B.transform.Rotate(Vector3.Cross(currentPos, correctPos), Vector3.Angle(currentPos, correctPos), Space.Self);
-                B.GetComponent<RigidbodyDriver>().addAngularVelocity(normal*Vector3.Angle(currentPos,correctPos)/Time.fixedDeltaTime);
-            }
-        }
 
         float AmassFactor = A.mass / (A.mass + B.mass);
         float BmassFactor = B.mass / (A.mass + B.mass);
