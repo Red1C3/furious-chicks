@@ -72,7 +72,7 @@ public class RigidbodyDriver : MonoBehaviour
 
 
         float3x3 inertiaTensor = shape.getTensorInertia();
-        float3x3 otherInertiaTensor = shape.getTensorInertia();
+        float3x3 otherInertiaTensor = other.shape.getTensorInertia();
 
         //Analogus implmentation
         //float3x3 alpha = (inertiaTensor - otherInertiaTensor) * math.inverse(inertiaTensor + otherInertiaTensor);
