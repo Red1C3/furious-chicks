@@ -5,18 +5,23 @@ public class OffsetSolver : Solver
 {
     public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
-        if(!cullision.cullided) return;
+        if (!cullision.cullided) return;
         A.GetComponent<RigidbodyDriver>().applyLinearMomentum(B.GetComponent<RigidbodyDriver>());
         A.GetComponent<RigidbodyDriver>().applyAngularMomentum(B.GetComponent<RigidbodyDriver>());
+        float depthA,depthB;
+        applyAngularOffset(cullision,A,B,out depthA,out depthB);
+        applyLinearOffset(cullision,A,B,depthA,depthB);
+    }
 
-        float depthA = cullision.depth;
-        float depthB = cullision.depth;
-
+    private void applyAngularOffset(CullisionInfo cullision, Rigidbody A, Rigidbody B, out float depthA, out float depthB)
+    {
+        depthA = cullision.depth;
+        depthB = cullision.depth;
         if (cullision.hasContactPointA || cullision.hasContactPointB)
         {
             float3 normal = Vector3.zero;
             float inertiaScalarA, inertiaScalarB;
-            float angleA=.0f,angleB=.0f;
+            float angleA = .0f, angleB = .0f;
 
             if (cullision.hasContactPointA)
             {
@@ -25,7 +30,7 @@ public class OffsetSolver : Solver
                 Vector3 correctPos = correctPoint - A.transform.position;
 
                 normal = Vector3.Cross(currentPos, correctPos);
-                angleA=Vector3.Angle(currentPos,correctPos);
+                angleA = Vector3.Angle(currentPos, correctPos);
             }
             if (cullision.hasContactPointB)
             {
@@ -33,8 +38,8 @@ public class OffsetSolver : Solver
                 Vector3 currentPos = cullision.contactPointB - B.transform.position;
                 Vector3 correctPos = correctPoint - B.transform.position;
 
-                angleB=Vector3.Angle(currentPos,correctPos);
-                if(math.all(normal==float3.zero))
+                angleB = Vector3.Angle(currentPos, correctPos);
+                if (math.all(normal == float3.zero))
                     normal = -Vector3.Cross(currentPos, correctPos);
             }
 
@@ -47,22 +52,20 @@ public class OffsetSolver : Solver
                 float AInertiaFactor = inertiaScalarA / (inertiaScalarA + inertiaScalarB);
                 float BInertiaFactor = inertiaScalarB / (inertiaScalarA + inertiaScalarB);
 
-                //A.transform.Rotate(normal, angleA*BInertiaFactor, Space.Self);
-                A.GetComponent<RigidbodyDriver>().addAngularVelocity(BInertiaFactor*normal * angleA * Time.fixedDeltaTime);
+                A.transform.Rotate(normal, angleA * BInertiaFactor, Space.Self);
+                //A.GetComponent<RigidbodyDriver>().addAngularVelocity(BInertiaFactor*normal * angleA * Time.fixedDeltaTime);
 
-                //B.transform.Rotate(-normal,angleB*AInertiaFactor, Space.Self);
-                B.GetComponent<RigidbodyDriver>().addAngularVelocity(-AInertiaFactor*normal * angleB * Time.fixedDeltaTime);
+                B.transform.Rotate(-normal, angleB * AInertiaFactor, Space.Self);
+                //B.GetComponent<RigidbodyDriver>().addAngularVelocity(-AInertiaFactor*normal * angleB * Time.fixedDeltaTime);
             }
 
-            if(angleA!=0) depthA/=2.0f;
-            if(angleB!=0) depthB/=2.0f;
-
-            //Debug.Log(angleA);
-            //Debug.Log(angleB);
-            //Debug.Log(normal);
+            if (angleA != 0) depthA /= 2.0f;
+            if (angleB != 0) depthB /= 2.0f;
         }
+    }
 
-
+    private void applyLinearOffset(CullisionInfo cullision, Rigidbody A, Rigidbody B, float depthA, float depthB)
+    {
         float AmassFactor = A.mass / (A.mass + B.mass);
         float BmassFactor = B.mass / (A.mass + B.mass);
 
@@ -71,6 +74,5 @@ public class OffsetSolver : Solver
 
         A.transform.position += BmassFactor * cullision.normal.normalized * depthA;
         B.transform.position += -AmassFactor * cullision.normal.normalized * depthB;
-
     }
 }
