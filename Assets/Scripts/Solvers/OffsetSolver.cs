@@ -6,17 +6,17 @@ public class OffsetSolver : Solver
     public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
-        A.GetComponent<RigidbodyDriver>().applyLinearMomentum(B.GetComponent<RigidbodyDriver>());
-        A.GetComponent<RigidbodyDriver>().applyAngularMomentum(B.GetComponent<RigidbodyDriver>());
+        //A.GetComponent<RigidbodyDriver>().applyLinearMomentum(B.GetComponent<RigidbodyDriver>());
+        //A.GetComponent<RigidbodyDriver>().applyAngularMomentum(B.GetComponent<RigidbodyDriver>());
         float depthA,depthB;
         applyAngularOffset(cullision,A,B,out depthA,out depthB);
-        applyLinearOffset(cullision,A,B,depthA,depthB);
+        //applyLinearOffset(cullision,A,B,depthA/1000.0f,depthB/1000.0f);
     }
 
     private void applyAngularOffset(CullisionInfo cullision, Rigidbody A, Rigidbody B, out float depthA, out float depthB)
     {
-        depthA = cullision.depth;
-        depthB = cullision.depth;
+        depthA = cullision.depth*100; //FIXME just for testing
+        depthB = cullision.depth*100;
         if (cullision.hasContactPointA || cullision.hasContactPointB)
         {
             float3 normal = Vector3.zero;

@@ -6,6 +6,7 @@ using UnityEngine;
 public class RigidbodyDriver : MonoBehaviour
 {
     public Vector3 initialAngularVelocity; //In radians
+    public Vector3 initialVelocity;
     private Rigidbody rb;
     private Vector3 velocity;
     //w component is always 0
@@ -18,14 +19,18 @@ public class RigidbodyDriver : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         shape = GetComponent<Shape>();
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
+        velocity=initialVelocity;
     }
 
     public void physicsUpdate()
     {
         //Debug.Log(string.Format("{0}, {1}, {2}, {3}",angularVelocity.x,angularVelocity.y,angularVelocity.z,angularVelocity.w));
-        if (rb.useGravity)
-            velocity += gravity * Time.fixedDeltaTime;
-        transform.position += velocity * Time.fixedDeltaTime;
+        //
+        //Faulty since lacking Reaction force
+        //if (rb.useGravity)
+        //    velocity += gravity * Time.fixedDeltaTime;
+        Vector3 appliedVelocity=transform.InverseTransformVector(velocity);
+        transform.position += appliedVelocity * Time.fixedDeltaTime;
 
         transform.rotation = quatQuatAdd(transform.rotation,
                             floatQuatMult(0.5f * Time.fixedDeltaTime,
