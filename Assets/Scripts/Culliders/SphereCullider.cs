@@ -81,7 +81,9 @@ public class SphereCullider : MonoBehaviour, Cullider
                 contactPoint=boxTransform.TransformPoint(closestFacePoint);
             }
 
-            return new CullisionInfo(true,mtv.normalized,mtv.magnitude,false,true,Vector3.zero,contactPoint,this,other);
+            Vector3 sphereContactPoint=-mtv.normalized*radius+center;
+
+            return new CullisionInfo(true,mtv.normalized,mtv.magnitude,true,true,sphereContactPoint,contactPoint,this,other);
         }else{
             return CullisionInfo.NO_CULLISION;
         }
