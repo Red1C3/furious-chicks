@@ -19,7 +19,31 @@ public struct float12x12{
     }
 
     public static float12 operator*(float12 vec,float12x12 mat){
-        //TODO
-        return new float12(0,0,0,0);
+        float12 res=new float12();
+        res.floats=new float[12];
+        
+        for(int i=0;i<12;i++){
+            res.floats[i]=rowColMult(vec,mat.column(i));
+        }
+
+        return res;
+    }
+
+    public float12 column(int i){
+        float12 col=new float12();
+        col.floats=new float[12];
+
+        for(int j=0;j<12;j++){
+            col.floats[j]=floats[j,i];
+        }
+        return col;
+    }
+
+    private static float rowColMult(float12 row,float12 col){
+        float res=0;
+        for(int i=0;i<12;i++){
+            res+=row.floats[i]*col.floats[i];
+        }
+        return res;
     }
 }
