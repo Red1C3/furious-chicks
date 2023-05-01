@@ -10,8 +10,9 @@ public class Throw : MonoBehaviour
     private float angleX;
     private float angleY;
     private float angleZ;
+    public LineRenderer lineRenderer;
 
-    bool press= false;
+    bool press= false,fired=false;
 
     private Rigidbody rb;
     // Start is called before the first frame update
@@ -21,28 +22,38 @@ public class Throw : MonoBehaviour
         transform.position=new Vector3(0,0,-force);
 
         rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity=false;
+
+        lineRenderer.SetPosition(0,Vector3.zero);
+        lineRenderer.SetPosition(1,transform.position);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(Input.GetMouseButtonDown(0))
-            press=true;
-        if(Input.GetKey (KeyCode.Z))
-            press=false;
-        Vector3 mousePosition = Input.mousePosition;
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z-force));
-        if(press)
-            transform.position=worldPosition;
-            Debug.Log(worldPosition);
-
+        if(!fired){
+            if(Input.GetMouseButtonDown(0))
+                press=true;
+            if(Input.GetKey (KeyCode.Z))
+                press=false;
+            Vector3 mousePosition = Input.mousePosition;
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z-force));
+            if(press){
+                transform.position=worldPosition;
+                lineRenderer.SetPosition(1,transform.position);
+            }
+        }
         if (Input.GetKey (KeyCode.E)){
+            fired=true;
             rb.isKinematic = false;
+            rb.useGravity=true;
             Vector3 distance = -transform.position;
             float magnitude = distance.magnitude;
             Vector3 direction = distance.normalized;
             Vector3 Force = direction * magnitude * rb.mass;
             rb.AddForce(Force, ForceMode.Impulse);
+            lineRenderer.enabled = false;
         }
     }
 }
