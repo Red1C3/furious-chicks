@@ -101,4 +101,9 @@ public class SphereCullider : MonoBehaviour, Cullider
 
         return tensor;
     }
+
+    Vector3 Shape.center()
+    {
+        return center;
+    }
 }

@@ -360,4 +360,9 @@ public class BoxCullider : MonoBehaviour, Cullider
 
         return tensor;
     }
+
+    Vector3 Shape.center()
+    {
+        return center;
+    }
 }
