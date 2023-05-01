@@ -65,4 +65,15 @@ public struct float12x12{
         }
         return res;
     }
+    public override string ToString()
+    {
+        string str="";
+        for(int i=0;i<12;i++){
+            for(int j=0;j<12;j++){
+                str+=floats[i,j]+", ";
+            }
+            str+="\n";
+        }
+        return str;
+    }
 }

@@ -29,8 +29,8 @@ public class RigidbodyDriver : MonoBehaviour
         //Faulty since lacking Reaction force
         //if (rb.useGravity)
         //    velocity += gravity * Time.fixedDeltaTime;
-        Vector3 appliedVelocity=transform.InverseTransformVector(velocity);
-        transform.position += appliedVelocity * Time.fixedDeltaTime;
+        //Vector3 appliedVelocity=transform.InverseTransformVector(velocity);
+        transform.position += velocity * Time.fixedDeltaTime;
 
         transform.rotation = quatQuatAdd(transform.rotation,
                             floatQuatMult(0.5f * Time.fixedDeltaTime,

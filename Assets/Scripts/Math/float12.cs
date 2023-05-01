@@ -33,4 +33,20 @@ public struct float12{
             floats[i]=fourthThree[i%3];
         }
     }
+
+    public static float12 operator*(float12 vec,float scalar){
+        for(int i=0;i<12;i++){
+            vec.floats[i]*=scalar;
+        }
+        return vec;
+    }
+    public override string ToString()
+    {
+        string str="";
+        for(int i=0;i<12;i++){
+            str+=floats[i]+", ";
+        }
+        str+="\n";
+        return str;
+    }
 }
