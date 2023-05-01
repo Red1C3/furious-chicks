@@ -11,6 +11,9 @@ public class ImpulseSolver : Solver
         Vector3 rA=cullision.contactPointA-cullision.first.center();
         Vector3 rB=cullision.contactPointB-cullision.second.center();
 
+        float12 jacobian=new float12(-normal,Vector3.Cross(-normal,rA)
+                                    ,normal,Vector3.Cross(normal,rB));
+
         
     }
 }

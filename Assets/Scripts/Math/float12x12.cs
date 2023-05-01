@@ -39,7 +39,7 @@ public struct float12x12{
         return col;
     }
 
-    private static float rowColMult(float12 row,float12 col){
+    public static float rowColMult(float12 row,float12 col){
         float res=0;
         for(int i=0;i<12;i++){
             res+=row.floats[i]*col.floats[i];
