@@ -365,4 +365,9 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         return center;
     }
+
+    public RigidbodyDriver getRigidbodyDriver()
+    {
+        return GetComponent<RigidbodyDriver>();
+    }
 }

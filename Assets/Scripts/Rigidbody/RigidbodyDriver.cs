@@ -8,7 +8,7 @@ public class RigidbodyDriver : MonoBehaviour
     public Vector3 initialAngularVelocity; //In radians
     public Vector3 initialVelocity;
     private Rigidbody rb;
-    private Vector3 velocity;
+    public Vector3 velocity{get;private set;}
     //w component is always 0
     private Quaternion angularVelocity;
     private static Vector3 gravity = new Vector3(0, -9.8f, 0);
@@ -108,5 +108,9 @@ public class RigidbodyDriver : MonoBehaviour
     }
     public float3x3 getInertiaTensor(){
         return shape.getTensorInertia();
+    }
+
+    public Vector3 getAngularVelocity(){
+        return new Vector3(angularVelocity.x,angularVelocity.y,angularVelocity.z);
     }
 }

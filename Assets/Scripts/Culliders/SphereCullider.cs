@@ -106,4 +106,9 @@ public class SphereCullider : MonoBehaviour, Cullider
     {
         return center;
     }
+
+    public RigidbodyDriver getRigidbodyDriver()
+    {
+        return GetComponent<RigidbodyDriver>();
+    }
 }

@@ -19,6 +19,9 @@ public class ImpulseSolver : Solver
                                         1.0f / cullision.second.getRigidbody().mass,
                                         1.0f / Shape.inertiaScalar(cullision.second.getTensorInertia(), (Vector3.Cross(normal, rB))));
 
-        
+        float12 velocities=new float12(cullision.first.getRigidbodyDriver().velocity,
+                                        cullision.first.getRigidbodyDriver().getAngularVelocity(),
+                                        cullision.second.getRigidbodyDriver().velocity,
+                                        cullision.second.getRigidbodyDriver().getAngularVelocity());
     }
 }
