@@ -29,6 +29,15 @@ public struct float12x12{
         return res;
     }
 
+    public static float12 operator*(float12x12 mat,float12 vec){
+        float12 res=new float12();
+        res.floats=new float[12];
+        for(int i=0;i<12;i++){
+            res.floats[i]=rowColMult(mat.row(i),vec);
+        }
+        return res;
+    }
+
     public float12 column(int i){
         float12 col=new float12();
         col.floats=new float[12];
@@ -37,6 +46,16 @@ public struct float12x12{
             col.floats[j]=floats[j,i];
         }
         return col;
+    }
+
+    public float12 row(int i){
+        float12 r=new float12();
+        r.floats=new float[12];
+
+        for(int j=0;j<12;j++){
+            r.floats[j]=floats[i,j];
+        }
+        return r;
     }
 
     public static float rowColMult(float12 row,float12 col){
