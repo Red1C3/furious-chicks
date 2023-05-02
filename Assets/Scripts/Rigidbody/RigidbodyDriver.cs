@@ -8,23 +8,32 @@ public class RigidbodyDriver : MonoBehaviour
     public Vector3 initialAngularVelocity; //In radians
     public Vector3 initialVelocity;
     private Rigidbody rb;
-    public Vector3 velocity{get;private set;}
+    public Vector3 velocity { get; private set; }
     //w component is always 0
     private Quaternion angularVelocity;
-    private static Vector3 gravity = new Vector3(0, -9.8f, 0);
+    public readonly static Vector3 gravity = new Vector3(0, -9.8f, 0);
 
     private Shape shape;
 
-    private Vector3 acclumatedForces;
+    public Vector3 acclumatedForces { get; private set; }
     private Vector3 acclumatedImpulses;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         shape = GetComponent<Shape>();
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
-        velocity=initialVelocity;
-        if(rb.useGravity)
-            acclumatedForces+=gravity;
+        velocity = initialVelocity;
+        if (rb.useGravity)
+            acclumatedForces += gravity;
+    }
+
+
+    public void applyForces()
+    {
+        Vector3 frameForces = acclumatedForces + acclumatedImpulses;
+        Vector3 acceleration = frameForces / rb.mass;
+        velocity += acceleration * Time.fixedDeltaTime;
+        acclumatedImpulses = Vector3.zero;
     }
 
     public void physicsUpdate()
@@ -36,18 +45,12 @@ public class RigidbodyDriver : MonoBehaviour
         //    velocity += gravity * Time.fixedDeltaTime;
         //Vector3 appliedVelocity=transform.InverseTransformVector(velocity);
 
-        Vector3 frameForces=acclumatedForces+acclumatedImpulses;
-        Vector3 acceleration=frameForces/rb.mass;
-        velocity+=acceleration*Time.fixedDeltaTime;
-
-
         transform.position += velocity * Time.fixedDeltaTime;
 
         transform.rotation = quatQuatAdd(transform.rotation,
                             floatQuatMult(0.5f * Time.fixedDeltaTime,
                             (angularVelocity * transform.rotation)));
 
-        acclumatedImpulses=Vector3.zero;
     }
 
     public static Quaternion floatQuatMult(float f, Quaternion quat)
@@ -110,29 +113,35 @@ public class RigidbodyDriver : MonoBehaviour
         other.angularVelocity = new Quaternion(newOtherVelocity.x, newOtherVelocity.y, newOtherVelocity.z, 0);
     }
 
-    public void addAngularVelocity(Vector3 vector3){
-        angularVelocity.x+=vector3.x;
-        angularVelocity.y+=vector3.y;
-        angularVelocity.z+=vector3.z;
+    public void addAngularVelocity(Vector3 vector3)
+    {
+        angularVelocity.x += vector3.x;
+        angularVelocity.y += vector3.y;
+        angularVelocity.z += vector3.z;
     }
-    public void addLinearVelocity(Vector3 vector3){
-        velocity+=vector3;
+    public void addLinearVelocity(Vector3 vector3)
+    {
+        velocity += vector3;
     }
-    public float3x3 getInertiaTensor(){
+    public float3x3 getInertiaTensor()
+    {
         return shape.getTensorInertia();
     }
 
-    public Vector3 getAngularVelocity(){
-        return new Vector3(angularVelocity.x,angularVelocity.y,angularVelocity.z);
+    public Vector3 getAngularVelocity()
+    {
+        return new Vector3(angularVelocity.x, angularVelocity.y, angularVelocity.z);
     }
 
-    public void addForce(Vector3 force,ForceMode mode){
-        switch(mode){
+    public void addForce(Vector3 force, ForceMode mode)
+    {
+        switch (mode)
+        {
             case ForceMode.Force:
-                acclumatedForces+=force;
+                acclumatedForces += force;
                 break;
             case ForceMode.Impulse:
-                acclumatedImpulses+=force;
+                acclumatedImpulses += force;
                 break;
             default:
                 Debug.Log("unsupported force mode passed to Rigidbody.addForce");

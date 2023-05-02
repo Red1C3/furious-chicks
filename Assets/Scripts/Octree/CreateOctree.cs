@@ -5,7 +5,7 @@ using UnityEngine;
 public class CreateOctree : MonoBehaviour
 {
     public GameObject player;
-    public int nodeMinSize = 5;  
+    public int nodeMinSize = 5;
     public Solver solver;
     Octree octree;
 
@@ -19,7 +19,7 @@ public class CreateOctree : MonoBehaviour
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
         foreach (GameObject gameObject in gameObjects)
         {
-            if(gameObject.tag=="Player")
+            if (gameObject.tag == "Player")
                 continue;
             Cullider cullider;
             if (gameObject.TryGetComponent<Cullider>(out cullider))
@@ -28,28 +28,39 @@ public class CreateOctree : MonoBehaviour
             }
         }
 
-        octree = new Octree(cullidingObject,nodeMinSize);
+        octree = new Octree(cullidingObject, nodeMinSize);
     }
 
-    void OnDrawGizmos(){
-        if(Application.isPlaying){
+    void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
             octree.rootNode.Draw();
         }
     }
 
-    void FixedUpdate(){
+    void FixedUpdate()
+    {
         culls.Clear();
-        octree.search(player,solver);
-        foreach(GameObject go in cullidingObject){
-            octree.search(go,solver);
+        RigidbodyDriver[] rigidbodies = FindObjectsOfType<RigidbodyDriver>();
+        foreach (RigidbodyDriver rb in rigidbodies)
+        {
+            rb.applyForces();
         }
-        octree.Update(cullidingObject,nodeMinSize);
-        foreach(CullisionInfo cullision in culls){
-            solver.resolveCullision(cullision,cullision.first.getRigidbody(), cullision.second.getRigidbody());
+        octree.search(player, solver);
+        foreach (GameObject go in cullidingObject)
+        {
+            octree.search(go, solver);
+        }
+        octree.Update(cullidingObject, nodeMinSize);
+
+        foreach (CullisionInfo cullision in culls)
+        {
+            solver.resolveCullision(cullision, cullision.first.getRigidbody(), cullision.second.getRigidbody());
             //Debug.Log("Count: "+culls.Count);
         }
-        RigidbodyDriver[] rigidbodies=FindObjectsOfType<RigidbodyDriver>();
-        foreach(RigidbodyDriver rb in rigidbodies){
+        foreach (RigidbodyDriver rb in rigidbodies)
+        {
             rb.physicsUpdate();
         }
     }
