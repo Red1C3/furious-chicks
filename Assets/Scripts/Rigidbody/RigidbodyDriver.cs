@@ -14,12 +14,17 @@ public class RigidbodyDriver : MonoBehaviour
     private static Vector3 gravity = new Vector3(0, -9.8f, 0);
 
     private Shape shape;
+
+    private Vector3 acclumatedForces;
+    private Vector3 acclumatedImpulses;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         shape = GetComponent<Shape>();
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
         velocity=initialVelocity;
+        if(rb.useGravity)
+            acclumatedForces+=gravity;
     }
 
     public void physicsUpdate()
@@ -30,12 +35,19 @@ public class RigidbodyDriver : MonoBehaviour
         //if (rb.useGravity)
         //    velocity += gravity * Time.fixedDeltaTime;
         //Vector3 appliedVelocity=transform.InverseTransformVector(velocity);
+
+        Vector3 frameForces=acclumatedForces+acclumatedImpulses;
+        Vector3 acceleration=frameForces/rb.mass;
+        velocity+=acceleration*Time.fixedDeltaTime;
+
+
         transform.position += velocity * Time.fixedDeltaTime;
 
         transform.rotation = quatQuatAdd(transform.rotation,
                             floatQuatMult(0.5f * Time.fixedDeltaTime,
                             (angularVelocity * transform.rotation)));
 
+        acclumatedImpulses=Vector3.zero;
     }
 
     public static Quaternion floatQuatMult(float f, Quaternion quat)
@@ -112,5 +124,19 @@ public class RigidbodyDriver : MonoBehaviour
 
     public Vector3 getAngularVelocity(){
         return new Vector3(angularVelocity.x,angularVelocity.y,angularVelocity.z);
+    }
+
+    public void addForce(Vector3 force,ForceMode mode){
+        switch(mode){
+            case ForceMode.Force:
+                acclumatedForces+=force;
+                break;
+            case ForceMode.Impulse:
+                acclumatedImpulses+=force;
+                break;
+            default:
+                Debug.Log("unsupported force mode passed to Rigidbody.addForce");
+                break;
+        }
     }
 }
