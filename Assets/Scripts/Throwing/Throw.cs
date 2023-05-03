@@ -44,15 +44,15 @@ public class Throw : MonoBehaviour
                 lineRenderer.SetPosition(1,transform.position);
             }
         }
-        if (Input.GetKey (KeyCode.E)){
+        if (Input.GetKeyDown (KeyCode.E)){
             fired=true;
-            rb.isKinematic = false;
             rb.useGravity=true;
             Vector3 distance = -transform.position;
             float magnitude = distance.magnitude;
             Vector3 direction = distance.normalized;
             Vector3 Force = direction * magnitude * rb.mass;
-            rb.AddForce(Force, ForceMode.Impulse);
+            GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity,ForceMode.Force);
+            GetComponent<RigidbodyDriver>().addForce(Force*1000,ForceMode.Impulse);
             lineRenderer.enabled = false;
         }
     }
