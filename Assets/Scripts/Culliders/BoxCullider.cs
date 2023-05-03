@@ -78,8 +78,8 @@ public class BoxCullider : MonoBehaviour, Cullider
         if (other is SphereCullider)
         {
             cullisionInfo = (other as SphereCullider).cullideWithBox(this);
-            cullisionInfo.first=this;
-            cullisionInfo.second=other;
+            cullisionInfo.first = this;
+            cullisionInfo.second = other;
             cullisionInfo.normal *= -1;
             cullisionInfo.hasContactPointA = cullisionInfo.hasContactPointB;
             cullisionInfo.contactPointA = cullisionInfo.contactPointB;
@@ -346,17 +346,24 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     public float3x3 getTensorInertia()
     {
-        float3x3 tensor=float3x3.identity;
-        float mass=rb.mass;
-        float h=transform.localScale.y;
-        float d=transform.localScale.z;
-        float w=transform.localScale.x;
+        float3x3 tensor = float3x3.identity;
+        float mass = rb.mass;
+        float h = transform.localScale.y;
+        float d = transform.localScale.z;
+        float w = transform.localScale.x;
 
-        mass=mass/12.0f;
+        mass = mass / 12.0f;
 
-        tensor[0][0]=mass*(h*h+d*d);
-        tensor[1][1]=mass*(w*w+d*d);
-        tensor[2][2]=mass*(w*w+h*h);
+        tensor[0][0] = mass * (h * h + d * d);
+        tensor[1][1] = mass * (w * w + d * d);
+        tensor[2][2] = mass * (w * w + h * h);
+
+
+        //Rotate tensor (in other words, take rotation into account when calculating inertia tensor)
+
+        float3x3 rotationMat = (new float3x3(Matrix4x4.Rotate(rotation)));
+
+        tensor = math.mul(math.mul(rotationMat, tensor), math.transpose(rotationMat));
 
         return tensor;
     }
