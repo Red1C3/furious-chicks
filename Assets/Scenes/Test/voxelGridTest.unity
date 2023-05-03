@@ -327,7 +327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   voxel: {fileID: 2390532595837661326, guid: 70999adacb66c1420b6ff88fdbad1571, type: 3}
-  density: 1000
+  density: 10000
 --- !u!1001 &1741782933
 PrefabInstance:
   m_ObjectHideFlags: 0

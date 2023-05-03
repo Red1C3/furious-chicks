@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3595426131967877103}
   - component: {fileID: 1088655856254410366}
   m_Layer: 0
-  m_Name: Voxel
+  m_Name: Voxelization Voxel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

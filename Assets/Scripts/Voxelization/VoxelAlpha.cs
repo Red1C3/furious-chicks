@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Voxel : MonoBehaviour
+public class VoxelAlpha : MonoBehaviour
 {
     public enum Type{NEUTRAL,SURFACE,INTERIOR,EXTERIOR}
 
