@@ -31,6 +31,7 @@ public class VoxelGrid : MonoBehaviour
         buildGrid();
         markSurfaceVoxels();
         markNonSurface();
+        //removeOfType(Voxel.Type.EXTERIOR);
     }
 
     // Update is called once per frame
