@@ -12,48 +12,51 @@ public class Throw : MonoBehaviour
     private float angleZ;
     public LineRenderer lineRenderer;
 
-    bool press= false,fired=false;
+    bool press = false, fired = false;
 
     private Rigidbody rb;
     // Start is called before the first frame update
     void Start()
     {
-        cam.transform.position=new Vector3(0,0,cam.transform.position.z-force);
-        transform.position=new Vector3(0,0,-force);
+        cam.transform.position = new Vector3(0, 0, cam.transform.position.z - force);
+        transform.position = new Vector3(0, 0, -force);
 
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
-        rb.useGravity=false;
+        rb.useGravity = false;
 
-        lineRenderer.SetPosition(0,Vector3.zero);
-        lineRenderer.SetPosition(1,transform.position);
+        lineRenderer.SetPosition(0, Vector3.zero);
+        lineRenderer.SetPosition(1, transform.position);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(!fired){
-            if(Input.GetMouseButtonDown(0))
-                press=true;
-            if(Input.GetKey (KeyCode.Z))
-                press=false;
+        if (!fired)
+        {
+            if (Input.GetMouseButtonDown(0))
+                press = true;
+            if (Input.GetKey(KeyCode.Z))
+                press = false;
             Vector3 mousePosition = Input.mousePosition;
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z-force));
-            if(press){
-                transform.position=worldPosition;
-                lineRenderer.SetPosition(1,transform.position);
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z - force));
+            if (press)
+            {
+                transform.position = worldPosition;
+                lineRenderer.SetPosition(1, transform.position);
             }
-        }
-        if (Input.GetKeyDown (KeyCode.E)){
-            fired=true;
-            rb.useGravity=true;
-            Vector3 distance = -transform.position;
-            float magnitude = distance.magnitude;
-            Vector3 direction = distance.normalized;
-            Vector3 Force = direction * magnitude * rb.mass;
-            GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity,ForceMode.Force);
-            GetComponent<RigidbodyDriver>().addForce(Force*1000,ForceMode.Impulse);
-            lineRenderer.enabled = false;
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                fired = true;
+                rb.useGravity = true;
+                Vector3 distance = -transform.position;
+                float magnitude = distance.magnitude;
+                Vector3 direction = distance.normalized;
+                Vector3 Force = direction * magnitude * rb.mass;
+                GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity, ForceMode.Force);
+                GetComponent<RigidbodyDriver>().addForce(Force * 500, ForceMode.Impulse);
+                lineRenderer.enabled = false;
+            }
         }
     }
 }
