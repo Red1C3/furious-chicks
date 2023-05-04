@@ -73,6 +73,7 @@ public class BoxCullider : MonoBehaviour, Cullider
                 }
             }
             cullisionInfo = cullideWithBox(other as BoxCullider);
+            if(cullisionInfo.cullided == false) return cullisionInfo;
             return addContactPoint(cullisionInfo);
         }
         if (other is SphereCullider)
@@ -96,7 +97,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     }
     private CullisionInfo addContactPoint(CullisionInfo ci)
     {
-        Voxel voxel;
+        /*Voxel voxel;
         if (TryGetComponent<Voxel>(out voxel))
         {
             ci.hasContactPointA = true;
@@ -106,8 +107,29 @@ public class BoxCullider : MonoBehaviour, Cullider
         {
             ci.hasContactPointB = true;
             ci.contactPointB = (ci.second as BoxCullider).center;
-        }
+        }*/
+        ci.hasContactPointA=true;
+        ci.contactPointA=getDeepestVertex(ci.first as BoxCullider,ci.second as BoxCullider);
+        ci.hasContactPointB=true;
+        ci.contactPointB=getDeepestVertex(ci.second as BoxCullider,ci.first as BoxCullider);
         return ci;
+    }
+
+    private Vector3 getDeepestVertex(BoxCullider from,BoxCullider inside){
+        Vector3[] fromVertices=from.vertices;
+        Vector3 insideCenter=inside.center;
+        Vector3 deepestVertex=fromVertices[0];
+        float depth=float.MaxValue;
+
+        foreach(Vector3 vertex in fromVertices){
+            float distance=Vector3.Distance(vertex,insideCenter);
+            if(distance<depth){
+                depth=distance;
+                deepestVertex=vertex;
+            }
+        }
+
+        return deepestVertex;
     }
     private CullisionInfo cullideWithBox(BoxCullider other)
     {
