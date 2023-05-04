@@ -46,7 +46,13 @@ public class SphereCullider : MonoBehaviour, Cullider
                 //From other sphere to base
                 Vector3 normal = (center - otherSphere.center).normalized;
 
-                return new CullisionInfo(true, normal, depth, false, false, Vector3.zero, Vector3.zero,this,other);
+                Vector3 contactPointA=center+(-normal*radius);
+
+                Vector3 contactPointB=otherSphere.center+normal*otherSphere.radius;
+
+                Vector3 contactPoint=(contactPointA+contactPointB)/2.0f;
+
+                return new CullisionInfo(true, normal, depth, true, true, contactPoint, contactPoint,this,other);
             }
         }
         if(other is BoxCullider){
