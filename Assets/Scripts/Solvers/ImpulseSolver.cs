@@ -8,6 +8,7 @@ public class ImpulseSolver : Solver
         if (!cullision.cullided) return;
         if(!cullision.hasContactPointA || !cullision.hasContactPointB){
             Debug.Log("A collision was passed with no contact points, only linear velocity was used to resolve");
+            Debug.Log(cullision);
         }
         Vector3 normal = cullision.normal.normalized * cullision.depth;
         Vector3 rA = cullision.contactPointA - cullision.first.center();
