@@ -17,11 +17,12 @@ public struct Edge
 
     public Vector3[] clip(Edge clipper, Vector3 clippingPlaneNorm)
     {
-        float fromSign = (clipper.to.x - clipper.from.x) * (from.y - clipper.from.y) -
-                        (clipper.to.y - clipper.from.y) * (from.x - clipper.from.x);
+        float fromSign = (clipper.to.x - clipper.from.x) * (from.z - clipper.from.z) -
+                        (clipper.to.z - clipper.from.z) * (from.x - clipper.from.x);
 
-        float toSign = (clipper.to.x - clipper.from.x) * (to.y - clipper.from.y) -
-                        (clipper.to.y - clipper.from.y) * (to.x - clipper.from.x);
+        float toSign = (clipper.to.x - clipper.from.x) * (to.z - clipper.from.z) -
+                        (clipper.to.z - clipper.from.z) * (to.x - clipper.from.x);
+
 
         //Both vertices are inside the clipping area
         if (fromSign <= 0 && toSign <= 0)
