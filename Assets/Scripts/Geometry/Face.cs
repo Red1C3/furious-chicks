@@ -46,7 +46,7 @@ public struct Face
         }
     }
 
-    public Face clip(Transform transform)
+    public Face clip(Matrix4x4 mat)
     {
         if (winding == Winding.CCW)
         {
@@ -68,7 +68,7 @@ public struct Face
         Face clipped = this; //A copy
         clipped.edges = (Edge[])edges.Clone();
 
-        clipped.toLocal(transform);
+        clipped.toLocal(mat);
 
 
         List<Vector3> vertList = new List<Vector3>();
@@ -88,18 +88,20 @@ public struct Face
             vertList = newList;
         }
 
-        for(int i=0;i<vertList.Count;i++){
-            vertList[i]=transform.TransformPoint(vertList[i]);
+        for (int i = 0; i < vertList.Count; i++)
+        {
+            //vertList[i]=transform.TransformPoint(vertList[i]);
+            vertList[i] = mat * (new Vector4(vertList[i].x, vertList[i].y, vertList[i].z, 1));
         }
 
         return new Face(vertList.ToArray());
     }
 
-    public void toLocal(Transform transform)
+    public void toLocal(Matrix4x4 mat)
     {
         for (int i = 0; i < edges.Length; i++)
         {
-            edges[i].toLocal(transform);
+            edges[i].toLocal(mat);
         }
     }
     public Vector3[] getVertices()

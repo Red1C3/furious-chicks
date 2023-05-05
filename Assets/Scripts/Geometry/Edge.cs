@@ -9,10 +9,12 @@ public struct Edge
         this.from = from;
         this.to = to;
     }
-    public void toLocal(Transform transform)
+    public void toLocal(Matrix4x4 mat)
     {
-        from = transform.InverseTransformPoint(from);
-        to = transform.InverseTransformPoint(to);
+        //from = transform.InverseTransformPoint(from);
+        //to = transform.InverseTransformPoint(to);
+        from = mat.inverse * (new Vector4(from.x, from.y, from.z, 1));
+        to = mat.inverse * (new Vector4(to.x, to.y, to.z, 1));
     }
 
     public Vector3[] clip(Edge clipper, Vector3 clippingPlaneNorm)
