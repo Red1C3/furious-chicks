@@ -98,4 +98,11 @@ public struct Face
             edges[i].toLocal(transform);
         }
     }
+    public Vector3[] getVertices(){
+        List<Vector3> vertices=new List<Vector3>();
+        foreach(Edge e in edges){
+            vertices.Add(e.from);
+        }
+        return vertices.ToArray();
+    }
 }
