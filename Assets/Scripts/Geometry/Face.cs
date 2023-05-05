@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public struct Face
 {
@@ -35,6 +36,16 @@ public struct Face
 
     }
 
+    private Face(Vector3[] vertices)
+    {
+        winding = Winding.CW;
+        edges = new Edge[vertices.Length];
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            edges[i] = new Edge(vertices[i], vertices[(i + 1) % vertices.Length]);
+        }
+    }
+
     public Face clip(Transform transform)
     {
         if (winding == Winding.CCW)
@@ -60,7 +71,24 @@ public struct Face
         clipped.toLocal(transform);
 
 
-        return clipped;//TODO
+        List<Vector3> vertList = new List<Vector3>();
+        foreach (Edge edge in edges)
+        {
+            vertList.Add(edge.from);
+        }
+
+        for (int i = 0; i < clippingArea.Length; i++)
+        {
+            List<Vector3> newList = new List<Vector3>();
+            for (int j = 0; j < vertList.Count; j++)
+            {
+                Edge edge = new Edge(vertList[j], vertList[(j + 1) % vertList.Count]);
+                newList.AddRange(edge.clip(clippingArea[i], clippingNorms[i]));
+            }
+            vertList = newList;
+        }
+
+        return new Face(vertList.ToArray());
     }
 
     public void toLocal(Transform transform)
