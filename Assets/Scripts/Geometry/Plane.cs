@@ -6,6 +6,8 @@ public class Plane
                                              Vector3 lineOrigin, Vector3 planeNorm, Vector3 planePoint)
     {
         contactPoint = Vector3.zero;
+        direction=direction.normalized;
+        
         float d = Vector3.Dot(planeNorm, planePoint);
 
         if (Vector3.Dot(planeNorm, direction) == 0)
