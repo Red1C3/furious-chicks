@@ -29,25 +29,33 @@ public struct Face
         else
         {
             Debug.Log("Non supported number of vertices was passed to create a faces");
-            edges=new Edge[0];
-            winding=Winding.CCW;
+            edges = new Edge[0];
+            winding = Winding.CCW;
         }
 
     }
 
-    public Face clip(Transform transform){
-        if(winding==Winding.CCW){
+    public Face clip(Transform transform)
+    {
+        if (winding == Winding.CCW)
+        {
             Debug.Log("Can't clip CCW winded faces");
             return this;
         }
-        Edge[] clippingArea=new Edge[4]; //Can be computed once by making it static
-        clippingArea[0]=new Edge(new Vector2(-1,-1),new Vector2(-1,1));// Must be CW
-        clippingArea[1]=new Edge(new Vector2(-1,1),new Vector2(1,1));
-        clippingArea[2]=new Edge(new Vector2(1,1),new Vector2(1,-1));
-        clippingArea[3]=new Edge(new Vector2(1,-1),new Vector2(-1,-1));
+        Edge[] clippingArea = new Edge[4]; //Can be computed once by making it static
+        clippingArea[0] = new Edge(new Vector2(-1, -1), new Vector2(-1, 1));// Must be CW
+        clippingArea[1] = new Edge(new Vector2(-1, 1), new Vector2(1, 1));
+        clippingArea[2] = new Edge(new Vector2(1, 1), new Vector2(1, -1));
+        clippingArea[3] = new Edge(new Vector2(1, -1), new Vector2(-1, -1));
 
-        Face clipped=this; //A copy
-        clipped.edges=(Edge[])edges.Clone();
+        Vector3[] clippingNorms = new Vector3[4];
+        clippingNorms[0] = new Vector2(1, 0);
+        clippingNorms[1] = new Vector2(0, -1);
+        clippingNorms[2] = new Vector2(-1, 0);
+        clippingNorms[3] = new Vector2(0, 1);
+
+        Face clipped = this; //A copy
+        clipped.edges = (Edge[])edges.Clone();
 
         clipped.toLocal(transform);
 
@@ -55,8 +63,10 @@ public struct Face
         return clipped;//TODO
     }
 
-    public void toLocal(Transform transform){
-        for(int i=0;i<edges.Length;i++){
+    public void toLocal(Transform transform)
+    {
+        for (int i = 0; i < edges.Length; i++)
+        {
             edges[i].toLocal(transform);
         }
     }
