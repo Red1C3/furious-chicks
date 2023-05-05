@@ -13,13 +13,13 @@ public struct Face
             edges[0] = new Edge(vertices[0], vertices[1]);
             edges[1] = new Edge(vertices[1], vertices[2]);
             edges[2] = new Edge(vertices[2], vertices[0]);
-            
+
             if (flipWinding)
             {
                 Edge tempEdge = edges[0];
                 edges[0] = edges[2];
                 edges[2] = tempEdge;
-                winding = CW;
+                winding = Winding.CW;
             }
             else
             {
@@ -29,7 +29,15 @@ public struct Face
         else
         {
             Debug.Log("Non supported number of vertices was passed to create a faces");
+            edges=new Edge[0];
+            winding=Winding.CCW;
         }
 
+    }
+
+    public Face clip(Transform transform){
+        Face clipped=this; //A copy
+        clipped.edges=(Edge[])edges.Clone();
+        return clipped;//TODO
     }
 }
