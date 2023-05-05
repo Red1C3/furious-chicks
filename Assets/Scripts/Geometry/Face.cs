@@ -54,16 +54,16 @@ public struct Face
             return this;
         }
         Edge[] clippingArea = new Edge[4]; //Can be computed once by making it static
-        clippingArea[0] = new Edge(new Vector2(-1, -1), new Vector2(-1, 1));// Must be CW
-        clippingArea[1] = new Edge(new Vector2(-1, 1), new Vector2(1, 1));
-        clippingArea[2] = new Edge(new Vector2(1, 1), new Vector2(1, -1));
-        clippingArea[3] = new Edge(new Vector2(1, -1), new Vector2(-1, -1));
+        clippingArea[0] = new Edge(new Vector3(-1, 0, -1), new Vector3(-1, 0, 1));// Must be CW
+        clippingArea[1] = new Edge(new Vector3(-1, 0, 1), new Vector3(1, 0, 1));
+        clippingArea[2] = new Edge(new Vector3(1, 0, 1), new Vector3(1, 0, -1));
+        clippingArea[3] = new Edge(new Vector3(1, 0, -1), new Vector3(-1, 0, -1));
 
         Vector3[] clippingNorms = new Vector3[4];
-        clippingNorms[0] = new Vector2(1, 0);
-        clippingNorms[1] = new Vector2(0, -1);
-        clippingNorms[2] = new Vector2(-1, 0);
-        clippingNorms[3] = new Vector2(0, 1);
+        clippingNorms[0] = new Vector3(1, 0, 0);
+        clippingNorms[1] = new Vector3(0, 0, -1);
+        clippingNorms[2] = new Vector3(-1, 0, 0);
+        clippingNorms[3] = new Vector3(0, 0, 1);
 
         Face clipped = this; //A copy
         clipped.edges = (Edge[])edges.Clone();
@@ -98,9 +98,11 @@ public struct Face
             edges[i].toLocal(transform);
         }
     }
-    public Vector3[] getVertices(){
-        List<Vector3> vertices=new List<Vector3>();
-        foreach(Edge e in edges){
+    public Vector3[] getVertices()
+    {
+        List<Vector3> vertices = new List<Vector3>();
+        foreach (Edge e in edges)
+        {
             vertices.Add(e.from);
         }
         return vertices.ToArray();
