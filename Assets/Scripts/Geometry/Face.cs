@@ -72,7 +72,7 @@ public struct Face
 
 
         List<Vector3> vertList = new List<Vector3>();
-        foreach (Edge edge in edges)
+        foreach (Edge edge in clipped.edges)
         {
             vertList.Add(edge.from);
         }
@@ -86,6 +86,10 @@ public struct Face
                 newList.AddRange(edge.clip(clippingArea[i], clippingNorms[i]));
             }
             vertList = newList;
+        }
+
+        for(int i=0;i<vertList.Count;i++){
+            vertList[i]=transform.TransformPoint(vertList[i]);
         }
 
         return new Face(vertList.ToArray());

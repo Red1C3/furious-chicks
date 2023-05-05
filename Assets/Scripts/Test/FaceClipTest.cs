@@ -12,6 +12,10 @@ public class FaceClipTest : MonoBehaviour
         }
         Face face = new Face(vertices, true);
         face = face.clip(clippingPlane);
+        vertices=face.getVertices();
+        foreach(Vector3 v in vertices){
+            Debug.Log(v);
+        }
         mesh.vertices = face.getVertices();
     }
 }
