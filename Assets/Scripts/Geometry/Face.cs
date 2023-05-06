@@ -139,6 +139,8 @@ public struct Face
             Edge tempEdge = edges[1];
             edges[1] = edges[3];
             edges[3] = tempEdge;
+            edges[0].flip();
+            edges[2].flip();
             edges[1].flip();
             edges[3].flip();
             if (winding == Winding.CW) winding = Winding.CCW;
