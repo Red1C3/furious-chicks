@@ -109,7 +109,11 @@ public struct Face
         for (int i = 0; i < vertList.Count; i++)
         {
             if (vertList[i].y > 0) vertList.Remove(vertList[i]);
-            else vertList[i] = mat * (new Vector4(vertList[i].x, vertList[i].y, vertList[i].z, 1));
+            else
+            {
+                vertList[i] = new Vector3(vertList[i].x, 0, vertList[i].z); //Project into clipping face
+                vertList[i] = mat * (new Vector4(vertList[i].x, vertList[i].y, vertList[i].z, 1));
+            }
         }
 
         return (vertList.ToArray());
