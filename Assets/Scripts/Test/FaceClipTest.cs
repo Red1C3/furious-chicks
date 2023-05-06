@@ -13,13 +13,12 @@ public class FaceClipTest : MonoBehaviour
         }
         Face face = new Face(vertices, true);
         Matrix4x4 a=box.facesMats[0];
-        face=new Face(a);
-        face.flip();
+        face=face.clip(a);
 
         vertices=face.getVertices();
         for(int i=0;i<vertices.Length;i++){
             vertices[i]=transform.InverseTransformPoint(vertices[i]);
-            //Debug.Log(vertices[i]);
+            Debug.Log(vertices[i]);
         }
         mesh.vertices = vertices;
         //mesh.triangles=new []{0,1,2,0,2,3};

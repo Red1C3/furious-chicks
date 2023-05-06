@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class BoxCullider : MonoBehaviour, Cullider
 {
-    public enum Side{TOP,DOWN,LEFT,RIGHT,FORWARD,BACKWARD,LEN}
+    public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
     private Vector3 center;
     private Vector3 size;
     private Quaternion rotation;
 
     private Vector3[] vertices;
     private Vector3 right, up, forward;
-    public Matrix4x4[] facesMats{get; private set;}
+    public Matrix4x4[] facesMats { get; private set; }
 
     public static readonly float axisThreshold = 0.01f;
 
@@ -77,7 +77,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
             cullisionInfo = cullideWithBox(other as BoxCullider);
             if (cullisionInfo.cullided == false) return cullisionInfo;
-            return addContactPoint(cullisionInfo);
+            //return addContactPoint(cullisionInfo);
+            return cullisionInfo;
         }
         if (other is SphereCullider)
         {
@@ -111,10 +112,10 @@ public class BoxCullider : MonoBehaviour, Cullider
             ci.hasContactPointB = true;
             ci.contactPointB = (ci.second as BoxCullider).center;
         }*/
-        ci.hasContactPointA = true;
+        /*ci.hasContactPointA = true;
         ci.contactPointA = getDeepestVertex(ci.first as BoxCullider, ci.second as BoxCullider);
         ci.hasContactPointB = true;
-        ci.contactPointB = getDeepestVertex(ci.second as BoxCullider, ci.first as BoxCullider);
+        ci.contactPointB = getDeepestVertex(ci.second as BoxCullider, ci.first as BoxCullider);*/
         return ci;
     }
 
@@ -137,49 +138,99 @@ public class BoxCullider : MonoBehaviour, Cullider
 
         return deepestVertex;
     }
-    private CullisionInfo cullideWithBox(BoxCullider other){
-        Vector3 axis=Vector3.zero;
-        bool thisOwnsReferenceFace=true;
-        bool isEdgeContact=false;
-        float overlap=float.MaxValue;
-        Side side=Side.TOP;
+    private CullisionInfo cullideWithBox(BoxCullider other)
+    {
+        Vector3 axis = Vector3.zero;
+        bool thisOwnsReferenceFace = true;
+        bool isEdgeContact = false;
+        Vector3 centeralContactPoint = Vector3.zero;
+        float overlap = float.MaxValue;
+        Side side = Side.TOP;
         float tempOverlap;
 
-        for(int i=0;i<(int)Side.LEN;i++){
-            if((tempOverlap=calculateOverlap(other,faceNormal((Side)i)))<0){
+        for (int i = 0; i < (int)Side.LEN; i++)
+        {
+            if ((tempOverlap = calculateOverlap(other, faceNormal((Side)i))) < 0)
+            {
                 return CullisionInfo.NO_CULLISION;
-            }else if(tempOverlap<overlap){
-                overlap=tempOverlap;
-                side=(Side)i;
+            }
+            else if (tempOverlap < overlap)
+            {
+                overlap = tempOverlap;
+                side = (Side)i;
             }
         }
 
-        for(int i=0;i<(int)Side.LEN;i++){
-            if((tempOverlap=calculateOverlap(other,other.faceNormal((Side)i)))<0){
+        for (int i = 0; i < (int)Side.LEN; i++)
+        {
+            if ((tempOverlap = calculateOverlap(other, other.faceNormal((Side)i))) < 0)
+            {
                 return CullisionInfo.NO_CULLISION;
-            }else if (tempOverlap<overlap){
-                overlap=tempOverlap;
-                side=(Side) i;
-                thisOwnsReferenceFace=false;
+            }
+            else if (tempOverlap < overlap)
+            {
+                overlap = tempOverlap;
+                side = (Side)i;
+                thisOwnsReferenceFace = false;
             }
         }
 
         //TODO edge contact
-
-        if(!isEdgeContact){
+        if (!isEdgeContact)
+        {
             Matrix4x4 referenceFace;
-            if(thisOwnsReferenceFace){ //TODO find incident face
-                referenceFace=facesMats[(int)side];
-            }else{
-                referenceFace=other.facesMats[(int)side];
+            Face incidentFace;
+            if (thisOwnsReferenceFace)
+            {
+                referenceFace = facesMats[(int)side];
+                incidentFace = other.getIncidentFace(Face.normal(referenceFace));
             }
-            axis=Face.normal(referenceFace);
+            else
+            {
+                referenceFace = other.facesMats[(int)side];
+                incidentFace = getIncidentFace(Face.normal(referenceFace));
+            }
+            incidentFace.flip();
+            //incidentFace.winding=Face.Winding.CW;
+            //incidentFace.clip(referenceFace);
+            incidentFace.clip(facesMats[0]);
+
+            Vector3[] incidentFacePoints = incidentFace.getVertices();
+
+            foreach (Vector3 v in incidentFacePoints)
+            {
+                centeralContactPoint += v;
+               // Debug.Log(v);
+            }
+            Debug.Log("END");
+            if (incidentFacePoints.Length > 0)
+                centeralContactPoint /= incidentFacePoints.Length;
+
+            axis = Face.normal(referenceFace);
         }
 
 
-         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, false, false,
-                                 Vector3.zero, Vector3.zero, this, other);
- 
+        return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
+                                centeralContactPoint, centeralContactPoint, this, other);
+
+    }
+    private Face getIncidentFace(Vector3 normal)
+    {
+        normal = normal.normalized;
+        float smallestDot = float.MaxValue;
+        Matrix4x4 incidentFaceMat = Matrix4x4.identity;
+
+        for (int i = 0; i < (int)Side.LEN; i++)
+        {
+            Vector3 faceNorm = faceNormal((Side)i);
+            float dot = Vector3.Dot(normal, faceNorm);
+            if (dot < smallestDot)
+            {
+                smallestDot = dot;
+                incidentFaceMat = facesMats[i];
+            }
+        }
+        return new Face(incidentFaceMat);
     }
     private CullisionInfo cullideWithBoxOld(BoxCullider other)
     {
@@ -433,8 +484,9 @@ public class BoxCullider : MonoBehaviour, Cullider
                                                                         new float4(up * max.y, 0),
                                                                         new float4(0, 0, 0, 1)));
     }
-    private Vector3 faceNormal(Side face){
-        Vector3 norm=facesMats[(int)face]*Vector3.up;
+    private Vector3 faceNormal(Side face)
+    {
+        Vector3 norm = facesMats[(int)face] * Vector3.up;
         return norm.normalized;
     }
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)

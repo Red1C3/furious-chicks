@@ -8,6 +8,7 @@ public class ImpulseSolver : Solver
     public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
+        //Debug.Log(cullision);
         if (!cullision.hasContactPointA || !cullision.hasContactPointB)
         {
             Debug.Log("A collision was passed with no contact points, only linear velocity was used to resolve");

@@ -5,7 +5,7 @@ public struct Face
 {
     public enum Winding { CW, CCW }
     private Edge[] edges;
-    public Winding winding { get; private set; }
+    public Winding winding { get; set; }
     public Face(Vector3[] vertices, bool flipWinding)
     {
         if (vertices.Length == 3)
@@ -108,8 +108,8 @@ public struct Face
 
         for (int i = 0; i < vertList.Count; i++)
         {
-            //vertList[i]=transform.TransformPoint(vertList[i]);
-            vertList[i] = mat * (new Vector4(vertList[i].x, vertList[i].y, vertList[i].z, 1));
+            if (vertList[i].y < 0) vertList.Remove(vertList[i]);
+            else vertList[i] = mat * (new Vector4(vertList[i].x, vertList[i].y, vertList[i].z, 1));
         }
 
         return new Face(vertList.ToArray());
@@ -152,8 +152,9 @@ public struct Face
         }
     }
 
-    public static Vector3 normal(Matrix4x4 mat){
-        Vector3 norm=mat*Vector3.up;
+    public static Vector3 normal(Matrix4x4 mat)
+    {
+        Vector3 norm = mat * Vector3.up;
         return norm.normalized;
     }
 }
