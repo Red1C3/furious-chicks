@@ -193,9 +193,9 @@ public class BoxCullider : MonoBehaviour, Cullider
             incidentFace.flip();
             //incidentFace.winding=Face.Winding.CW;
             //incidentFace.clip(referenceFace);
-            incidentFace.clip(facesMats[0]);
+            
 
-            Vector3[] incidentFacePoints = incidentFace.getVertices();
+            Vector3[] incidentFacePoints = incidentFace.clip(referenceFace);
 
             foreach (Vector3 v in incidentFacePoints)
             {

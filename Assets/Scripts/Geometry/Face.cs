@@ -64,12 +64,12 @@ public struct Face
         }
     }
 
-    public Face clip(Matrix4x4 mat)
+    public Vector3[] clip(Matrix4x4 mat)
     {
         if (winding == Winding.CCW)
         {
             Debug.Log("Can't clip CCW winded faces");
-            return this;
+            return null;
         }
         Edge[] clippingArea = new Edge[4]; //Can be computed once by making it static
         clippingArea[0] = new Edge(new Vector3(-1, 0, -1), new Vector3(-1, 0, 1));// Must be CW
@@ -108,11 +108,11 @@ public struct Face
 
         for (int i = 0; i < vertList.Count; i++)
         {
-            if (vertList[i].y < 0) vertList.Remove(vertList[i]);
+            if (vertList[i].y > 0) vertList.Remove(vertList[i]);
             else vertList[i] = mat * (new Vector4(vertList[i].x, vertList[i].y, vertList[i].z, 1));
         }
 
-        return new Face(vertList.ToArray());
+        return (vertList.ToArray());
     }
 
     public void toLocal(Matrix4x4 mat)
