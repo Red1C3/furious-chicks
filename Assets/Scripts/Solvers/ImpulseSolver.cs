@@ -3,13 +3,21 @@ using Unity.Mathematics;
 
 public class ImpulseSolver : Solver
 {
+    const float biasFactor = 0.001f;
+    const float depthThreshold=0.01f;
     public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
-        if(!cullision.hasContactPointA || !cullision.hasContactPointB){
+        if (!cullision.hasContactPointA || !cullision.hasContactPointB)
+        {
             Debug.Log("A collision was passed with no contact points, only linear velocity was used to resolve");
             Debug.Log(cullision);
         }
+
+        float bias = 0;
+        if (math.abs(cullision.depth) > depthThreshold)
+            bias = biasFactor * cullision.depth / Time.fixedDeltaTime;
+
         Vector3 normal = cullision.normal.normalized * cullision.depth;
         Vector3 rA = cullision.contactPointA - cullision.first.center();
         Vector3 rB = cullision.contactPointB - cullision.second.center();
@@ -27,7 +35,7 @@ public class ImpulseSolver : Solver
                                         cullision.second.getRigidbodyDriver().velocity,
                                         cullision.second.getRigidbodyDriver().getAngularVelocity());
 
-        float lambda = -(float12x12.rowColMult(jacobian, velocities)) / (float12x12.rowColMult((jacobian * inverseMass), jacobian));
+        float lambda = -(float12x12.rowColMult(jacobian, velocities) + bias) / (float12x12.rowColMult((jacobian * inverseMass), jacobian));
         lambda = math.clamp(lambda, float.MinValue, 0);
 
         float12 deltaV = inverseMass * jacobian * lambda;
