@@ -11,6 +11,7 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     private Vector3[] vertices;
     private Vector3 right, up, forward;
+    public Matrix4x4[] facesMats{get; private set;}
 
     public static readonly float axisThreshold = 0.01f;
 
@@ -19,6 +20,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        facesMats = new Matrix4x4[6];
         updateBoundaries();
     }
 
@@ -73,7 +75,7 @@ public class BoxCullider : MonoBehaviour, Cullider
                 }
             }
             cullisionInfo = cullideWithBox(other as BoxCullider);
-            if(cullisionInfo.cullided == false) return cullisionInfo;
+            if (cullisionInfo.cullided == false) return cullisionInfo;
             return addContactPoint(cullisionInfo);
         }
         if (other is SphereCullider)
@@ -83,8 +85,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             cullisionInfo.second = other;
             cullisionInfo.normal *= -1;
 
-            bool hasContactPointB=cullisionInfo.hasContactPointA;
-            Vector3 contactPointB=cullisionInfo.contactPointA;
+            bool hasContactPointB = cullisionInfo.hasContactPointA;
+            Vector3 contactPointB = cullisionInfo.contactPointA;
 
             cullisionInfo.hasContactPointA = cullisionInfo.hasContactPointB;
             cullisionInfo.contactPointA = cullisionInfo.contactPointB;
@@ -108,24 +110,27 @@ public class BoxCullider : MonoBehaviour, Cullider
             ci.hasContactPointB = true;
             ci.contactPointB = (ci.second as BoxCullider).center;
         }*/
-        ci.hasContactPointA=true;
-        ci.contactPointA=getDeepestVertex(ci.first as BoxCullider,ci.second as BoxCullider);
-        ci.hasContactPointB=true;
-        ci.contactPointB=getDeepestVertex(ci.second as BoxCullider,ci.first as BoxCullider);
+        ci.hasContactPointA = true;
+        ci.contactPointA = getDeepestVertex(ci.first as BoxCullider, ci.second as BoxCullider);
+        ci.hasContactPointB = true;
+        ci.contactPointB = getDeepestVertex(ci.second as BoxCullider, ci.first as BoxCullider);
         return ci;
     }
 
-    private Vector3 getDeepestVertex(BoxCullider from,BoxCullider inside){
-        Vector3[] fromVertices=from.vertices;
-        Vector3 insideCenter=inside.center;
-        Vector3 deepestVertex=fromVertices[0];
-        float depth=float.MaxValue;
+    private Vector3 getDeepestVertex(BoxCullider from, BoxCullider inside)
+    {
+        Vector3[] fromVertices = from.vertices;
+        Vector3 insideCenter = inside.center;
+        Vector3 deepestVertex = fromVertices[0];
+        float depth = float.MaxValue;
 
-        foreach(Vector3 vertex in fromVertices){
-            float distance=Vector3.Distance(vertex,insideCenter);
-            if(distance<depth){
-                depth=distance;
-                deepestVertex=vertex;
+        foreach (Vector3 vertex in fromVertices)
+        {
+            float distance = Vector3.Distance(vertex, insideCenter);
+            if (distance < depth)
+            {
+                depth = distance;
+                deepestVertex = vertex;
             }
         }
 
@@ -346,6 +351,42 @@ public class BoxCullider : MonoBehaviour, Cullider
         right = rotation * Vector3.right;
         up = rotation * Vector3.up;
         forward = rotation * Vector3.forward;
+
+        //Top
+        facesMats[0] = math.mul(float4x4.Translate(center + up * max.y), new float4x4(new float4(right * max.x, 0),
+                                                                                new float4(up * max.y, 0),
+                                                                                new float4(forward * max.z, 0),
+                                                                                new float4(0, 0, 0, 1)));
+
+        //Bottom
+        facesMats[1] = math.mul(float4x4.Translate(center - up * max.y), new float4x4(new float4(right * max.x, 0),
+                                                                                new float4(-up * max.y, 0),
+                                                                                new float4(-forward * max.z, 0),
+                                                                                new float4(0, 0, 0, 1)));
+
+        //Right
+        facesMats[2] = math.mul(float4x4.Translate(center + right * max.x), new float4x4(new float4(-up * max.y, 0),
+                                                                        new float4(right * max.x, 0),
+                                                                        new float4(forward * max.z, 0),
+                                                                        new float4(0, 0, 0, 1)));
+
+        //Left
+        facesMats[3] = math.mul(float4x4.Translate(center - right * max.x), new float4x4(new float4(up * max.y, 0),
+                                                                        new float4(-right * max.x, 0),
+                                                                        new float4(forward * max.z, 0),
+                                                                        new float4(0, 0, 0, 1)));
+
+        //Forward
+        facesMats[4] = math.mul(float4x4.Translate(center + forward * max.z), new float4x4(new float4(right * max.x, 0),
+                                                                        new float4(forward * max.z, 0),
+                                                                        new float4(-up * max.y, 0),
+                                                                        new float4(0, 0, 0, 1)));
+
+        //Backward
+        facesMats[5] = math.mul(float4x4.Translate(center - forward * max.z), new float4x4(new float4(right * max.x, 0),
+                                                                        new float4(-forward * max.z, 0),
+                                                                        new float4(up * max.y, 0),
+                                                                        new float4(0, 0, 0, 1)));
     }
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)
     {
