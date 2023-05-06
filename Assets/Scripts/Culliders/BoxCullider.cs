@@ -11,6 +11,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     private Quaternion rotation;
 
     private Vector3[] vertices;
+    private Edge[] edges;
     private Vector3 right, up, forward;
     public Matrix4x4[] facesMats { get; private set; }
 
@@ -22,6 +23,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         rb = GetComponent<Rigidbody>();
         facesMats = new Matrix4x4[6];
+        edges = new Edge[12];
         updateBoundaries();
     }
 
@@ -193,16 +195,16 @@ public class BoxCullider : MonoBehaviour, Cullider
             incidentFace.flip();
             //incidentFace.winding=Face.Winding.CW;
             //incidentFace.clip(referenceFace);
-            
+
 
             Vector3[] incidentFacePoints = incidentFace.clip(referenceFace);
 
             foreach (Vector3 v in incidentFacePoints)
             {
                 centeralContactPoint += v;
-               // Debug.Log(v);
+                // Debug.Log(v);
             }
-            Debug.Log("END");
+            // Debug.Log("END");
             if (incidentFacePoints.Length > 0)
                 centeralContactPoint /= incidentFacePoints.Length;
 
@@ -434,19 +436,38 @@ public class BoxCullider : MonoBehaviour, Cullider
 
         vertices = new[]
             {
-                center + rotation * min,
-                center + rotation * new Vector3(max.x, min.y, min.z),
-                center + rotation * new Vector3(min.x, max.y, min.z),
-                center + rotation * new Vector3(max.x, max.y, min.z),
-                center + rotation * new Vector3(min.x, min.y, max.z),
-                center + rotation * new Vector3(max.x, min.y, max.z),
-                center + rotation * new Vector3(min.x, max.y, max.z),
-                center + rotation * max,
+                center + rotation * min,                             //0
+                center + rotation * new Vector3(max.x, min.y, min.z),//1
+                center + rotation * new Vector3(min.x, max.y, min.z),//2
+                center + rotation * new Vector3(max.x, max.y, min.z),//3
+                center + rotation * new Vector3(min.x, min.y, max.z),//4
+                center + rotation * new Vector3(max.x, min.y, max.z),//5
+                center + rotation * new Vector3(min.x, max.y, max.z),//6
+                center + rotation * max,                             //7
            };
 
         right = rotation * Vector3.right;
         up = rotation * Vector3.up;
         forward = rotation * Vector3.forward;
+
+        //Bottom face
+        edges[0]=new Edge(vertices[0],vertices[4]);
+        edges[1]=new Edge(vertices[4],vertices[5]);
+        edges[2]=new Edge(vertices[5],vertices[1]);
+        edges[3]=new Edge(vertices[1],vertices[0]);
+
+        //Top face
+        edges[4]=new Edge(vertices[7],vertices[3]);
+        edges[5]=new Edge(vertices[3],vertices[2]);
+        edges[6]=new Edge(vertices[2],vertices[6]);
+        edges[7]=new Edge(vertices[6],vertices[7]);
+
+        //Side faces
+        edges[8]=new Edge(vertices[7],vertices[5]);
+        edges[9]=new Edge(vertices[0],vertices[2]);
+        edges[10]=new Edge(vertices[6],vertices[4]);
+        edges[11]=new Edge(vertices[1],vertices[3]);
+
 
         //Top
         facesMats[(int)Side.TOP] = math.mul(float4x4.Translate(center + up * max.y), new float4x4(new float4(right * max.x, 0),
