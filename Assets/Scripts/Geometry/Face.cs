@@ -151,4 +151,9 @@ public struct Face
             Debug.Log("Face flip was called with unsupported face");
         }
     }
+
+    public static Vector3 normal(Matrix4x4 mat){
+        Vector3 norm=mat*Vector3.up;
+        return norm.normalized;
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BoxCullider : MonoBehaviour, Cullider
 {
-    public enum Side{TOP,DOWN,LEFT,RIGHT,FORWARD,BACKWARD}
+    public enum Side{TOP,DOWN,LEFT,RIGHT,FORWARD,BACKWARD,LEN}
     private Vector3 center;
     private Vector3 size;
     private Quaternion rotation;
@@ -138,15 +138,48 @@ public class BoxCullider : MonoBehaviour, Cullider
         return deepestVertex;
     }
     private CullisionInfo cullideWithBox(BoxCullider other){
+        Vector3 axis=Vector3.zero;
         bool thisOwnsReferenceFace=true;
         bool isEdgeContact=false;
         float overlap=float.MaxValue;
-        Vector3 axis=Vector3.zero;
+        Side side=Side.TOP;
         float tempOverlap;
 
+        for(int i=0;i<(int)Side.LEN;i++){
+            if((tempOverlap=calculateOverlap(other,faceNormal((Side)i)))<0){
+                return CullisionInfo.NO_CULLISION;
+            }else if(tempOverlap<overlap){
+                overlap=tempOverlap;
+                side=(Side)i;
+            }
+        }
 
-        //loop over this faces and find lowest overlap
-        return CullisionInfo.NO_CULLISION;
+        for(int i=0;i<(int)Side.LEN;i++){
+            if((tempOverlap=calculateOverlap(other,other.faceNormal((Side)i)))<0){
+                return CullisionInfo.NO_CULLISION;
+            }else if (tempOverlap<overlap){
+                overlap=tempOverlap;
+                side=(Side) i;
+                thisOwnsReferenceFace=false;
+            }
+        }
+
+        //TODO edge contact
+
+        if(!isEdgeContact){
+            Matrix4x4 referenceFace;
+            if(thisOwnsReferenceFace){ //TODO find incident face
+                referenceFace=facesMats[(int)side];
+            }else{
+                referenceFace=other.facesMats[(int)side];
+            }
+            axis=Face.normal(referenceFace);
+        }
+
+
+         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, false, false,
+                                 Vector3.zero, Vector3.zero, this, other);
+ 
     }
     private CullisionInfo cullideWithBoxOld(BoxCullider other)
     {

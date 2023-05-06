@@ -19,7 +19,7 @@ public class FaceClipTest : MonoBehaviour
         vertices=face.getVertices();
         for(int i=0;i<vertices.Length;i++){
             vertices[i]=transform.InverseTransformPoint(vertices[i]);
-            Debug.Log(vertices[i]);
+            //Debug.Log(vertices[i]);
         }
         mesh.vertices = vertices;
         //mesh.triangles=new []{0,1,2,0,2,3};
