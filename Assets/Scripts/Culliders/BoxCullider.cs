@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class BoxCullider : MonoBehaviour, Cullider
 {
+    public enum Side{TOP,DOWN,LEFT,RIGHT,FORWARD,BACKWARD}
     private Vector3 center;
     private Vector3 size;
     private Quaternion rotation;
@@ -353,40 +354,44 @@ public class BoxCullider : MonoBehaviour, Cullider
         forward = rotation * Vector3.forward;
 
         //Top
-        facesMats[0] = math.mul(float4x4.Translate(center + up * max.y), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.TOP] = math.mul(float4x4.Translate(center + up * max.y), new float4x4(new float4(right * max.x, 0),
                                                                                 new float4(up * max.y, 0),
                                                                                 new float4(forward * max.z, 0),
                                                                                 new float4(0, 0, 0, 1)));
 
         //Bottom
-        facesMats[1] = math.mul(float4x4.Translate(center - up * max.y), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.DOWN] = math.mul(float4x4.Translate(center - up * max.y), new float4x4(new float4(right * max.x, 0),
                                                                                 new float4(-up * max.y, 0),
                                                                                 new float4(-forward * max.z, 0),
                                                                                 new float4(0, 0, 0, 1)));
 
         //Right
-        facesMats[2] = math.mul(float4x4.Translate(center + right * max.x), new float4x4(new float4(-up * max.y, 0),
+        facesMats[(int)Side.RIGHT] = math.mul(float4x4.Translate(center + right * max.x), new float4x4(new float4(-up * max.y, 0),
                                                                         new float4(right * max.x, 0),
                                                                         new float4(forward * max.z, 0),
                                                                         new float4(0, 0, 0, 1)));
 
         //Left
-        facesMats[3] = math.mul(float4x4.Translate(center - right * max.x), new float4x4(new float4(up * max.y, 0),
+        facesMats[(int)Side.LEFT] = math.mul(float4x4.Translate(center - right * max.x), new float4x4(new float4(up * max.y, 0),
                                                                         new float4(-right * max.x, 0),
                                                                         new float4(forward * max.z, 0),
                                                                         new float4(0, 0, 0, 1)));
 
         //Forward
-        facesMats[4] = math.mul(float4x4.Translate(center + forward * max.z), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.FORWARD] = math.mul(float4x4.Translate(center + forward * max.z), new float4x4(new float4(right * max.x, 0),
                                                                         new float4(forward * max.z, 0),
                                                                         new float4(-up * max.y, 0),
                                                                         new float4(0, 0, 0, 1)));
 
         //Backward
-        facesMats[5] = math.mul(float4x4.Translate(center - forward * max.z), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.BACKWARD] = math.mul(float4x4.Translate(center - forward * max.z), new float4x4(new float4(right * max.x, 0),
                                                                         new float4(-forward * max.z, 0),
                                                                         new float4(up * max.y, 0),
                                                                         new float4(0, 0, 0, 1)));
+    }
+    private Vector3 faceNormal(Side face){
+        Vector3 norm=facesMats[(int)face]*Vector3.up;
+        return norm.normalized;
     }
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)
     {
