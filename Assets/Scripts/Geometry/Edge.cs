@@ -55,9 +55,32 @@ public struct Edge
         }
 
     }
-    public void flip(){
-        Vector3 tempVert=from;
-        from=to;
-        to=tempVert;
+    public void flip()
+    {
+        Vector3 tempVert = from;
+        from = to;
+        to = tempVert;
+    }
+    public Vector3 closestPoint(Edge other)
+    {
+        Vector3 point = from;
+        Vector3 otherPoint = other.from;
+        Vector3 norm = (to - from).normalized;
+        Vector3 otherNorm = (other.to - other.from).normalized;
+
+        var pos_diff = point - otherPoint;
+        var cross_normal = Vector3.Cross(norm, otherNorm).normalized;
+        var rejection = pos_diff - Vector3.Project(pos_diff, otherNorm) - Vector3.Project(pos_diff, cross_normal);
+        var distance_to_line_pos = rejection.magnitude / Vector3.Dot(norm, rejection.normalized);
+        var closest_approach = point - norm * distance_to_line_pos;
+        return closest_approach;
+    }
+    public Vector3 normal()
+    {
+        return (to - from).normalized;
+    }
+    public override string ToString()
+    {
+        return "Edge:" + from.ToString() + " -> " + to.ToString();
     }
 }

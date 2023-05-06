@@ -149,6 +149,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         float overlap = float.MaxValue;
         Side side = Side.TOP;
         float tempOverlap;
+        Edge thisEdge = new Edge(), otherEdge = new Edge();
 
         for (int i = 0; i < (int)Side.LEN; i++)
         {
@@ -174,6 +175,24 @@ public class BoxCullider : MonoBehaviour, Cullider
                 overlap = tempOverlap;
                 side = (Side)i;
                 thisOwnsReferenceFace = false;
+            }
+        }
+
+        for (int i = 0; i < edges.Length; i++)
+        {
+            for (int j = 0; j < other.edges.Length; j++)
+            {
+                if ((tempOverlap = calculateOverlap(other, Vector3.Cross(edges[i].normal(), other.edges[j].normal()))) < 0)
+                {
+                    return CullisionInfo.NO_CULLISION;
+                }
+                else if (tempOverlap < overlap)
+                {
+                    isEdgeContact = true;
+                    overlap = tempOverlap;
+                    thisEdge = edges[i];
+                    otherEdge = other.edges[j];
+                }
             }
         }
 
@@ -209,6 +228,13 @@ public class BoxCullider : MonoBehaviour, Cullider
                 centeralContactPoint /= incidentFacePoints.Length;
 
             axis = Face.normal(referenceFace);
+        }
+        else
+        {
+            Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
+            Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
+            centeralContactPoint = (contactPointA + contactPointB) / 2.0f;
+            axis = Vector3.Cross(thisEdge.normal(), otherEdge.normal());
         }
 
 
@@ -451,22 +477,22 @@ public class BoxCullider : MonoBehaviour, Cullider
         forward = rotation * Vector3.forward;
 
         //Bottom face
-        edges[0]=new Edge(vertices[0],vertices[4]);
-        edges[1]=new Edge(vertices[4],vertices[5]);
-        edges[2]=new Edge(vertices[5],vertices[1]);
-        edges[3]=new Edge(vertices[1],vertices[0]);
+        edges[0] = new Edge(vertices[0], vertices[4]);
+        edges[1] = new Edge(vertices[4], vertices[5]);
+        edges[2] = new Edge(vertices[5], vertices[1]);
+        edges[3] = new Edge(vertices[1], vertices[0]);
 
         //Top face
-        edges[4]=new Edge(vertices[7],vertices[3]);
-        edges[5]=new Edge(vertices[3],vertices[2]);
-        edges[6]=new Edge(vertices[2],vertices[6]);
-        edges[7]=new Edge(vertices[6],vertices[7]);
+        edges[4] = new Edge(vertices[7], vertices[3]);
+        edges[5] = new Edge(vertices[3], vertices[2]);
+        edges[6] = new Edge(vertices[2], vertices[6]);
+        edges[7] = new Edge(vertices[6], vertices[7]);
 
         //Side faces
-        edges[8]=new Edge(vertices[7],vertices[5]);
-        edges[9]=new Edge(vertices[0],vertices[2]);
-        edges[10]=new Edge(vertices[6],vertices[4]);
-        edges[11]=new Edge(vertices[1],vertices[3]);
+        edges[8] = new Edge(vertices[7], vertices[5]);
+        edges[9] = new Edge(vertices[0], vertices[2]);
+        edges[10] = new Edge(vertices[6], vertices[4]);
+        edges[11] = new Edge(vertices[1], vertices[3]);
 
 
         //Top
