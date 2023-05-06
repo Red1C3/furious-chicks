@@ -55,4 +55,9 @@ public struct Edge
         }
 
     }
+    public void flip(){
+        Vector3 tempVert=from;
+        from=to;
+        to=tempVert;
+    }
 }

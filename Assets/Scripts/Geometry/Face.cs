@@ -36,6 +36,24 @@ public struct Face
 
     }
 
+    public Face(Matrix4x4 faceMat)
+    {
+        winding = Winding.CCW;
+        edges = new Edge[4];
+        Vector3[] vertices = new Vector3[4];
+        vertices[0] = faceMat * (new Vector4(-1, 0, -1, 1));
+        vertices[1] = faceMat * (new Vector4(1, 0, -1, 1));
+        vertices[2] = faceMat * (new Vector4(-1, 0, 1, 1));
+        vertices[3] = faceMat * (new Vector4(1, 0, 1, 1));
+
+        edges[0] = new Edge(vertices[0], vertices[2]);
+        edges[1] = new Edge(vertices[2], vertices[3]);
+        edges[2] = new Edge(vertices[3], vertices[1]);
+        edges[3] = new Edge(vertices[1], vertices[0]);
+
+    }
+
+
     private Face(Vector3[] vertices)
     {
         winding = Winding.CW;
@@ -112,5 +130,23 @@ public struct Face
             vertices.Add(e.from);
         }
         return vertices.ToArray();
+    }
+
+    public void flip()
+    {
+        if (edges.Length == 4)
+        {
+            Edge tempEdge = edges[1];
+            edges[1] = edges[3];
+            edges[3] = tempEdge;
+            edges[1].flip();
+            edges[3].flip();
+            if (winding == Winding.CW) winding = Winding.CCW;
+            else winding = Winding.CW;
+        }
+        else
+        {
+            Debug.Log("Face flip was called with unsupported face");
+        }
     }
 }

@@ -137,7 +137,18 @@ public class BoxCullider : MonoBehaviour, Cullider
 
         return deepestVertex;
     }
-    private CullisionInfo cullideWithBox(BoxCullider other)
+    private CullisionInfo cullideWithBox(BoxCullider other){
+        bool thisOwnsReferenceFace=true;
+        bool isEdgeContact=false;
+        float overlap=float.MaxValue;
+        Vector3 axis=Vector3.zero;
+        float tempOverlap;
+
+
+        //loop over this faces and find lowest overlap
+        return CullisionInfo.NO_CULLISION;
+    }
+    private CullisionInfo cullideWithBoxOld(BoxCullider other)
     {
         float overlap = float.MaxValue;
         //From other to base

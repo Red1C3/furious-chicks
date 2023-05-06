@@ -12,7 +12,7 @@ public class FaceClipTest : MonoBehaviour
             vertices[i]=transform.TransformPoint(vertices[i]);
         }
         Face face = new Face(vertices, true);
-        Matrix4x4 a=box.facesMats[4];
+        Matrix4x4 a=box.facesMats[0];
         face=face.clip(a);
 
         vertices=face.getVertices();
