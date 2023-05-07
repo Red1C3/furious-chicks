@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimpleSolver : Solver
+public class SimpleSolver //Doesn't implement Solver interface any longer
 {
-    public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
+    public  void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
 

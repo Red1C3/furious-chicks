@@ -199,7 +199,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         //TODO edge contact
         if (!isEdgeContact)
         {
-            Debug.Log("Face contact");
+           // Debug.Log("Face contact");
             Matrix4x4 referenceFace;
             Face incidentFace;
             if (thisOwnsReferenceFace)
@@ -232,7 +232,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         else
         {
-            Debug.Log("Edge contact");
+          //  Debug.Log("Edge contact");
             Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
             Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
             centeralContactPoint = (contactPointA + contactPointB) / 2.0f;
