@@ -152,6 +152,8 @@ public class BoxCullider : MonoBehaviour, Cullider
         Edge thisEdge = new Edge(), otherEdge = new Edge();
         List<Vector3> contactPoints=new List<Vector3>();
 
+
+        //FIXME calculate overlap only takes the vector into account which returns the opposite faces
         for (int i = 0; i < (int)Side.LEN; i++)
         {
             if ((tempOverlap = calculateOverlap(other, faceNormal((Side)i))) < 0)
@@ -200,7 +202,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         //TODO edge contact
         if (!isEdgeContact)
         {
-           Debug.Log("Face contact");
+          // Debug.Log("Face contact");
             Matrix4x4 referenceFace;
             Face incidentFace;
             if (thisOwnsReferenceFace)
@@ -214,6 +216,11 @@ public class BoxCullider : MonoBehaviour, Cullider
                 incidentFace = getIncidentFace(Face.normal(referenceFace));
             }
             incidentFace.flip();
+            Debug.Log(thisOwnsReferenceFace);
+            Debug.Log(this);
+            foreach(Vector3 v in incidentFace.getVertices()){
+                Debug.Log(v);
+            }
             //incidentFace.winding=Face.Winding.CW;
             //incidentFace.clip(referenceFace);
 
@@ -221,17 +228,22 @@ public class BoxCullider : MonoBehaviour, Cullider
             Vector3[] incidentFacePoints = incidentFace.clip(referenceFace);
 
             contactPoints.AddRange(incidentFacePoints);
+            Debug.Log(side);
+            foreach (Vector3 v in incidentFacePoints){
+                Debug.Log(v);
+            }
+            Debug.Log("END");
 
             axis = Face.normal(referenceFace);
         }
         else
         {
-            Debug.Log("Edge contact");
+         //   Debug.Log("Edge contact");
             Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
             Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
             //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
             contactPoints.Add((contactPointA+contactPointB)/2.0f);
-            axis = Vector3.Cross(thisEdge.vec(), otherEdge.vec()).normalized;
+            axis = Vector3.Cross(thisEdge.vec(), otherEdge.vec());
         }
 
 
