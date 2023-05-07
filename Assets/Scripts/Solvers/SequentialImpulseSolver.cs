@@ -2,7 +2,7 @@ using UnityEngine;
 using Unity.Mathematics;
 public class SequentialImpulseSolver : Solver
 {
-    private int iterations = 10;
+    private int iterations = 100;
 
     const float biasFactor = 0.001f;
     const float depthThreshold = 0.01f;
