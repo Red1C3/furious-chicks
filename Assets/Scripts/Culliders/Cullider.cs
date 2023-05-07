@@ -19,6 +19,7 @@ public struct CullisionInfo
     public Vector3 contactPointA, contactPointB;
 
     public Cullider first,second;
+    public float normalImpulseSum;
 
     public static readonly CullisionInfo NO_CULLISION=new CullisionInfo(false,Vector3.zero,0,false,false,Vector3.zero,Vector3.zero,null,null);
     
@@ -27,6 +28,8 @@ public struct CullisionInfo
                     Cullider first,Cullider second)
     {
         bool debug=false;
+
+        normalImpulseSum=0.0f;
 
         this.cullided = cullided;
         this.normal = normal;
