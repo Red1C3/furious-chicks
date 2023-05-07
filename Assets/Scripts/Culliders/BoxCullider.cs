@@ -179,11 +179,11 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
         }
 
-        /*for (int i = 0; i < edges.Length; i++)
+        for (int i = 0; i < edges.Length; i++)
         {
             for (int j = 0; j < other.edges.Length; j++)
             {
-                if ((tempOverlap = calculateOverlap(other, Vector3.Cross(edges[i].normal(), other.edges[j].normal()))) < 0)
+                if ((tempOverlap = calculateOverlap(other, Vector3.Cross(edges[i].vec(), other.edges[j].vec()))) < 0)
                 {
                     return CullisionInfo.NO_CULLISION;
                 }
@@ -195,12 +195,12 @@ public class BoxCullider : MonoBehaviour, Cullider
                     otherEdge = other.edges[j];
                 }
             }
-        }*/
+        }
 
         //TODO edge contact
         if (!isEdgeContact)
         {
-           // Debug.Log("Face contact");
+           Debug.Log("Face contact");
             Matrix4x4 referenceFace;
             Face incidentFace;
             if (thisOwnsReferenceFace)
@@ -226,11 +226,12 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         else
         {
-          //  Debug.Log("Edge contact");
+            Debug.Log("Edge contact");
             Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
             Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
             //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
-            axis = Vector3.Cross(thisEdge.normal(), otherEdge.normal());
+            contactPoints.Add((contactPointA+contactPointB)/2.0f);
+            axis = Vector3.Cross(thisEdge.vec(), otherEdge.vec()).normalized;
         }
 
 

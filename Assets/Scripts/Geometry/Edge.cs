@@ -75,9 +75,9 @@ public struct Edge
         var closest_approach = point - norm * distance_to_line_pos;
         return closest_approach;
     }
-    public Vector3 normal()
+    public Vector3 vec()
     {
-        return (to - from).normalized;
+        return (to - from);
     }
     public override string ToString()
     {
