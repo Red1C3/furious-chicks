@@ -145,11 +145,12 @@ public class BoxCullider : MonoBehaviour, Cullider
         Vector3 axis = Vector3.zero;
         bool thisOwnsReferenceFace = true;
         bool isEdgeContact = false;
-        Vector3 centeralContactPoint = Vector3.zero;
+        //Vector3 centeralContactPoint = Vector3.zero;
         float overlap = float.MaxValue;
         Side side = Side.TOP;
         float tempOverlap;
         Edge thisEdge = new Edge(), otherEdge = new Edge();
+        List<Vector3> contactPoints=new List<Vector3>();
 
         for (int i = 0; i < (int)Side.LEN; i++)
         {
@@ -219,14 +220,7 @@ public class BoxCullider : MonoBehaviour, Cullider
 
             Vector3[] incidentFacePoints = incidentFace.clip(referenceFace);
 
-            foreach (Vector3 v in incidentFacePoints)
-            {
-                centeralContactPoint += v;
-                // Debug.Log(v);
-            }
-            // Debug.Log("END");
-            if (incidentFacePoints.Length > 0)
-                centeralContactPoint /= incidentFacePoints.Length;
+            contactPoints.AddRange(incidentFacePoints);
 
             axis = Face.normal(referenceFace);
         }
@@ -235,13 +229,13 @@ public class BoxCullider : MonoBehaviour, Cullider
           //  Debug.Log("Edge contact");
             Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
             Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
-            centeralContactPoint = (contactPointA + contactPointB) / 2.0f;
+            //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
             axis = Vector3.Cross(thisEdge.normal(), otherEdge.normal());
         }
 
 
         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
-                                centeralContactPoint, centeralContactPoint, this, other);
+                                contactPoints.ToArray(), contactPoints.ToArray(), this, other);
 
     }
     private Face getIncidentFace(Vector3 normal)
