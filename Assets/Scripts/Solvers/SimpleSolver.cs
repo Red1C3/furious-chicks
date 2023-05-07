@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimpleSolver //Doesn't implement Solver interface any longer
+//Commented out to reduce maintainace
+/*public class SimpleSolver //Doesn't implement Solver interface any longer
 {
     public  void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
@@ -29,4 +30,4 @@ public class SimpleSolver //Doesn't implement Solver interface any longer
             B.AddForce(-cullision.normal.normalized * cullision.depth, ForceMode.Impulse);
         }
     }
-}
+}*/

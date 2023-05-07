@@ -1,7 +1,8 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public class OffsetSolver //Doesn't implement Solver interface any longer
+//Commented out to reduce maintainance
+/*public class OffsetSolver //Doesn't implement Solver interface any longer
 {
     public void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
@@ -75,4 +76,4 @@ public class OffsetSolver //Doesn't implement Solver interface any longer
         A.transform.position += BmassFactor * cullision.normal.normalized * depthA;
         B.transform.position += -AmassFactor * cullision.normal.normalized * depthB;
     }
-}
+}*/

@@ -90,12 +90,12 @@ public class BoxCullider : MonoBehaviour, Cullider
             cullisionInfo.normal *= -1;
 
             bool hasContactPointB = cullisionInfo.hasContactPointA;
-            Vector3 contactPointB = cullisionInfo.contactPointA;
+            Vector3[] contactPointsB = (Vector3[])cullisionInfo.contactPointsA.Clone();
 
             cullisionInfo.hasContactPointA = cullisionInfo.hasContactPointB;
-            cullisionInfo.contactPointA = cullisionInfo.contactPointB;
+            cullisionInfo.contactPointsA = cullisionInfo.contactPointsB;
             cullisionInfo.hasContactPointB = hasContactPointB;
-            cullisionInfo.contactPointB = contactPointB;
+            cullisionInfo.contactPointsB = contactPointsB;
             //addContactPoint(cullisionInfo);
             return cullisionInfo;
         }
