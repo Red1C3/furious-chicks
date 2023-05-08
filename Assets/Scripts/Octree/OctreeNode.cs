@@ -91,7 +91,7 @@ public class OctreeNode
     }
 
     public void Draw(){
-        Gizmos.color = new Color(0,1,0);
+        Gizmos.color = new Color(1,0,0);
         Gizmos.DrawWireCube(nodeBounds.center,nodeBounds.size);
         if(child!=null){
             for(int i=0;i<8;i++){
