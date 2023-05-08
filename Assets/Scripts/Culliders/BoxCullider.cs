@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -149,7 +150,6 @@ public class BoxCullider : MonoBehaviour, Cullider
         float overlap = float.MaxValue;
         Side side = Side.TOP;
         float tempOverlap;
-        Edge thisEdge = new Edge(), otherEdge = new Edge();
         List<Vector3> contactPoints = new List<Vector3>();
 
 
@@ -181,6 +181,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
         }
 
+        List<Tuple<Edge, Edge>> contactEdges = new List<Tuple<Edge, Edge>>();
+
         for (int i = 0; i < edges.Length; i++)
         {
             for (int j = 0; j < other.edges.Length; j++)
@@ -191,10 +193,16 @@ public class BoxCullider : MonoBehaviour, Cullider
                 }
                 else if (isEdgeValid(other, edges[i], other.edges[j]) && tempOverlap < overlap)
                 {
+                    contactEdges.Clear();
                     isEdgeContact = true;
                     overlap = tempOverlap;
-                    thisEdge = edges[i];
-                    otherEdge = other.edges[j];
+                    //thisEdge = edges[i];
+                    //otherEdge = other.edges[j];
+                    contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
+                }
+                else if (isEdgeValid(other, edges[i], other.edges[j]) && (math.abs(overlap - tempOverlap)) < math.EPSILON)
+                {
+                    contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
                 }
             }
         }
@@ -240,12 +248,23 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         else
         {
-            //   Debug.Log("Edge contact");
-            Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
-            Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
-            //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
-            contactPoints.Add((contactPointA + contactPointB) / 2.0f);
-            axis = Vector3.Cross(thisEdge.vec(), otherEdge.vec());
+            // //   Debug.Log("Edge contact");
+            // Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
+            // Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
+            // //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
+            // contactPoints.Add((contactPointA + contactPointB) / 2.0f);
+            // Debug.Log(contactPoints[0]);
+            // axis = Vector3.Cross(thisEdge.vec(), otherEdge.vec());
+
+            foreach (Tuple<Edge, Edge> tuple in contactEdges)
+            {
+                Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
+                Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
+
+                contactPoints.Add((contactPointA + contactPointB) / 2.0f);
+                
+            }
+            axis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
         }
 
 
