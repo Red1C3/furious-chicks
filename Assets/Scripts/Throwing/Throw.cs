@@ -40,9 +40,11 @@ public class Throw : MonoBehaviour
                 press = false;
             Vector3 mousePosition = Input.mousePosition;
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z - force));
-            if (press)
+            float pzSq = (force*force)-(worldPosition.x*worldPosition.x)-(worldPosition.y*worldPosition.y);
+            if (press && pzSq>0)
             {
-                transform.position = worldPosition;
+                float pz = -Mathf.Sqrt(pzSq);
+                transform.position = new Vector3(worldPosition.x,worldPosition.y,pz);
                 lineRenderer.SetPosition(1, transform.position);
             }
             if (Input.GetKeyDown(KeyCode.E))
