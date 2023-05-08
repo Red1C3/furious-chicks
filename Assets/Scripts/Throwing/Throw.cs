@@ -11,6 +11,7 @@ public class Throw : MonoBehaviour
     private float angleY;
     private float angleZ;
     public LineRenderer lineRenderer;
+    public int cameraAway = 3;
 
     bool press = false, fired = false;
 
@@ -18,8 +19,8 @@ public class Throw : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cam.transform.position = new Vector3(0, 0, cam.transform.position.z - force);
         transform.position = new Vector3(0, 0, -force);
+        cam.transform.position = new Vector3(0, 0, -(force+cameraAway));
 
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
@@ -45,6 +46,8 @@ public class Throw : MonoBehaviour
             {
                 float pz = -Mathf.Sqrt(pzSq);
                 transform.position = new Vector3(worldPosition.x,worldPosition.y,pz);
+                cam.transform.position = new Vector3(worldPosition.x,worldPosition.y,-(force+cameraAway));
+                cam.transform.LookAt(Vector3.zero);
                 lineRenderer.SetPosition(1, transform.position);
             }
             if (Input.GetKeyDown(KeyCode.E))
