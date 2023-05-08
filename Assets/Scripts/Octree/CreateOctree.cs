@@ -57,7 +57,6 @@ public class CreateOctree : MonoBehaviour
         foreach (CullisionInfo cullision in culls)
         {
             solver.resolveCullision(cullision, cullision.first.getRigidbody(), cullision.second.getRigidbody());
-            //Debug.Log("Count: "+culls.Count);
         }
         foreach (RigidbodyDriver rb in rigidbodies)
         {
