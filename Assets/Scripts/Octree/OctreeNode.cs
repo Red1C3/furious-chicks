@@ -77,14 +77,6 @@ public class OctreeNode
                 CullisionInfo returned = player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>());
                 CullisionInfo swaped = CreateOctree.culls.Find(x => (x.first==returned.second && returned.first==x.second));
                 CullisionInfo duplicated = CreateOctree.culls.Find(x => (x.first==returned.first && returned.second==x.second));
-                // if(notNull(returned)){
-                //     Debug.Log("_______________________________");
-                //     Debug.Log("RET: "+returned.ToString());
-                // }
-                // if(notNull(swaped))
-                //     Debug.Log("SWA: "+swaped.ToString());
-                // if(notNull(duplicated))
-                //     Debug.Log("DUP: "+duplicated.ToString());
                 if(notNull(returned) && !notNull(swaped)&& !notNull(duplicated))
                     CreateOctree.culls.Add(returned);
             } 
