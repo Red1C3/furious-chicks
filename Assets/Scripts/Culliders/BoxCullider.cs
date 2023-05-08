@@ -200,7 +200,7 @@ public class BoxCullider : MonoBehaviour, Cullider
                     //otherEdge = other.edges[j];
                     contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
                 }
-                else if (isEdgeValid(other, edges[i], other.edges[j]) && (math.abs(overlap - tempOverlap)) < math.EPSILON)
+                else if (isEdgeContact && isEdgeValid(other, edges[i], other.edges[j]) && (math.abs(overlap - tempOverlap)) < math.EPSILON)
                 {
                     contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
                 }
@@ -248,7 +248,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         else
         {
-            // //   Debug.Log("Edge contact");
+           // Debug.Log("Edge contact");
             // Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
             // Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
             // //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
@@ -262,11 +262,9 @@ public class BoxCullider : MonoBehaviour, Cullider
                 Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
 
                 contactPoints.Add((contactPointA + contactPointB) / 2.0f);
-                
             }
             axis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
         }
-
 
         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
                                 contactPoints.ToArray(), contactPoints.ToArray(), this, other);
