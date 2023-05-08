@@ -189,7 +189,7 @@ public class BoxCullider : MonoBehaviour, Cullider
                 {
                     return CullisionInfo.NO_CULLISION;
                 }
-                else if (tempOverlap < overlap)
+                else if (isEdgeValid(other, edges[i], other.edges[j]) && tempOverlap < overlap)
                 {
                     isEdgeContact = true;
                     overlap = tempOverlap;
@@ -216,25 +216,25 @@ public class BoxCullider : MonoBehaviour, Cullider
                 incidentFace = getIncidentFace(Face.normal(referenceFace));
             }
             incidentFace.flip();
-            Debug.Log(thisOwnsReferenceFace);
-            Debug.Log(this);
-            foreach (Vector3 v in incidentFace.getVertices())
-            {
-                Debug.Log(v);
-            }
-            //incidentFace.winding=Face.Winding.CW;
+            //Debug.Log(thisOwnsReferenceFace);
+            //Debug.Log(this);
+            // foreach (Vector3 v in incidentFace.getVertices())
+            // {
+            //     Debug.Log(v);
+            // }
+            // //incidentFace.winding=Face.Winding.CW;
             //incidentFace.clip(referenceFace);
 
 
             Vector3[] incidentFacePoints = incidentFace.clip(referenceFace);
 
             contactPoints.AddRange(incidentFacePoints);
-            Debug.Log(side);
-            foreach (Vector3 v in incidentFacePoints)
-            {
-                Debug.Log(v);
-            }
-            Debug.Log("END");
+            // Debug.Log(side);
+            // foreach (Vector3 v in incidentFacePoints)
+            // {
+            //     Debug.Log(v);
+            // }
+            // Debug.Log("END");
 
             axis = Face.normal(referenceFace);
         }
@@ -257,6 +257,15 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         Vector3 faceCenter = faceMat.GetColumn(3);
         float dot = Vector3.Dot(center - faceCenter, other.center - faceCenter);
+        return dot < 0;
+    }
+    private bool isEdgeValid(BoxCullider other, Edge first, Edge second)
+    {
+        Vector3 closestFirst = first.closestPoint(second);
+        Vector3 closestSecond = second.closestPoint(first);
+        Vector3 closest = (closestFirst + closestSecond) / 2.0f;
+
+        float dot = Vector3.Dot(center - closest, other.center - closest);
         return dot < 0;
     }
     private Face getIncidentFace(Vector3 normal)
