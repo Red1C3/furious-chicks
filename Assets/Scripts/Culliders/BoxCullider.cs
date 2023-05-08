@@ -148,7 +148,8 @@ public class BoxCullider : MonoBehaviour, Cullider
         bool isEdgeContact = false;
         //Vector3 centeralContactPoint = Vector3.zero;
         float overlap = float.MaxValue;
-        Side side = Side.TOP;
+        float faceOverlap = float.MaxValue, edgeOverlap = float.MaxValue;
+        Side side = Side.LEN;
         float tempOverlap;
         List<Vector3> contactPoints = new List<Vector3>();
 
@@ -164,6 +165,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             {
                 overlap = tempOverlap;
                 side = (Side)i;
+                faceOverlap = overlap;
             }
         }
 
@@ -178,6 +180,7 @@ public class BoxCullider : MonoBehaviour, Cullider
                 overlap = tempOverlap;
                 side = (Side)i;
                 thisOwnsReferenceFace = false;
+                faceOverlap = overlap;
             }
         }
 
@@ -196,6 +199,7 @@ public class BoxCullider : MonoBehaviour, Cullider
                     contactEdges.Clear();
                     isEdgeContact = true;
                     overlap = tempOverlap;
+                    edgeOverlap = overlap;
                     //thisEdge = edges[i];
                     //otherEdge = other.edges[j];
                     contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
@@ -207,10 +211,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
         }
 
-        //TODO edge contact
-        if (!isEdgeContact)
+        if (side != Side.LEN)
         {
-            // Debug.Log("Face contact");
             Matrix4x4 referenceFace;
             Face incidentFace;
             if (thisOwnsReferenceFace)
@@ -224,38 +226,35 @@ public class BoxCullider : MonoBehaviour, Cullider
                 incidentFace = getIncidentFace(Face.normal(referenceFace));
             }
             incidentFace.flip();
-            //Debug.Log(thisOwnsReferenceFace);
-            //Debug.Log(this);
-            // foreach (Vector3 v in incidentFace.getVertices())
-            // {
-            //     Debug.Log(v);
-            // }
-            // //incidentFace.winding=Face.Winding.CW;
-            //incidentFace.clip(referenceFace);
-
 
             Vector3[] incidentFacePoints = incidentFace.clip(referenceFace);
 
             contactPoints.AddRange(incidentFacePoints);
-            // Debug.Log(side);
-            // foreach (Vector3 v in incidentFacePoints)
-            // {
-            //     Debug.Log(v);
-            // }
-            // Debug.Log("END");
-
             axis = Face.normal(referenceFace);
+            overlap = faceOverlap;
+            if (isEdgeContact)
+            {
+                Vector3 edgeAxis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
+                if (Vector3.Dot(fixAxis(other, faceOverlap, axis).normalized, fixAxis(other, edgeOverlap, edgeAxis).normalized) < 1.0f - math.EPSILON)
+                {
+                    Debug.Log("Edge contact 0");
+                    axis = edgeAxis;
+                    overlap = edgeOverlap;
+                    contactPoints.Clear();
+                    foreach (Tuple<Edge, Edge> tuple in contactEdges)
+                    {
+                        Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
+                        Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
+
+                        contactPoints.Add((contactPointA + contactPointB) / 2.0f);
+                    }
+                }
+
+            }
         }
         else
         {
-           // Debug.Log("Edge contact");
-            // Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
-            // Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
-            // //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
-            // contactPoints.Add((contactPointA + contactPointB) / 2.0f);
-            // Debug.Log(contactPoints[0]);
-            // axis = Vector3.Cross(thisEdge.vec(), otherEdge.vec());
-
+            Debug.Log("Edge contact 1");
             foreach (Tuple<Edge, Edge> tuple in contactEdges)
             {
                 Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
@@ -264,8 +263,8 @@ public class BoxCullider : MonoBehaviour, Cullider
                 contactPoints.Add((contactPointA + contactPointB) / 2.0f);
             }
             axis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
+            overlap = edgeOverlap;
         }
-
         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
                                 contactPoints.ToArray(), contactPoints.ToArray(), this, other);
 
