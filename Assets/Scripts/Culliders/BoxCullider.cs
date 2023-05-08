@@ -150,7 +150,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         Side side = Side.TOP;
         float tempOverlap;
         Edge thisEdge = new Edge(), otherEdge = new Edge();
-        List<Vector3> contactPoints=new List<Vector3>();
+        List<Vector3> contactPoints = new List<Vector3>();
 
 
         //FIXME calculate overlap only takes the vector into account which returns the opposite faces
@@ -160,7 +160,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             {
                 return CullisionInfo.NO_CULLISION;
             }
-            else if (tempOverlap < overlap)
+            else if (isFaceValid(other, facesMats[i]) && tempOverlap < overlap)
             {
                 overlap = tempOverlap;
                 side = (Side)i;
@@ -173,7 +173,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             {
                 return CullisionInfo.NO_CULLISION;
             }
-            else if (tempOverlap < overlap)
+            else if (isFaceValid(other, other.facesMats[i]) && tempOverlap < overlap)
             {
                 overlap = tempOverlap;
                 side = (Side)i;
@@ -202,7 +202,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         //TODO edge contact
         if (!isEdgeContact)
         {
-          // Debug.Log("Face contact");
+            // Debug.Log("Face contact");
             Matrix4x4 referenceFace;
             Face incidentFace;
             if (thisOwnsReferenceFace)
@@ -218,7 +218,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             incidentFace.flip();
             Debug.Log(thisOwnsReferenceFace);
             Debug.Log(this);
-            foreach(Vector3 v in incidentFace.getVertices()){
+            foreach (Vector3 v in incidentFace.getVertices())
+            {
                 Debug.Log(v);
             }
             //incidentFace.winding=Face.Winding.CW;
@@ -229,7 +230,8 @@ public class BoxCullider : MonoBehaviour, Cullider
 
             contactPoints.AddRange(incidentFacePoints);
             Debug.Log(side);
-            foreach (Vector3 v in incidentFacePoints){
+            foreach (Vector3 v in incidentFacePoints)
+            {
                 Debug.Log(v);
             }
             Debug.Log("END");
@@ -238,11 +240,11 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         else
         {
-         //   Debug.Log("Edge contact");
+            //   Debug.Log("Edge contact");
             Vector3 contactPointA = thisEdge.closestPoint(otherEdge);
             Vector3 contactPointB = otherEdge.closestPoint(thisEdge);
             //centeralContactPoint = (contactPointA + contactPointB) / 2.0f; //FIXME only one
-            contactPoints.Add((contactPointA+contactPointB)/2.0f);
+            contactPoints.Add((contactPointA + contactPointB) / 2.0f);
             axis = Vector3.Cross(thisEdge.vec(), otherEdge.vec());
         }
 
@@ -250,6 +252,12 @@ public class BoxCullider : MonoBehaviour, Cullider
         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
                                 contactPoints.ToArray(), contactPoints.ToArray(), this, other);
 
+    }
+    private bool isFaceValid(BoxCullider other, Matrix4x4 faceMat)
+    {
+        Vector3 faceCenter = faceMat.GetColumn(3);
+        float dot = Vector3.Dot(center - faceCenter, other.center - faceCenter);
+        return dot < 0;
     }
     private Face getIncidentFace(Vector3 normal)
     {
