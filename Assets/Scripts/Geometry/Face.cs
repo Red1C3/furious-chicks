@@ -106,18 +106,19 @@ public struct Face
             vertList = newList;
         }
 
+        List<Vector3> projectedList = new List<Vector3>();
         for (int i = 0; i < vertList.Count; i++)
         {
-            if (vertList[i].y > 0) vertList.Remove(vertList[i]);
-            else
+            if (vertList[i].y <= 0)
             {
                 //vertList[i] = new Vector3(vertList[i].x, 0, vertList[i].z); //Project into clipping face
-                vertList[i]=Vector3.ProjectOnPlane(vertList[i],new Vector3(0,1,0));
+                vertList[i] = Vector3.ProjectOnPlane(vertList[i], new Vector3(0, 1, 0));
                 vertList[i] = mat * (new Vector4(vertList[i].x, vertList[i].y, vertList[i].z, 1));
+                projectedList.Add(vertList[i]);
             }
         }
 
-        return (vertList.ToArray());
+        return (projectedList.ToArray());
     }
 
     public void toLocal(Matrix4x4 mat)
