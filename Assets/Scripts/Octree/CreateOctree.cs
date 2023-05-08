@@ -5,9 +5,11 @@ using UnityEngine;
 public class CreateOctree : MonoBehaviour
 {
     public GameObject player;
-    public int nodeMinSize = 5;
     public Solver solver;
     Octree octree;
+    public static int nodeMinSize = 100;
+    public static int allObjectsN = 0, maxNodeObjectN = 0;
+    bool lastActionIsShrink = true;
 
     private List<GameObject> cullidingObject;
     public static List<CullisionInfo> culls = new List<CullisionInfo>();
@@ -41,6 +43,8 @@ public class CreateOctree : MonoBehaviour
 
     void FixedUpdate()
     {
+        allObjectsN = 0;
+        maxNodeObjectN = 0;
         culls.Clear();
         RigidbodyDriver[] rigidbodies = FindObjectsOfType<RigidbodyDriver>();
         foreach (RigidbodyDriver rb in rigidbodies)
@@ -61,6 +65,21 @@ public class CreateOctree : MonoBehaviour
         foreach (RigidbodyDriver rb in rigidbodies)
         {
             rb.physicsUpdate();
+        }
+        if(Input.GetKeyDown(KeyCode.Z)){
+            Debug.Log("Max: " + maxNodeObjectN + "\n All:" + allObjectsN);
+        }
+
+        int cullidingObjectN = cullidingObject.Count;
+        if(2 * cullidingObjectN < allObjectsN){
+            nodeMinSize+=1;
+            Debug.Log("Expanding: " + nodeMinSize);
+            lastActionIsShrink=false;
+        }
+        if(cullidingObjectN < 2 * maxNodeObjectN){
+            nodeMinSize-=1;
+            Debug.Log("Shrinking: " + nodeMinSize);
+            lastActionIsShrink=true;
         }
     }
 }

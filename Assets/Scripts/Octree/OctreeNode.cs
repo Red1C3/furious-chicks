@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +38,8 @@ public class OctreeNode
     public void DivideAndAdd(GameObject go){
         if(nodeBounds.size.y <= minSize){
             gos.Add(go);
+            CreateOctree.allObjectsN+=1;
+            CreateOctree.maxNodeObjectN=Math.Max(CreateOctree.maxNodeObjectN,gos.Count);
             return;
         }
         if(child==null)
