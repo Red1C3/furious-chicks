@@ -2,7 +2,8 @@ using UnityEngine;
 using Unity.Mathematics;
 public class SequentialImpulseSolver : Solver
 {
-    private int iterations = 100;
+    [SerializeField]
+    private int iterations = 50; //Higher gives better accuracy but needs more cpu power
 
     const float biasFactor = 0.001f;
     const float depthThreshold = 0.01f;
