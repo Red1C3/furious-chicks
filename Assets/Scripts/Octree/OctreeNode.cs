@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +38,8 @@ public class OctreeNode
     public void DivideAndAdd(GameObject go){
         if(nodeBounds.size.y <= minSize){
             gos.Add(go);
+            CreateOctree.allObjectsN+=1;
+            CreateOctree.maxNodeObjectN=Math.Max(CreateOctree.maxNodeObjectN,gos.Count);
             return;
         }
         if(child==null)
@@ -77,14 +80,6 @@ public class OctreeNode
                 CullisionInfo returned = player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>());
                 CullisionInfo swaped = CreateOctree.culls.Find(x => (x.first==returned.second && returned.first==x.second));
                 CullisionInfo duplicated = CreateOctree.culls.Find(x => (x.first==returned.first && returned.second==x.second));
-                // if(notNull(returned)){
-                //     Debug.Log("_______________________________");
-                //     Debug.Log("RET: "+returned.ToString());
-                // }
-                // if(notNull(swaped))
-                //     Debug.Log("SWA: "+swaped.ToString());
-                // if(notNull(duplicated))
-                //     Debug.Log("DUP: "+duplicated.ToString());
                 if(notNull(returned) && !notNull(swaped)&& !notNull(duplicated))
                     CreateOctree.culls.Add(returned);
             } 
@@ -99,7 +94,7 @@ public class OctreeNode
     }
 
     public void Draw(){
-        Gizmos.color = new Color(0,1,0);
+        Gizmos.color = new Color(1,0,0);
         Gizmos.DrawWireCube(nodeBounds.center,nodeBounds.size);
         if(child!=null){
             for(int i=0;i<8;i++){
