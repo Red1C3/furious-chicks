@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityMeshDecimation;
 
 public class VoxelGrid : MonoBehaviour
 {
@@ -34,11 +35,25 @@ public class VoxelGrid : MonoBehaviour
 
         indices = mesh.triangles;
 
-        buildGrid();
+
+        GetComponent<MeshFilter>().mesh=decimate(mesh);
+
+        /*buildGrid();
         centerVoxels();
         markSurfaceVoxels();
         markNonSurface();
-        removeOfType(Voxel.Type.EXTERIOR);
+        removeOfType(Voxel.Type.EXTERIOR);*/
+    }
+
+    private Mesh decimate(Mesh mesh){
+        var conditions=new TargetConditions();
+        conditions.faceCount=300;
+        var parameter=new EdgeCollapseParameter();
+        parameter.UsedProperty=UnityMeshDecimation.Internal.VertexProperty.UV0;
+
+        var meshDecimation=new UnityMeshDecimation.UnityMeshDecimation();
+        meshDecimation.Execute(mesh,parameter,conditions);
+        return meshDecimation.ToMesh();
     }
 
     private void centerVoxels()
