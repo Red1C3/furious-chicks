@@ -24,9 +24,9 @@ public class VoxelGrid : MonoBehaviour
     {
         surfaceVoxels = new List<Voxel>();
         interiorVoxels = new List<Voxel>();
-        origin = transform.position;
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         Renderer renderer = GetComponent<Renderer>();
+        origin = renderer.bounds.center;
         var bounds = renderer.bounds; //Mesh bounds in world space
         length = bounds.extents.x * 2;
         width = bounds.extents.y * 2;
@@ -36,23 +36,26 @@ public class VoxelGrid : MonoBehaviour
         indices = mesh.triangles;
 
 
-        GetComponent<MeshFilter>().mesh=decimate(mesh);
+        GetComponent<MeshFilter>().mesh = decimate(mesh);
+        mesh = GetComponent<MeshFilter>().mesh;
 
-        /*buildGrid();
+        buildGrid();
         centerVoxels();
         markSurfaceVoxels();
         markNonSurface();
-        removeOfType(Voxel.Type.EXTERIOR);*/
+        removeOfType(Voxel.Type.EXTERIOR);
+        removeOfType(Voxel.Type.INTERIOR);
     }
 
-    private Mesh decimate(Mesh mesh){
-        var conditions=new TargetConditions();
-        conditions.faceCount=300;
-        var parameter=new EdgeCollapseParameter();
-        parameter.UsedProperty=UnityMeshDecimation.Internal.VertexProperty.UV0;
+    private Mesh decimate(Mesh mesh)
+    {
+        var conditions = new TargetConditions();
+        conditions.faceCount = 100;
+        var parameter = new EdgeCollapseParameter();
+        parameter.UsedProperty = UnityMeshDecimation.Internal.VertexProperty.UV0;
 
-        var meshDecimation=new UnityMeshDecimation.UnityMeshDecimation();
-        meshDecimation.Execute(mesh,parameter,conditions);
+        var meshDecimation = new UnityMeshDecimation.UnityMeshDecimation();
+        meshDecimation.Execute(mesh, parameter, conditions);
         return meshDecimation.ToMesh();
     }
 
@@ -78,7 +81,7 @@ public class VoxelGrid : MonoBehaviour
             {
                 for (int k = 0; k < voxels[i][j].Length; k++)
                 {
-                    voxels[i][j][k].transform.Translate(-avg + transform.position, Space.World);
+                    voxels[i][j][k].transform.Translate(-avg + origin, Space.World);
                 }
             }
         }
