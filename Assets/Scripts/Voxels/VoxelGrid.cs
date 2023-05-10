@@ -7,11 +7,16 @@ public class VoxelGrid : MonoBehaviour
     public GameObject voxelPrefab;
     private Vector3 origin;
     [SerializeField]
-    private float density, length, width, depth;
+    private float density;
+    private float length, width, depth;
     [SerializeField]
     private float totalMass;
     private float voxelLen;
     private GameObject[][][] voxels;
+    private Vector3[] vertices;
+
+    private int[] indices;
+
     public List<Voxel> surfaceVoxels, interiorVoxels;
 
     void Awake()
@@ -19,35 +24,46 @@ public class VoxelGrid : MonoBehaviour
         surfaceVoxels = new List<Voxel>();
         interiorVoxels = new List<Voxel>();
         origin = transform.position;
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        Renderer renderer = GetComponent<Renderer>();
+        var bounds = renderer.bounds; //Mesh bounds in world space
+        length = bounds.extents.x * 2;
+        width = bounds.extents.y * 2;
+        depth = bounds.extents.z * 2;
+        vertices = mesh.vertices;
+
+        indices = mesh.triangles;
+
         buildGrid();
-        typeVoxels();
         centerVoxels();
-        //connectVoxels();
-        //distributeMass();
+        markSurfaceVoxels();
+        markNonSurface();
+        removeOfType(Voxel.Type.EXTERIOR);
     }
 
-    private void centerVoxels(){
-        Vector3 avg=Vector3.zero;
-        int count=0;
+    private void centerVoxels()
+    {
+        Vector3 avg = Vector3.zero;
+        int count = 0;
         for (int i = 0; i < voxels.Length; i++)
         {
             for (int j = 0; j < voxels[i].Length; j++)
             {
                 for (int k = 0; k < voxels[i][j].Length; k++)
                 {
-                    avg+=voxels[i][j][k].transform.position;
+                    avg += voxels[i][j][k].transform.position;
                     count++;
                 }
             }
         }
-        avg/=count;
+        avg /= count;
         for (int i = 0; i < voxels.Length; i++)
         {
             for (int j = 0; j < voxels[i].Length; j++)
             {
                 for (int k = 0; k < voxels[i][j].Length; k++)
                 {
-                    voxels[i][j][k].transform.Translate(-avg+transform.position,Space.World);
+                    voxels[i][j][k].transform.Translate(-avg + transform.position, Space.World);
                 }
             }
         }
@@ -80,7 +96,8 @@ public class VoxelGrid : MonoBehaviour
         }
     }
 
-    private void typeVoxels()
+
+    private void markSurfaceVoxels()
     {
         for (int i = 0; i < voxels.Length; i++)
         {
@@ -88,22 +105,121 @@ public class VoxelGrid : MonoBehaviour
             {
                 for (int k = 0; k < voxels[i][j].Length; k++)
                 {
-                    Vector3 c = voxels[i][j][k].GetComponent<Voxel>().coords;
-                    if (c.x == 0 || c.x == voxels.Length - 1 || c.y == 0 || c.y == voxels[i].Length - 1 ||
-                    c.z == 0 || c.z == voxels[i][j].Length - 1)
+                    Voxel voxel = voxels[i][j][k].GetComponent<Voxel>();
+
+                    for (int l = 0; l < indices.Length; l += 3)
                     {
-                        voxels[i][j][k].GetComponent<Voxel>().type = Voxel.Type.SURFACE;
-                        voxels[i][j][k].AddComponent<BoxCullider>().updateBoundaries();
-                        surfaceVoxels.Add(voxels[i][j][k].GetComponent<Voxel>());
-                    }
-                    else
-                    {
-                        voxels[i][j][k].GetComponent<Voxel>().type = Voxel.Type.INTERIOR;
-                        interiorVoxels.Add(voxels[i][j][k].GetComponent<Voxel>());
+                        Vector3[] tri = new Vector3[3];
+                        tri[0] = vertices[indices[l]];
+                        tri[1] = vertices[indices[l + 1]];
+                        tri[2] = vertices[indices[l + 2]];
+                        for (int m = 0; m < 3; m++) tri[m] = transform.TransformPoint(tri[m]);
+
+                        //if tri intersects voxel, switch to surface and break
+                        if (TriCubeIntersection.triCubeIntersection(tri, voxel.transform) == (ulong)TriCubeIntersection.InOut.INSIDE)
+                        {
+                            voxel.type = Voxel.Type.SURFACE;
+                            surfaceVoxels.Add(voxel);
+                            break;
+                        }
                     }
                 }
             }
         }
+    }
+    private void markNonSurface()
+    {
+        //Transverse the voxel grid starting from a neutral voxel
+        Voxel seed = null;
+        for (int i = 0; i < voxels.Length; i++)
+        {
+            for (int j = 0; j < voxels[i].Length; j++)
+            {
+                for (int k = 0; k < voxels[i][j].Length; k++)
+                {
+                    if (voxels[i][j][k].GetComponent<Voxel>().type == Voxel.Type.NEUTRAL)
+                    {
+                        seed = voxels[i][j][k].GetComponent<Voxel>();
+                    }
+                }
+            }
+        }
+        //All voxels are now set
+        if (seed == null) return;
+
+        Stack<Voxel> stack = new Stack<Voxel>();
+        List<Voxel> visited = new List<Voxel>();
+        stack.Push(seed);
+
+        bool isExterior = false;
+
+        while (stack.Count > 0)
+        {
+            Voxel head = stack.Pop();
+            visited.Add(head);
+            if (isVoxelOnOutline(head))
+            {
+                isExterior = true;
+            }
+
+            Voxel[] neighbours = getNeutralNeighbours(head);
+            for (int i = 0; i < neighbours.Length; i++)
+            {
+                if (!visited.Contains(neighbours[i]))
+                {
+                    stack.Push(neighbours[i]);
+                }
+            }
+        }
+
+        for (int i = 0; i < visited.Count; i++)
+        {
+            if (isExterior) visited[i].type = Voxel.Type.EXTERIOR;
+            else
+            {
+                visited[i].type = Voxel.Type.INTERIOR;
+                interiorVoxels.Add(visited[i]);
+            }
+        }
+        //Exhaust all voxels in the grid that are not surface
+        markNonSurface();
+    }
+    private Voxel[] getNeutralNeighbours(Voxel v)
+    {
+        List<Voxel> list = new List<Voxel>();
+
+        for (int i = v.coords.x - 1; i <= v.coords.x + 1; i++)
+        {
+            if (i < 0 || i >= voxels.Length || i == v.coords.x) continue;
+            Voxel voxel = voxels[i][v.coords.y][v.coords.z].GetComponent<Voxel>();
+            if (voxel.type == Voxel.Type.NEUTRAL)
+            {
+                list.Add(voxel);
+            }
+        }
+
+        for (int i = v.coords.y - 1; i <= v.coords.y + 1; i++)
+        {
+            if (i < 0 || i >= voxels[0].Length || i == v.coords.y) continue;
+            Voxel voxel = voxels[v.coords.x][i][v.coords.z].GetComponent<Voxel>();
+            if (voxel.type == Voxel.Type.NEUTRAL) list.Add(voxel);
+        }
+
+        for (int i = v.coords.z - 1; i <= v.coords.z + 1; i++)
+        {
+            if (i < 0 || i >= voxels[0][0].Length || i == v.coords.z) continue;
+            Voxel voxel = voxels[v.coords.x][v.coords.y][i].GetComponent<Voxel>();
+            if (voxel.type == Voxel.Type.NEUTRAL) list.Add(voxel);
+        }
+
+        return list.ToArray();
+    }
+    private bool isVoxelOnOutline(Voxel v)
+    {
+        int i = v.coords.x;
+        int j = v.coords.y;
+        int k = v.coords.z;
+        return i == 0 || j == 0 || k == 0 || i == voxels.Length - 1 || j == voxels[0].Length - 1 || k == voxels[0][0].Length - 1;
     }
 
     public Bounds getBounds()
@@ -117,162 +233,6 @@ public class VoxelGrid : MonoBehaviour
         return bounds;
     }
 
-    private void connectVoxels()
-    {
-        Vector3 ruf = new Vector3(0.5f, 0.5f, 0.5f), rdf = new Vector3(0.5f, -0.5f, 0.5f), luf = new Vector3(-0.5f, 0.5f, 0.5f),
-        ldf = new Vector3(-0.5f, -0.5f, 0.5f), rub = new Vector3(0.5f, 0.5f, -0.5f), rdb = new Vector3(0.5f, -0.5f, -0.5f),
-        lub = new Vector3(-0.5f, 0.5f, -0.5f), ldb = new Vector3(-0.5f, -0.5f, -0.5f);
-
-        for (int i = 0; i < voxels.Length; i++)
-        {
-            for (int j = 0; j < voxels[i].Length; j++)
-            {
-                for (int k = 0; k < voxels[i][j].Length; k++)
-                {
-                    Vector3 c = voxels[i][j][k].GetComponent<Voxel>().coords;
-                    Voxel v = voxels[i][j][k].GetComponent<Voxel>();
-                    //check if voxel exists and not connected then add spring
-                    if (voxelExists(new Vector3Int(i + 1, j, k)) && !v.isConnected(voxels[i + 1][j][k].GetComponent<Voxel>()))
-                    {
-                        //Connect right voxel
-                        addSprings(v.gameObject, voxels[i + 1][j][k], new[] { ruf, rdf, rub, rdb });
-
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j, k)) && !v.isConnected(voxels[i - 1][j][k].GetComponent<Voxel>()))
-                    {
-                        //Connect left voxel
-                        addSprings(v.gameObject, voxels[i - 1][j][k], new[] { luf, ldf, lub, ldb });
-                    }
-                    if (voxelExists(new Vector3Int(i, j + 1, k)) && !v.isConnected(voxels[i][j + 1][k].GetComponent<Voxel>()))
-                    {
-                        //Connect above voxel
-                        addSprings(v.gameObject, voxels[i][j + 1][k], new[] { ruf, rub, luf, lub });
-                    }
-                    if (voxelExists(new Vector3Int(i, j - 1, k)) && !v.isConnected(voxels[i][j - 1][k].GetComponent<Voxel>()))
-                    {
-                        //Connect below voxel
-                        addSprings(v.gameObject, voxels[i][j - 1][k], new[] { rdf, rdb, ldf, ldb });
-                    }
-                    if (voxelExists(new Vector3Int(i, j, k + 1)) && !v.isConnected(voxels[i][j][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connect forward voxel
-                        addSprings(v.gameObject, voxels[i][j][k + 1], new[] { ruf, rdf, luf, ldf });
-                    }
-                    if (voxelExists(new Vector3Int(i, j, k - 1)) && !v.isConnected(voxels[i][j][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect backward voxel
-                        addSprings(v.gameObject, voxels[i][j][k - 1], new[] { rub, rdb, lub, ldb });
-                    }
-
-                    if (voxelExists(new Vector3Int(i + 1, j + 1, k)) && !v.isConnected(voxels[i + 1][j + 1][k].GetComponent<Voxel>()))
-                    {
-                        //Connect up-right voxel
-                        addSprings(v.gameObject, voxels[i + 1][j + 1][k], new[] { ruf, rub });
-                    }
-                    if (voxelExists(new Vector3Int(i + 1, j - 1, k)) && !v.isConnected(voxels[i + 1][j - 1][k].GetComponent<Voxel>()))
-                    {
-                        //Connect down-right voxel
-                        addSprings(v.gameObject, voxels[i + 1][j - 1][k], new[] { rdf, rdb });
-                    }
-                    if (voxelExists(new Vector3Int(i + 1, j, k + 1)) && !v.isConnected(voxels[i + 1][j][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connnect right-forward voxel
-                        addSprings(v.gameObject, voxels[i + 1][j][k + 1], new[] { ruf, rdf });
-                    }
-                    if (voxelExists(new Vector3Int(i + 1, j, k - 1)) && !v.isConnected(voxels[i + 1][j][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect right-back voxel
-                        addSprings(v.gameObject, voxels[i + 1][j][k - 1], new[] { rub, rdb });
-                    }
-
-                    if (voxelExists(new Vector3Int(i - 1, j + 1, k)) && !v.isConnected(voxels[i - 1][j + 1][k].GetComponent<Voxel>()))
-                    {
-                        //Connect up-left voxel
-                        addSprings(v.gameObject, voxels[i - 1][j + 1][k], new[] { luf, lub });
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j - 1, k)) && !v.isConnected(voxels[i - 1][j - 1][k].GetComponent<Voxel>()))
-                    {
-                        //Connect down-left voxel
-                        addSprings(v.gameObject, voxels[i - 1][j - 1][k], new[] { ldf, ldb });
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j, k + 1)) && !v.isConnected(voxels[i - 1][j][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connnect left-forward voxel
-                        addSprings(v.gameObject, voxels[i - 1][j][k + 1], new[] { luf, ldf });
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j, k - 1)) && !v.isConnected(voxels[i - 1][j][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect left-back voxel
-                        addSprings(v.gameObject, voxels[i - 1][j][k - 1], new[] { lub, ldb });
-                    }
-
-                    if (voxelExists(new Vector3Int(i, j + 1, k + 1)) && !v.isConnected(voxels[i][j + 1][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connect up-forward
-                        addSprings(v.gameObject, voxels[i][j + 1][k + 1], new[] { ruf, luf });
-                    }
-                    if (voxelExists(new Vector3Int(i, j + 1, k - 1)) && !v.isConnected(voxels[i][j + 1][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect up-backward
-                        addSprings(v.gameObject, voxels[i][j + 1][k - 1], new[] { rub, lub });
-                    }
-                    if (voxelExists(new Vector3Int(i, j - 1, k + 1)) && !v.isConnected(voxels[i][j - 1][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connect down-forward
-                        addSprings(v.gameObject, voxels[i][j - 1][k + 1], new[] { rdf, ldf });
-                    }
-                    if (voxelExists(new Vector3Int(i, j - 1, k - 1)) && !v.isConnected(voxels[i][j - 1][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect down-backward
-                        addSprings(v.gameObject, voxels[i][j - 1][k - 1], new[] { rdb, ldb });
-                    }
-
-                    if (voxelExists(new Vector3Int(i + 1, j + 1, k + 1)) && !v.isConnected(voxels[i + 1][j + 1][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connect up-right-forward
-                        addSprings(v.gameObject, voxels[i + 1][j + 1][k + 1], new[] { ruf });
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j + 1, k + 1)) && !v.isConnected(voxels[i - 1][j + 1][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connect left-up-forward
-                        addSprings(v.gameObject, voxels[i - 1][j + 1][k + 1], new[] { luf });
-                    }
-                    if (voxelExists(new Vector3Int(i + 1, j - 1, k + 1)) && !v.isConnected(voxels[i + 1][j - 1][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connect right-down-forward
-                        addSprings(v.gameObject, voxels[i + 1][j - 1][k + 1], new[] { rdf });
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j - 1, k + 1)) && !v.isConnected(voxels[i - 1][j - 1][k + 1].GetComponent<Voxel>()))
-                    {
-                        //Connect left-down-forward
-                        addSprings(v.gameObject, voxels[i - 1][j - 1][k + 1], new[] { ldf });
-                    }
-
-                    if (voxelExists(new Vector3Int(i + 1, j + 1, k - 1)) && !v.isConnected(voxels[i + 1][j + 1][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect up-right-back
-                        addSprings(v.gameObject, voxels[i + 1][j + 1][k - 1], new[] { rub });
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j + 1, k - 1)) && !v.isConnected(voxels[i - 1][j + 1][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect left-up-back
-                        addSprings(v.gameObject, voxels[i - 1][j + 1][k - 1], new[] { lub });
-                    }
-                    if (voxelExists(new Vector3Int(i + 1, j - 1, k - 1)) && !v.isConnected(voxels[i + 1][j - 1][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect right-down-back
-                        addSprings(v.gameObject, voxels[i + 1][j - 1][k - 1], new[] { rdb });
-                    }
-                    if (voxelExists(new Vector3Int(i - 1, j - 1, k - 1)) && !v.isConnected(voxels[i - 1][j - 1][k - 1].GetComponent<Voxel>()))
-                    {
-                        //Connect left-down-back
-                        addSprings(v.gameObject, voxels[i - 1][j - 1][k - 1], new[] { ldb });
-                    }
-
-                }
-            }
-        }
-    }
 
     private bool voxelExists(Vector3Int coords)
     {
@@ -280,33 +240,21 @@ public class VoxelGrid : MonoBehaviour
             && coords.x < voxels.Length && coords.y < voxels[0].Length && coords.z < voxels[0][0].Length
             && voxels[coords.x][coords.y][coords.z] != null;
     }
-
-    private void addSprings(GameObject voxel, GameObject other, Vector3[] localConnectingPoints)
+    private void removeOfType(Voxel.Type type)
     {
-        foreach (Vector3 localConnectingPoint in localConnectingPoints)
+        for (int i = 0; i < voxels.Length; i++)
         {
-            Rigidbody otherRb = other.GetComponent<Rigidbody>();
-            SpringJoint spring = voxel.AddComponent<SpringJoint>();
-            spring.connectedBody = otherRb;
-            spring.anchor = localConnectingPoint;
-            spring.tolerance=0;
-            spring.spring=250;//Increase to reduce gap between voxels
-
-            //change other properties as well here
-
-
-            voxel.GetComponent<Voxel>().addSpring(spring);
-        }
-    }
-
-    private void distributeMass(){
-        int voxelsCount=surfaceVoxels.Count+interiorVoxels.Count;
-        float massPerVoxel=totalMass/(float)voxelsCount;
-        foreach(Voxel v in surfaceVoxels){
-            v.rb.mass=massPerVoxel;
-        }
-        foreach(Voxel v in interiorVoxels){
-            v.rb.mass=massPerVoxel;
+            for (int j = 0; j < voxels[i].Length; j++)
+            {
+                for (int k = 0; k < voxels[i][j].Length; k++)
+                {
+                    GameObject voxel = voxels[i][j][k];
+                    if (voxel.GetComponent<Voxel>().type == type)
+                    {
+                        Destroy(voxel);
+                    }
+                }
+            }
         }
     }
 }
