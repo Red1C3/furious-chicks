@@ -17,6 +17,7 @@ public class VoxelGrid : MonoBehaviour
     private Vector3[] vertices;
 
     private int[] indices;
+    private static readonly float VOLUME_FACTOR=50.0f;
 
     public List<Voxel> surfaceVoxels, interiorVoxels;
 
@@ -39,24 +40,33 @@ public class VoxelGrid : MonoBehaviour
         GetComponent<MeshFilter>().mesh = decimate(mesh);
         mesh = GetComponent<MeshFilter>().mesh;
 
-        buildGrid();
+        /*buildGrid();
         centerVoxels();
         markSurfaceVoxels();
         markNonSurface();
         removeOfType(Voxel.Type.EXTERIOR);
-        removeOfType(Voxel.Type.INTERIOR);
+        removeOfType(Voxel.Type.INTERIOR);*/
     }
 
     private Mesh decimate(Mesh mesh)
     {
         var conditions = new TargetConditions();
-        conditions.faceCount = 100;
+        //conditions.faceCount = 100;
+        conditions.maxMetrix = (1.0f/getApproxAABBVolume())*VOLUME_FACTOR;
+
         var parameter = new EdgeCollapseParameter();
-        parameter.UsedProperty = UnityMeshDecimation.Internal.VertexProperty.UV0;
+        parameter.UsedProperty = UnityMeshDecimation.Internal.VertexProperty.Normal | UnityMeshDecimation.Internal.VertexProperty.UV0;
+        parameter.PreserveBoundary = true;
 
         var meshDecimation = new UnityMeshDecimation.UnityMeshDecimation();
         meshDecimation.Execute(mesh, parameter, conditions);
         return meshDecimation.ToMesh();
+    }
+
+    private float getApproxAABBVolume()
+    {
+        var extents = GetComponent<Renderer>().bounds.extents;
+        return extents.x * extents.y * extents.z * 8.0f;
     }
 
     private void centerVoxels()
