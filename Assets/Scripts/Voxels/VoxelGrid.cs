@@ -8,7 +8,6 @@ public class VoxelGrid : MonoBehaviour
 {
     public GameObject voxelPrefab;
     private Vector3 origin;
-    [SerializeField]
     private float density;
     private float length, width, depth;
     [SerializeField]
@@ -23,7 +22,7 @@ public class VoxelGrid : MonoBehaviour
 
     public List<Voxel> surfaceVoxels, interiorVoxels;
     [SerializeField]
-    private bool displayDecimated=false;
+    private bool displayDecimated = false;
 
     void Awake()
     {
@@ -36,14 +35,15 @@ public class VoxelGrid : MonoBehaviour
         length = bounds.extents.x * 2;
         width = bounds.extents.y * 2;
         depth = bounds.extents.z * 2;
-        vertices = mesh.vertices;
-
-        indices = mesh.triangles;
 
 
+        density = (mesh.triangles.Length / 3.0f) * math.sqrt(getApproxAABBVolume());
         mesh = decimate(mesh);
-        if(displayDecimated){
-            GetComponent<MeshFilter>().mesh=mesh;
+        vertices = mesh.vertices;
+        indices = mesh.triangles;
+        if (displayDecimated)
+        {
+            GetComponent<MeshFilter>().mesh = mesh;
         }
 
         buildGrid();
