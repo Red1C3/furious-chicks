@@ -18,8 +18,8 @@ public class VoxelGrid : MonoBehaviour
     private Vector3[] vertices;
 
     private int[] indices;
-    private static readonly float VOLUME_FACTOR=50.0f;
-    private static readonly float FACE_COUNT_FACTOR=100.0f;
+    private static readonly float VOLUME_FACTOR = 50.0f;
+    private static readonly float FACE_COUNT_FACTOR = 100.0f;
 
     public List<Voxel> surfaceVoxels, interiorVoxels;
 
@@ -39,24 +39,23 @@ public class VoxelGrid : MonoBehaviour
         indices = mesh.triangles;
 
 
-        GetComponent<MeshFilter>().mesh = decimate(mesh);
-        mesh = GetComponent<MeshFilter>().mesh;
+        mesh = decimate(mesh);
 
-        /*buildGrid();
+        buildGrid();
         centerVoxels();
         markSurfaceVoxels();
         markNonSurface();
         removeOfType(Voxel.Type.EXTERIOR);
-        removeOfType(Voxel.Type.INTERIOR);*/
+        removeOfType(Voxel.Type.INTERIOR);
     }
 
     private Mesh decimate(Mesh mesh)
     {
-        int facesCount= (int)math.round(mesh.triangles.Length/3.0f);
+        int facesCount = (int)math.round(mesh.triangles.Length / 3.0f);
         var conditions = new TargetConditions();
         //conditions.faceCount = 100;
-        conditions.maxMetrix = VOLUME_FACTOR*(1.0f/math.sqrt(getApproxAABBVolume()))+
-                                FACE_COUNT_FACTOR*(1.0f/math.sqrt(facesCount));
+        conditions.maxMetrix = VOLUME_FACTOR * (1.0f / math.sqrt(getApproxAABBVolume())) +
+                                FACE_COUNT_FACTOR * (1.0f / math.sqrt(facesCount));
 
         var parameter = new EdgeCollapseParameter();
         parameter.UsedProperty = UnityMeshDecimation.Internal.VertexProperty.UV0;
@@ -119,7 +118,8 @@ public class VoxelGrid : MonoBehaviour
                     voxels[i][j][k] = Instantiate(voxelPrefab,
                      new Vector3((i + 0.5f) * voxelLen, (j + 0.5f) * voxelLen, (k + 0.5f) * voxelLen) + origin
                     , Quaternion.identity, transform);
-                    voxels[i][j][k].transform.localScale = new Vector3(voxelLen, voxelLen, voxelLen);
+                    voxels[i][j][k].transform.localScale = new Vector3(voxelLen / transform.lossyScale.x,
+                    voxelLen / transform.lossyScale.y, voxelLen / transform.lossyScale.z);
                     voxels[i][j][k].GetComponent<Voxel>().coords = new Vector3Int(i, j, k);
                     voxels[i][j][k].GetComponent<Voxel>().grid = this;
                     voxels[i][j][k].GetComponent<Voxel>().init();
