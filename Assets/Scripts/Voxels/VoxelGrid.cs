@@ -18,7 +18,7 @@ public class VoxelGrid : MonoBehaviour
     private Vector3[] vertices;
 
     private int[] indices;
-    private static readonly float VOLUME_FACTOR=100.0f;
+    private static readonly float VOLUME_FACTOR=50.0f;
     private static readonly float FACE_COUNT_FACTOR=100.0f;
 
     public List<Voxel> surfaceVoxels, interiorVoxels;
