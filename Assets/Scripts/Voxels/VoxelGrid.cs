@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityMeshDecimation;
 
@@ -18,6 +19,7 @@ public class VoxelGrid : MonoBehaviour
 
     private int[] indices;
     private static readonly float VOLUME_FACTOR=50.0f;
+    private static readonly float FACE_COUNT_FACTOR=1.0f;
 
     public List<Voxel> surfaceVoxels, interiorVoxels;
 
@@ -50,12 +52,14 @@ public class VoxelGrid : MonoBehaviour
 
     private Mesh decimate(Mesh mesh)
     {
+        int facesCount=mesh.triangles.Length;
         var conditions = new TargetConditions();
         //conditions.faceCount = 100;
-        conditions.maxMetrix = (1.0f/getApproxAABBVolume())*VOLUME_FACTOR;
+        conditions.maxMetrix = VOLUME_FACTOR*(1.0f/math.sqrt(getApproxAABBVolume()))+
+                                FACE_COUNT_FACTOR*(1.0f/math.sqrt(facesCount));
 
         var parameter = new EdgeCollapseParameter();
-        parameter.UsedProperty = UnityMeshDecimation.Internal.VertexProperty.Normal | UnityMeshDecimation.Internal.VertexProperty.UV0;
+        parameter.UsedProperty = UnityMeshDecimation.Internal.VertexProperty.UV0;
         parameter.PreserveBoundary = true;
 
         var meshDecimation = new UnityMeshDecimation.UnityMeshDecimation();
