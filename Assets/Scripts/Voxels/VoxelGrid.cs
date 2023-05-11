@@ -22,6 +22,8 @@ public class VoxelGrid : MonoBehaviour
     private static readonly float FACE_COUNT_FACTOR = 100.0f;
 
     public List<Voxel> surfaceVoxels, interiorVoxels;
+    [SerializeField]
+    private bool displayDecimated=false;
 
     void Awake()
     {
@@ -40,6 +42,9 @@ public class VoxelGrid : MonoBehaviour
 
 
         mesh = decimate(mesh);
+        if(displayDecimated){
+            GetComponent<MeshFilter>().mesh=mesh;
+        }
 
         buildGrid();
         centerVoxels();
