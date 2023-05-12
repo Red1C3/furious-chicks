@@ -7,9 +7,8 @@ public class CreateOctree : MonoBehaviour
     public GameObject player;
     public Solver solver;
     Octree octree;
-    public static int nodeMinSize = 100;
+    public static int nodeMinSize = 1;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
-    bool lastActionIsShrink = true;
 
     private List<GameObject> cullidingObject;
     public static List<CullisionInfo> culls = new List<CullisionInfo>();
@@ -66,20 +65,19 @@ public class CreateOctree : MonoBehaviour
         {
             rb.physicsUpdate();
         }
-        if(Input.GetKeyDown(KeyCode.Z)){
-            Debug.Log("Max: " + maxNodeObjectN + "\n All:" + allObjectsN);
-        }
 
         int cullidingObjectN = cullidingObject.Count;
         if(2 * cullidingObjectN < allObjectsN){
-            nodeMinSize+=1;
-            Debug.Log("Expanding: " + nodeMinSize);
-            lastActionIsShrink=false;
+            if(nodeMinSize > 10)
+                nodeMinSize += (int) Mathf.Ceil(nodeMinSize / 2);
+            else
+                nodeMinSize += 1;
         }
-        if(cullidingObjectN < 2 * maxNodeObjectN){
-            nodeMinSize-=1;
-            Debug.Log("Shrinking: " + nodeMinSize);
-            lastActionIsShrink=true;
+        if(2 * cullidingObjectN < nodeMinSize * maxNodeObjectN){
+            if(nodeMinSize > 10)
+                nodeMinSize -= (int) Mathf.Ceil(nodeMinSize / 2);
+            else
+                nodeMinSize -= 1;
         }
     }
 }
