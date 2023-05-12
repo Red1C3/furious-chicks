@@ -341,10 +341,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   voxelPrefab: {fileID: 8235633730404023840, guid: dfdb9286b7bad6f7cb55690d182f753f, type: 3}
-  density: 1000
   totalMass: 0
   surfaceVoxels: []
   interiorVoxels: []
+  displayDecimated: 0
 --- !u!23 &1804907561
 MeshRenderer:
   m_ObjectHideFlags: 0

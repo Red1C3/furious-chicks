@@ -50,8 +50,10 @@ public class VoxelGrid : MonoBehaviour
         centerVoxels();
         markSurfaceVoxels();
         markNonSurface();
+        //Calculate inertia tensor
         removeOfType(Voxel.Type.EXTERIOR);
-        removeOfType(Voxel.Type.INTERIOR);
+
+
     }
 
     private Mesh decimate(Mesh mesh)
@@ -69,6 +71,18 @@ public class VoxelGrid : MonoBehaviour
         var meshDecimation = new UnityMeshDecimation.UnityMeshDecimation();
         meshDecimation.Execute(mesh, parameter, conditions);
         return meshDecimation.ToMesh();
+    }
+
+    private void merge(Voxel seed)
+    {
+        bool[,,] visited = new bool[voxels.Length, voxels[0].Length, voxels[0][0].Length];
+
+        List<Voxel> region = new List<Voxel>();
+
+        //TODO
+
+
+
     }
 
     private float getApproxAABBVolume()
@@ -199,7 +213,7 @@ public class VoxelGrid : MonoBehaviour
                 isExterior = true;
             }
 
-            Voxel[] neighbours = getNeutralNeighbours(head);
+            Voxel[] neighbours = getNeighbours(head, (int)Voxel.Type.NEUTRAL);
             for (int i = 0; i < neighbours.Length; i++)
             {
                 if (!visited.Contains(neighbours[i]))
@@ -221,7 +235,7 @@ public class VoxelGrid : MonoBehaviour
         //Exhaust all voxels in the grid that are not surface
         markNonSurface();
     }
-    private Voxel[] getNeutralNeighbours(Voxel v)
+    private Voxel[] getNeighbours(Voxel v, int typeMask)
     {
         List<Voxel> list = new List<Voxel>();
 
@@ -229,7 +243,7 @@ public class VoxelGrid : MonoBehaviour
         {
             if (i < 0 || i >= voxels.Length || i == v.coords.x) continue;
             Voxel voxel = voxels[i][v.coords.y][v.coords.z].GetComponent<Voxel>();
-            if (voxel.type == Voxel.Type.NEUTRAL)
+            if ((((int)voxel.type) & typeMask) != 0)
             {
                 list.Add(voxel);
             }
@@ -239,14 +253,14 @@ public class VoxelGrid : MonoBehaviour
         {
             if (i < 0 || i >= voxels[0].Length || i == v.coords.y) continue;
             Voxel voxel = voxels[v.coords.x][i][v.coords.z].GetComponent<Voxel>();
-            if (voxel.type == Voxel.Type.NEUTRAL) list.Add(voxel);
+            if ((((int)voxel.type) & typeMask) != 0) list.Add(voxel);
         }
 
         for (int i = v.coords.z - 1; i <= v.coords.z + 1; i++)
         {
             if (i < 0 || i >= voxels[0][0].Length || i == v.coords.z) continue;
             Voxel voxel = voxels[v.coords.x][v.coords.y][i].GetComponent<Voxel>();
-            if (voxel.type == Voxel.Type.NEUTRAL) list.Add(voxel);
+            if ((((int)voxel.type) & typeMask) != 0) list.Add(voxel);
         }
 
         return list.ToArray();
