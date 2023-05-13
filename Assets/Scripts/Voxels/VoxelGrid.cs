@@ -52,12 +52,42 @@ public class VoxelGrid : MonoBehaviour
         markSurfaceVoxels();
         markNonSurface();
         //Calculate inertia tensor
-        var b = merge(voxels[2][6][8].GetComponent<Voxel>()); //2 6 8
-        Debug.Log(b.center);
-        Debug.Log(b.extents);
+        bool[,,] visited = new bool[voxels.Length, voxels[0].Length, voxels[0][0].Length];
+        //List<Bounds> b = new List<Bounds>();
+
+        //var b = merge(voxels[2][6][8].GetComponent<Voxel>(),visited); //2 6 8
+        foreach (Voxel v in interiorVoxels)
+        {
+            //b.Add(merge(v, visited));
+            if(visited[v.coords.x,v.coords.y,v.coords.z]) continue;
+            var region = merge(v, visited);
+            if (region == v.getBounds())
+            {
+                visited[v.coords.x, v.coords.y, v.coords.z] = false;
+            }
+            else
+            {
+                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity);
+                g.transform.localScale = region.size;
+            }
+        }
+        /*foreach (Voxel v in surfaceVoxels)
+        {
+            //b.Add(merge(v, visited));
+            var region = merge(v, visited);
+            if (region == v.getBounds())
+            {
+                visited[v.coords.x, v.coords.y, v.coords.z] = false;
+            }
+            else
+            {
+                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity);
+                g.transform.localScale = region.size;
+            }
+        }*/
         removeOfType(Voxel.Type.EXTERIOR);
-        //removeOfType(Voxel.Type.SURFACE);
-        //removeOfType(Voxel.Type.INTERIOR);
+        removeOfType(Voxel.Type.SURFACE);
+        removeOfType(Voxel.Type.INTERIOR);
 
 
     }
@@ -79,11 +109,10 @@ public class VoxelGrid : MonoBehaviour
         return meshDecimation.ToMesh();
     }
 
-    private Bounds merge(Voxel seed)
+    private Bounds merge(Voxel seed, bool[,,] visited)
     {
-        bool[,,] visited = new bool[voxels.Length, voxels[0].Length, voxels[0][0].Length];
 
-        var bounds = new Bounds();
+        var bounds = seed.getBounds();
 
         Queue<Voxel> queue = new Queue<Voxel>();
         queue.Enqueue(seed);
@@ -102,8 +131,6 @@ public class VoxelGrid : MonoBehaviour
             //Probably voxel get bounds is not right
             newBounds.Encapsulate(head.getBounds());
 
-            Debug.Log(newBounds.center);
-            Debug.Log(newBounds.extents);
 
             bool intersectsExterior = false;
 
@@ -130,6 +157,7 @@ public class VoxelGrid : MonoBehaviour
                 }
             }
         }
+
 
         return bounds;
     }
