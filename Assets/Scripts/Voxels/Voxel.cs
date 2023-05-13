@@ -20,4 +20,8 @@ public class Voxel : MonoBehaviour
     {
         return "Voxel("+coords.x+","+coords.y+","+coords.z+")";
     }
+
+    public Bounds getBounds(){
+        return GetComponent<Renderer>().bounds;
+    }
 }

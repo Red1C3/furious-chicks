@@ -20,7 +20,7 @@ public class VoxelGrid : MonoBehaviour
     private static readonly float VOLUME_FACTOR = 50.0f;
     private static readonly float FACE_COUNT_FACTOR = 100.0f;
 
-    public List<Voxel> surfaceVoxels, interiorVoxels;
+    public List<Voxel> surfaceVoxels, interiorVoxels, exteriorVoxels;
     [SerializeField]
     private bool displayDecimated = false;
 
@@ -28,6 +28,7 @@ public class VoxelGrid : MonoBehaviour
     {
         surfaceVoxels = new List<Voxel>();
         interiorVoxels = new List<Voxel>();
+        exteriorVoxels = new List<Voxel>();
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         Renderer renderer = GetComponent<Renderer>();
         origin = renderer.bounds.center;
@@ -51,7 +52,12 @@ public class VoxelGrid : MonoBehaviour
         markSurfaceVoxels();
         markNonSurface();
         //Calculate inertia tensor
+        var b = merge(voxels[2][6][8].GetComponent<Voxel>()); //2 6 8
+        Debug.Log(b.center);
+        Debug.Log(b.extents);
         removeOfType(Voxel.Type.EXTERIOR);
+        //removeOfType(Voxel.Type.SURFACE);
+        //removeOfType(Voxel.Type.INTERIOR);
 
 
     }
@@ -73,16 +79,59 @@ public class VoxelGrid : MonoBehaviour
         return meshDecimation.ToMesh();
     }
 
-    private void merge(Voxel seed)
+    private Bounds merge(Voxel seed)
     {
         bool[,,] visited = new bool[voxels.Length, voxels[0].Length, voxels[0][0].Length];
 
-        List<Voxel> region = new List<Voxel>();
+        var bounds = new Bounds();
 
-        //TODO
+        Queue<Voxel> queue = new Queue<Voxel>();
+        queue.Enqueue(seed);
 
+        while (queue.Count != 0)
+        {
+            Voxel head = queue.Dequeue();
+            var coords = head.coords;
 
+            if (visited[coords.x, coords.y, coords.z]) continue;
 
+            visited[coords.x, coords.y, coords.z] = true;
+
+            var newBounds = bounds;
+
+            //Probably voxel get bounds is not right
+            newBounds.Encapsulate(head.getBounds());
+
+            Debug.Log(newBounds.center);
+            Debug.Log(newBounds.extents);
+
+            bool intersectsExterior = false;
+
+            foreach (Voxel exterior in exteriorVoxels)
+            {
+                if (newBounds.Intersects(exterior.getBounds()))
+                {
+                    intersectsExterior = true;
+                    break;
+                }
+            }
+
+            if (!intersectsExterior)
+            {
+                bounds = newBounds;
+                var neighbours = getNeighbours(head, (int)Voxel.Type.SURFACE | (int)Voxel.Type.INTERIOR);
+
+                foreach (Voxel v in neighbours)
+                {
+                    if (!visited[v.coords.x, v.coords.y, v.coords.z])
+                    {
+                        queue.Enqueue(v);
+                    }
+                }
+            }
+        }
+
+        return bounds;
     }
 
     private float getApproxAABBVolume()
@@ -225,7 +274,11 @@ public class VoxelGrid : MonoBehaviour
 
         for (int i = 0; i < visited.Count; i++)
         {
-            if (isExterior) visited[i].type = Voxel.Type.EXTERIOR;
+            if (isExterior)
+            {
+                visited[i].type = Voxel.Type.EXTERIOR;
+                exteriorVoxels.Add(visited[i]);
+            }
             else
             {
                 visited[i].type = Voxel.Type.INTERIOR;
