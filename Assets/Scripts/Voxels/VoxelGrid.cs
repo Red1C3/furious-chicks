@@ -52,6 +52,18 @@ public class VoxelGrid : MonoBehaviour
         markNonSurface();
         removeOfType(Voxel.Type.EXTERIOR);
         removeOfType(Voxel.Type.INTERIOR);
+
+        addCulliderToSurface();
+    }
+
+    private void addCulliderToSurface(){
+        // foreach (Voxel v in surfaceVoxels)
+        // {
+        //     v.gameObject.AddComponent<VoxelCullider>();
+        // }
+        for(int i=0;i<surfaceVoxels.Count;i++){
+            surfaceVoxels[i].gameObject.AddComponent<VoxelCullider>();
+        }
     }
 
     private Mesh decimate(Mesh mesh)
@@ -262,10 +274,10 @@ public class VoxelGrid : MonoBehaviour
     public Bounds getBounds()
     {
         Bounds bounds = new Bounds();
-        foreach (Voxel v in surfaceVoxels)
+        for(int i=0;i<surfaceVoxels.Count;i++)
         {
-            BoxCullider cullider = v.GetComponent<BoxCullider>();
-            bounds.Encapsulate(cullider.getBounds());
+            VoxelCullider cullider = surfaceVoxels[i].GetComponent<VoxelCullider>();
+            bounds.Encapsulate(cullider.getBoxBounds());
         }
         return bounds;
     }
