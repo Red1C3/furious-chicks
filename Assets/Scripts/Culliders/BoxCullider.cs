@@ -20,7 +20,7 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     private Rigidbody rb;
 
-    void Start()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
         facesMats = new Matrix4x4[6];
@@ -28,7 +28,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         updateBoundaries();
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         updateBoundaries();
     }
@@ -601,7 +601,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         return base.ToString();
     }
 
-    public float3x3 getTensorInertia()
+    public virtual float3x3 getTensorInertia()
     {
         float3x3 tensor = float3x3.identity;
         float mass = rb.mass;
