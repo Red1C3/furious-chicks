@@ -19,8 +19,7 @@ public class VoxelCullider : BoxCullider
 
     public override float3x3 getTensorInertia()
     {
-        return float3x3.identity;
-        return base.getTensorInertia(); //TODO return voxel grid inertia tensor
+        return voxel.grid.getInertiaTensor();
     }
 
     public override Vector3 center()

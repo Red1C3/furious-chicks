@@ -10,8 +10,6 @@ public class VoxelGrid : MonoBehaviour
     private Vector3 origin;
     private float density;
     private float length, width, depth;
-    [SerializeField]
-    private float totalMass;
     private float voxelLen;
     private GameObject[][][] voxels;
     private Vector3[] vertices;
@@ -23,6 +21,7 @@ public class VoxelGrid : MonoBehaviour
     public List<Voxel> surfaceVoxels, interiorVoxels;
     [SerializeField]
     private bool displayDecimated = false;
+    private float3x3 identityInertiaTensor;
 
     void Awake()
     {
@@ -51,6 +50,7 @@ public class VoxelGrid : MonoBehaviour
         markSurfaceVoxels();
         markNonSurface();
         removeOfType(Voxel.Type.EXTERIOR);
+        calculateInitialInertiaTensor();
         removeOfType(Voxel.Type.INTERIOR);
 
         addCulliderToSurface();
@@ -313,18 +313,49 @@ public class VoxelGrid : MonoBehaviour
     {
         Vector3 avg = Vector3.zero;
         int count = 0;
-        for (int i = 0; i < voxels.Length; i++)
+        foreach (Voxel v in surfaceVoxels)
         {
-            for (int j = 0; j < voxels[i].Length; j++)
-            {
-                for (int k = 0; k < voxels[i][j].Length; k++)
-                {
-                    avg += voxels[i][j][k].transform.position;
-                    count++;
-                }
-            }
+            avg = v.transform.position;
+            count++;
+        }
+        foreach (Voxel v in interiorVoxels)
+        {
+            avg = v.transform.position;
+            count++;
         }
         avg /= count;
         return avg;
+    }
+
+    private void calculateInitialInertiaTensor()
+    {
+        identityInertiaTensor = float3x3.zero;
+        Vector3 voxelsCenter = getVoxelsCenter();
+
+        float totalMass = GetComponent<Rigidbody>().mass;
+        float mass = totalMass / (surfaceVoxels.Count + interiorVoxels.Count);
+
+        foreach (Voxel v in interiorVoxels)
+        {
+            float3 r = (voxelsCenter - v.transform.position);
+            identityInertiaTensor = identityInertiaTensor + v.getInertiaTensor(mass) +
+                ((math.dot(r, r) * float3x3.identity) - float3Helpers.crossProductTensor(r, r)) * mass;
+        }
+
+        foreach (Voxel v in surfaceVoxels)
+        {
+            float3 r = (voxelsCenter - v.transform.position);
+            identityInertiaTensor = identityInertiaTensor + v.getInertiaTensor(mass) +
+                ((math.dot(r, r) * float3x3.identity) - float3Helpers.crossProductTensor(r, r)) * mass;
+        }
+    }
+
+    public float3x3 getInertiaTensor()
+    {
+        float3x3 rotationMat = (new float3x3(Matrix4x4.Rotate(transform.rotation)));
+
+        float3x3 tensor = math.mul(math.mul(rotationMat, identityInertiaTensor), math.transpose(rotationMat));
+
+        return tensor;
     }
 }
