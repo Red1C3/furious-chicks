@@ -56,12 +56,14 @@ public class VoxelGrid : MonoBehaviour
         addCulliderToSurface();
     }
 
-    private void addCulliderToSurface(){
+    private void addCulliderToSurface()
+    {
         // foreach (Voxel v in surfaceVoxels)
         // {
         //     v.gameObject.AddComponent<VoxelCullider>();
         // }
-        for(int i=0;i<surfaceVoxels.Count;i++){
+        for (int i = 0; i < surfaceVoxels.Count; i++)
+        {
             surfaceVoxels[i].gameObject.AddComponent<VoxelCullider>();
         }
     }
@@ -274,7 +276,7 @@ public class VoxelGrid : MonoBehaviour
     public Bounds getBounds()
     {
         Bounds bounds = new Bounds();
-        for(int i=0;i<surfaceVoxels.Count;i++)
+        for (int i = 0; i < surfaceVoxels.Count; i++)
         {
             VoxelCullider cullider = surfaceVoxels[i].GetComponent<VoxelCullider>();
             bounds.Encapsulate(cullider.getBoxBounds());
@@ -305,5 +307,24 @@ public class VoxelGrid : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Vector3 getVoxelsCenter()
+    {
+        Vector3 avg = Vector3.zero;
+        int count = 0;
+        for (int i = 0; i < voxels.Length; i++)
+        {
+            for (int j = 0; j < voxels[i].Length; j++)
+            {
+                for (int k = 0; k < voxels[i][j].Length; k++)
+                {
+                    avg += voxels[i][j][k].transform.position;
+                    count++;
+                }
+            }
+        }
+        avg /= count;
+        return avg;
     }
 }

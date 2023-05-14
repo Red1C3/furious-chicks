@@ -25,7 +25,7 @@ public class VoxelCullider : BoxCullider
 
     public override Vector3 center()
     {
-        return base.center(); //TODO return voxel grid center
+        return voxel.grid.getVoxelsCenter();
     }
 
     public override RigidbodyDriver getRigidbodyDriver()
