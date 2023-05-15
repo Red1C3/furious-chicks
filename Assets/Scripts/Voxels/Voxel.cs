@@ -13,7 +13,8 @@ public class Voxel : MonoBehaviour
 
     public VoxelGrid grid;
     //gets called from voxelgrid
-    public void init(){
+    public void init(bool display){
+       GetComponent<MeshRenderer>().enabled=display;
     }
 
     public override string ToString()

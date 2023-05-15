@@ -21,6 +21,8 @@ public class VoxelGrid : MonoBehaviour
     public List<Voxel> surfaceVoxels, interiorVoxels;
     [SerializeField]
     private bool displayDecimated = false;
+    [SerializeField]
+    private bool displayVoxels = false;
     private float3x3 identityInertiaTensor;
 
     void Awake()
@@ -51,7 +53,7 @@ public class VoxelGrid : MonoBehaviour
         markNonSurface();
         removeOfType(Voxel.Type.EXTERIOR);
         calculateInitialInertiaTensor();
-        removeOfType(Voxel.Type.INTERIOR);
+        //removeOfType(Voxel.Type.INTERIOR); I guess we can do something similar to the inertia tensor thing
 
         addCulliderToSurface();
     }
@@ -141,7 +143,7 @@ public class VoxelGrid : MonoBehaviour
                     voxelLen / transform.lossyScale.y, voxelLen / transform.lossyScale.z);
                     voxels[i][j][k].GetComponent<Voxel>().coords = new Vector3Int(i, j, k);
                     voxels[i][j][k].GetComponent<Voxel>().grid = this;
-                    voxels[i][j][k].GetComponent<Voxel>().init();
+                    voxels[i][j][k].GetComponent<Voxel>().init(displayVoxels);
                 }
             }
         }
@@ -315,12 +317,12 @@ public class VoxelGrid : MonoBehaviour
         int count = 0;
         foreach (Voxel v in surfaceVoxels)
         {
-            avg = v.transform.position;
+            avg += v.transform.position;
             count++;
         }
         foreach (Voxel v in interiorVoxels)
         {
-            avg = v.transform.position;
+            avg += v.transform.position;
             count++;
         }
         avg /= count;
