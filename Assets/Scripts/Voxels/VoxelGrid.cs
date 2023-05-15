@@ -169,7 +169,6 @@ public class VoxelGrid : MonoBehaviour
 
             if (visited[coords.x, coords.y, coords.z]) continue;
 
-            visited[coords.x, coords.y, coords.z] = true;
 
             var newBounds = bounds;
 
@@ -190,6 +189,8 @@ public class VoxelGrid : MonoBehaviour
             if (!intersectsExterior)
             {
                 bounds = newBounds;
+                visited[coords.x, coords.y, coords.z] = true;
+
                 var neighbours = getNeighbours26(head, (int)Voxel.Type.SURFACE | (int)Voxel.Type.INTERIOR);
 
                 foreach (Voxel v in neighbours)
