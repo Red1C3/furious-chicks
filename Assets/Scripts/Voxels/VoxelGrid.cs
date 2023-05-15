@@ -18,7 +18,7 @@ public class VoxelGrid : MonoBehaviour
     private static readonly float VOLUME_FACTOR = 50.0f;
     private static readonly float FACE_COUNT_FACTOR = 100.0f;
 
-    public List<Voxel> surfaceVoxels, interiorVoxels, exteriorVoxels;
+    public List<Voxel> surfaceVoxels, interiorVoxels, exteriorVoxels, quantizedVoxels;
     [SerializeField]
     private bool displayDecimated = false;
     [SerializeField]
@@ -30,6 +30,7 @@ public class VoxelGrid : MonoBehaviour
         surfaceVoxels = new List<Voxel>();
         interiorVoxels = new List<Voxel>();
         exteriorVoxels = new List<Voxel>();
+        quantizedVoxels = new List<Voxel>();
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         Renderer renderer = GetComponent<Renderer>();
         origin = renderer.bounds.center;
@@ -60,7 +61,7 @@ public class VoxelGrid : MonoBehaviour
         foreach (Voxel v in interiorVoxels)
         {
             //b.Add(merge(v, visited));
-            if(visited[v.coords.x,v.coords.y,v.coords.z]) continue;
+            if (visited[v.coords.x, v.coords.y, v.coords.z]) continue;
             var region = merge(v, visited);
             if (region == v.getBounds())
             {
@@ -68,8 +69,9 @@ public class VoxelGrid : MonoBehaviour
             }
             else
             {
-                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity);
-                g.transform.localScale = region.size;
+                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity,transform);
+                g.transform.localScale = region.size; //probably should use lossy scale
+                quantizedVoxels.Add(g.GetComponent<Voxel>());
             }
         }
         /*foreach (Voxel v in surfaceVoxels)
@@ -88,20 +90,21 @@ public class VoxelGrid : MonoBehaviour
         }*/
         removeOfType(Voxel.Type.EXTERIOR);
         calculateInitialInertiaTensor();
-        //removeOfType(Voxel.Type.INTERIOR); I guess we can do something similar to the inertia tensor thing
+        removeOfType(Voxel.Type.INTERIOR);// I guess we can do something similar to the inertia tensor thing
+        removeOfType(Voxel.Type.SURFACE);
 
-        addCulliderToSurface();
+        addCulliderToQuantized();
     }
 
-    private void addCulliderToSurface()
+    private void addCulliderToQuantized()
     {
         // foreach (Voxel v in surfaceVoxels)
         // {
         //     v.gameObject.AddComponent<VoxelCullider>();
         // }
-        for (int i = 0; i < surfaceVoxels.Count; i++)
+        for (int i = 0; i < quantizedVoxels.Count; i++)
         {
-            surfaceVoxels[i].gameObject.AddComponent<VoxelCullider>();
+            quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
         }
     }
 
@@ -405,7 +408,8 @@ public class VoxelGrid : MonoBehaviour
 
     public Vector3 getVoxelsCenter()
     {
-        Vector3 avg = Vector3.zero;
+        return transform.position; //Hot take
+        /*Vector3 avg = Vector3.zero;
         int count = 0;
         foreach (Voxel v in surfaceVoxels)
         {
@@ -418,7 +422,7 @@ public class VoxelGrid : MonoBehaviour
             count++;
         }
         avg /= count;
-        return avg;
+        return avg;*/
     }
 
     private void calculateInitialInertiaTensor()

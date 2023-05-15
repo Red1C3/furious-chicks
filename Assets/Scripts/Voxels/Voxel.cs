@@ -38,6 +38,6 @@ public class Voxel : MonoBehaviour
         return tensor;
     }
     public Bounds getBounds(){
-        return GetComponent<VoxelCullider>().getBoxBounds();
+        return GetComponent<Renderer>().bounds;
     }
 }
