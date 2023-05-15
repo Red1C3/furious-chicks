@@ -101,6 +101,40 @@ public class VoxelGrid : MonoBehaviour
                 quantizedVoxels.Add(g.GetComponent<Voxel>());
             }
         }
+
+        foreach (Voxel v in surfaceVoxels)
+        {
+            if (visited[v.coords.x, v.coords.y, v.coords.z]) continue;
+            var region = merge(v, visited);
+            if (region == v.getBounds())
+            {
+                visited[v.coords.x, v.coords.y, v.coords.z] = false;
+            }
+            else
+            {
+                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity, transform);
+                g.transform.localScale = new Vector3(region.size.x / transform.lossyScale.x,
+                                                    region.size.y / transform.lossyScale.y,
+                                                    region.size.z / transform.lossyScale.z);
+                g.GetComponent<Voxel>().init(displayVoxels);
+                g.GetComponent<Voxel>().type = Voxel.Type.SURFACE;
+                g.GetComponent<Voxel>().grid = this;
+                quantizedVoxels.Add(g.GetComponent<Voxel>());
+            }
+        }
+
+        // foreach (Voxel v in surfaceVoxels)
+        // {
+        //     if (visited[v.coords.x, v.coords.y, v.coords.z]) continue;
+        //     var region = merge(v, visited);
+
+        //     var g = Instantiate(voxelPrefab, v.transform.position, Quaternion.identity, transform);
+        //     g.transform.localScale = v.transform.localScale;
+        //     g.GetComponent<Voxel>().init(displayVoxels);
+        //     g.GetComponent<Voxel>().type = Voxel.Type.SURFACE;
+        //     g.GetComponent<Voxel>().grid = this;
+        //     quantizedVoxels.Add(g.GetComponent<Voxel>());
+        // }
     }
 
     private Mesh decimate(Mesh mesh)
@@ -139,7 +173,6 @@ public class VoxelGrid : MonoBehaviour
 
             var newBounds = bounds;
 
-            //Probably voxel get bounds is not right
             newBounds.Encapsulate(head.getBounds());
 
 
@@ -157,7 +190,7 @@ public class VoxelGrid : MonoBehaviour
             if (!intersectsExterior)
             {
                 bounds = newBounds;
-                var neighbours = getNeighbours(head, (int)Voxel.Type.SURFACE | (int)Voxel.Type.INTERIOR);
+                var neighbours = getNeighbours26(head, (int)Voxel.Type.SURFACE | (int)Voxel.Type.INTERIOR);
 
                 foreach (Voxel v in neighbours)
                 {
@@ -356,6 +389,29 @@ public class VoxelGrid : MonoBehaviour
         }
 
         return list.ToArray();
+    }
+    private Voxel[] getNeighbours26(Voxel v, int typeMask)
+    {
+        var neighbours = new List<Voxel>();
+        var coords = v.coords;
+        for (int i = coords.x - 1; i < coords.x + 2; i++)
+        {
+            for (int j = coords.y - 1; j < coords.y + 2; j++)
+            {
+                for (int k = coords.z - 1; k < coords.z + 2; k++)
+                {
+                    if (i == coords.x && j == coords.y && k == coords.z) continue;
+
+                    if (i < 0 || i >= voxels.Length || j < 0 || j >= voxels[0].Length ||
+                         k < 0 || k >= voxels[0][0].Length)
+                        continue;
+
+                    Voxel voxel = voxels[i][j][k].GetComponent<Voxel>();
+                    if ((((int)voxel.type) & typeMask) != 0) neighbours.Add(voxel);
+                }
+            }
+        }
+        return neighbours.ToArray();
     }
     private bool isVoxelOnOutline(Voxel v)
     {
