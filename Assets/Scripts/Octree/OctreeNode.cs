@@ -68,7 +68,7 @@ public class OctreeNode
         return (c.first!=null && c.second!=null);
     }
 
-    public void search(GameObject player,Solver solver){
+    public void search(GameObject player,Solver solver){        
         Bounds bounds = player.GetComponent<Cullider>().getBounds();  
         if(!Intersects(bounds)){
             return;
@@ -77,6 +77,9 @@ public class OctreeNode
             foreach(GameObject go in gos){
                 if(go == player)
                     continue;
+                if(bothAreVoxelsBelongingToSameGrid(go,player)) continue;
+
+                
                 CullisionInfo returned = player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>());
                 CullisionInfo swaped = CreateOctree.culls.Find(x => (x.first==returned.second && returned.first==x.second));
                 CullisionInfo duplicated = CreateOctree.culls.Find(x => (x.first==returned.first && returned.second==x.second));
@@ -91,6 +94,16 @@ public class OctreeNode
                 child[i].search(player,solver);
             }       
         }
+    }
+
+    private bool bothAreVoxelsBelongingToSameGrid(GameObject v0,GameObject v1){
+        Voxel vc0,vc1;
+        if(v0.TryGetComponent<Voxel>(out vc0) && v1.TryGetComponent<Voxel>(out vc1)){
+            if(vc0.grid==vc1.grid){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void Draw(){

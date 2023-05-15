@@ -7,20 +7,20 @@ using UnityEngine;
 public class BoxCullider : MonoBehaviour, Cullider
 {
     public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
-    private Vector3 center;
+    private Vector3 boxCenter;
     private Vector3 size;
     private Quaternion rotation;
 
     private Vector3[] vertices;
-    private Edge[] edges;
+    protected Edge[] edges;
     private Vector3 right, up, forward;
-    public Matrix4x4[] facesMats { get; private set; }
+    public Matrix4x4[] facesMats { get; protected set; }
 
     public static readonly float axisThreshold = 0.01f;
 
     private Rigidbody rb;
 
-    void Start()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
         facesMats = new Matrix4x4[6];
@@ -28,7 +28,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         updateBoundaries();
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         updateBoundaries();
     }
@@ -42,7 +42,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         return rb;
     }
-    public Bounds getBounds()
+    public virtual Bounds getBounds()
     {
         //REQUIRES mesh,otherwise use the commented code
         return GetComponent<Renderer>().bounds;
@@ -62,6 +62,27 @@ public class BoxCullider : MonoBehaviour, Cullider
         bounds.center=new Vector3((minX+maxX)/2.0f,(minY+maxY)/2.0f,(minZ+maxZ)/2.0f);
         bounds.extents=(new Vector3(maxX,maxY,maxZ))-bounds.center;
         return bounds;*/
+    }
+
+    public virtual Bounds getBoxBounds()
+    {
+        float minX, maxX, minY, maxY, minZ, maxZ;
+        minX = minY = minZ = float.MaxValue;
+        maxX = maxY = maxZ = float.MinValue;
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            if (vertices[i].x < minX) minX = vertices[i].x;
+            if (vertices[i].x > maxX) maxX = vertices[i].x;
+            if (vertices[i].y < minY) minY = vertices[i].y;
+            if (vertices[i].y > maxY) maxY = vertices[i].y;
+            if (vertices[i].z < minZ) minZ = vertices[i].z;
+            if (vertices[i].z > maxZ) maxZ = vertices[i].z;
+        }
+
+        Bounds bounds = new Bounds();
+        bounds.center = new Vector3((minX + maxX) / 2.0f, (minY + maxY) / 2.0f, (minZ + maxZ) / 2.0f);
+        bounds.extents = (new Vector3(maxX, maxY, maxZ)) - bounds.center;
+        return bounds;
     }
 
     public CullisionInfo cullideWith(Cullider other)
@@ -125,7 +146,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     private Vector3 getDeepestVertex(BoxCullider from, BoxCullider inside)
     {
         Vector3[] fromVertices = from.vertices;
-        Vector3 insideCenter = inside.center;
+        Vector3 insideCenter = inside.boxCenter;
         Vector3 deepestVertex = fromVertices[0];
         float depth = float.MaxValue;
 
@@ -237,7 +258,7 @@ public class BoxCullider : MonoBehaviour, Cullider
                 Vector3 edgeAxis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
                 if (Vector3.Dot(fixAxis(other, faceOverlap, axis).normalized, fixAxis(other, edgeOverlap, edgeAxis).normalized) < 1.0f - math.EPSILON)
                 {
-                   // Debug.Log("Edge contact 0");
+                    // Debug.Log("Edge contact 0");
                     axis = edgeAxis;
                     overlap = edgeOverlap;
                     contactPoints.Clear();
@@ -254,7 +275,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         else
         {
-           // Debug.Log("Edge contact 1");
+            // Debug.Log("Edge contact 1");
             foreach (Tuple<Edge, Edge> tuple in contactEdges)
             {
                 Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
@@ -272,7 +293,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     private bool isFaceValid(BoxCullider other, Matrix4x4 faceMat)
     {
         Vector3 faceCenter = faceMat.GetColumn(3);
-        float dot = Vector3.Dot(center - faceCenter, other.center - faceCenter);
+        float dot = Vector3.Dot(boxCenter - faceCenter, other.boxCenter - faceCenter);
         return dot < 0;
     }
     private bool isEdgeValid(BoxCullider other, Edge first, Edge second)
@@ -281,7 +302,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         Vector3 closestSecond = second.closestPoint(first);
         Vector3 closest = (closestFirst + closestSecond) / 2.0f;
 
-        float dot = Vector3.Dot(center - closest, other.center - closest);
+        float dot = Vector3.Dot(boxCenter - closest, other.boxCenter - closest);
         return dot < 0;
     }
     private Face getIncidentFace(Vector3 normal)
@@ -414,7 +435,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             overlap = tempOverlap;
             axis = Vector3.Cross(forward, other.forward);
         }
-        Vector3 BinALocal = transform.InverseTransformPoint(other.center);
+        Vector3 BinALocal = transform.InverseTransformPoint(other.boxCenter);
 
         Vector3 closestB = new Vector3(
             Mathf.Max(-0.5f, Mathf.Min(BinALocal.x, 0.5f)),
@@ -422,7 +443,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             Mathf.Max(-0.5f, Mathf.Min(BinALocal.z, 0.5f))
         );
 
-        Vector3 AinBLocal = other.transform.InverseTransformPoint(center);
+        Vector3 AinBLocal = other.transform.InverseTransformPoint(boxCenter);
 
         Vector3 closestA = new Vector3(
             Mathf.Max(-0.5f, Mathf.Min(AinBLocal.x, 0.5f)),
@@ -495,8 +516,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     public void updateBoundaries()
     {
 
-        center = transform.position;
-        size = transform.localScale;
+        boxCenter = transform.position;
+        size = transform.lossyScale;
         rotation = transform.rotation;
 
         var max = size / 2;
@@ -504,14 +525,14 @@ public class BoxCullider : MonoBehaviour, Cullider
 
         vertices = new[]
             {
-                center + rotation * min,                             //0
-                center + rotation * new Vector3(max.x, min.y, min.z),//1
-                center + rotation * new Vector3(min.x, max.y, min.z),//2
-                center + rotation * new Vector3(max.x, max.y, min.z),//3
-                center + rotation * new Vector3(min.x, min.y, max.z),//4
-                center + rotation * new Vector3(max.x, min.y, max.z),//5
-                center + rotation * new Vector3(min.x, max.y, max.z),//6
-                center + rotation * max,                             //7
+                boxCenter + rotation * min,                             //0
+                boxCenter + rotation * new Vector3(max.x, min.y, min.z),//1
+                boxCenter + rotation * new Vector3(min.x, max.y, min.z),//2
+                boxCenter + rotation * new Vector3(max.x, max.y, min.z),//3
+                boxCenter + rotation * new Vector3(min.x, min.y, max.z),//4
+                boxCenter + rotation * new Vector3(max.x, min.y, max.z),//5
+                boxCenter + rotation * new Vector3(min.x, max.y, max.z),//6
+                boxCenter + rotation * max,                             //7
            };
 
         right = rotation * Vector3.right;
@@ -538,37 +559,37 @@ public class BoxCullider : MonoBehaviour, Cullider
 
 
         //Top
-        facesMats[(int)Side.TOP] = math.mul(float4x4.Translate(center + up * max.y), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.TOP] = math.mul(float4x4.Translate(boxCenter + up * max.y), new float4x4(new float4(right * max.x, 0),
                                                                                 new float4(up * max.y, 0),
                                                                                 new float4(forward * max.z, 0),
                                                                                 new float4(0, 0, 0, 1)));
 
         //Bottom
-        facesMats[(int)Side.DOWN] = math.mul(float4x4.Translate(center - up * max.y), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.DOWN] = math.mul(float4x4.Translate(boxCenter - up * max.y), new float4x4(new float4(right * max.x, 0),
                                                                                 new float4(-up * max.y, 0),
                                                                                 new float4(-forward * max.z, 0),
                                                                                 new float4(0, 0, 0, 1)));
 
         //Right
-        facesMats[(int)Side.RIGHT] = math.mul(float4x4.Translate(center + right * max.x), new float4x4(new float4(-up * max.y, 0),
+        facesMats[(int)Side.RIGHT] = math.mul(float4x4.Translate(boxCenter + right * max.x), new float4x4(new float4(-up * max.y, 0),
                                                                         new float4(right * max.x, 0),
                                                                         new float4(forward * max.z, 0),
                                                                         new float4(0, 0, 0, 1)));
 
         //Left
-        facesMats[(int)Side.LEFT] = math.mul(float4x4.Translate(center - right * max.x), new float4x4(new float4(up * max.y, 0),
+        facesMats[(int)Side.LEFT] = math.mul(float4x4.Translate(boxCenter - right * max.x), new float4x4(new float4(up * max.y, 0),
                                                                         new float4(-right * max.x, 0),
                                                                         new float4(forward * max.z, 0),
                                                                         new float4(0, 0, 0, 1)));
 
         //Forward
-        facesMats[(int)Side.FORWARD] = math.mul(float4x4.Translate(center + forward * max.z), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.FORWARD] = math.mul(float4x4.Translate(boxCenter + forward * max.z), new float4x4(new float4(right * max.x, 0),
                                                                         new float4(forward * max.z, 0),
                                                                         new float4(-up * max.y, 0),
                                                                         new float4(0, 0, 0, 1)));
 
         //Backward
-        facesMats[(int)Side.BACKWARD] = math.mul(float4x4.Translate(center - forward * max.z), new float4x4(new float4(right * max.x, 0),
+        facesMats[(int)Side.BACKWARD] = math.mul(float4x4.Translate(boxCenter - forward * max.z), new float4x4(new float4(right * max.x, 0),
                                                                         new float4(-forward * max.z, 0),
                                                                         new float4(up * max.y, 0),
                                                                         new float4(0, 0, 0, 1)));
@@ -580,7 +601,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     }
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)
     {
-        Vector3 otherToSelf = center - other.center;
+        Vector3 otherToSelf = boxCenter - other.boxCenter;
         if (Vector3.Dot(axis, otherToSelf) >= 0)
             return axis;
         return -axis;
@@ -601,7 +622,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         return base.ToString();
     }
 
-    public float3x3 getTensorInertia()
+    public virtual float3x3 getTensorInertia()
     {
         float3x3 tensor = float3x3.identity;
         float mass = rb.mass;
@@ -625,12 +646,12 @@ public class BoxCullider : MonoBehaviour, Cullider
         return tensor;
     }
 
-    Vector3 Shape.center()
+    public virtual Vector3 center()
     {
-        return center;
+        return boxCenter;
     }
 
-    public RigidbodyDriver getRigidbodyDriver()
+    public virtual RigidbodyDriver getRigidbodyDriver()
     {
         return GetComponent<RigidbodyDriver>();
     }

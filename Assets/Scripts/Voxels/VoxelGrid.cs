@@ -10,8 +10,6 @@ public class VoxelGrid : MonoBehaviour
     private Vector3 origin;
     private float density;
     private float length, width, depth;
-    [SerializeField]
-    private float totalMass;
     private float voxelLen;
     private GameObject[][][] voxels;
     private Vector3[] vertices;
@@ -23,6 +21,9 @@ public class VoxelGrid : MonoBehaviour
     public List<Voxel> surfaceVoxels, interiorVoxels, exteriorVoxels;
     [SerializeField]
     private bool displayDecimated = false;
+    [SerializeField]
+    private bool displayVoxels = false;
+    private float3x3 identityInertiaTensor;
 
     void Awake()
     {
@@ -86,10 +87,22 @@ public class VoxelGrid : MonoBehaviour
             }
         }*/
         removeOfType(Voxel.Type.EXTERIOR);
-        removeOfType(Voxel.Type.SURFACE);
-        removeOfType(Voxel.Type.INTERIOR);
+        calculateInitialInertiaTensor();
+        //removeOfType(Voxel.Type.INTERIOR); I guess we can do something similar to the inertia tensor thing
 
+        addCulliderToSurface();
+    }
 
+    private void addCulliderToSurface()
+    {
+        // foreach (Voxel v in surfaceVoxels)
+        // {
+        //     v.gameObject.AddComponent<VoxelCullider>();
+        // }
+        for (int i = 0; i < surfaceVoxels.Count; i++)
+        {
+            surfaceVoxels[i].gameObject.AddComponent<VoxelCullider>();
+        }
     }
 
     private Mesh decimate(Mesh mesh)
@@ -218,7 +231,7 @@ public class VoxelGrid : MonoBehaviour
                     voxelLen / transform.lossyScale.y, voxelLen / transform.lossyScale.z);
                     voxels[i][j][k].GetComponent<Voxel>().coords = new Vector3Int(i, j, k);
                     voxels[i][j][k].GetComponent<Voxel>().grid = this;
-                    voxels[i][j][k].GetComponent<Voxel>().init();
+                    voxels[i][j][k].GetComponent<Voxel>().init(displayVoxels);
                 }
             }
         }
@@ -357,10 +370,10 @@ public class VoxelGrid : MonoBehaviour
     public Bounds getBounds()
     {
         Bounds bounds = new Bounds();
-        foreach (Voxel v in surfaceVoxels)
+        for (int i = 0; i < surfaceVoxels.Count; i++)
         {
-            BoxCullider cullider = v.GetComponent<BoxCullider>();
-            bounds.Encapsulate(cullider.getBounds());
+            VoxelCullider cullider = surfaceVoxels[i].GetComponent<VoxelCullider>();
+            bounds.Encapsulate(cullider.getBoxBounds());
         }
         return bounds;
     }
@@ -388,5 +401,55 @@ public class VoxelGrid : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Vector3 getVoxelsCenter()
+    {
+        Vector3 avg = Vector3.zero;
+        int count = 0;
+        foreach (Voxel v in surfaceVoxels)
+        {
+            avg += v.transform.position;
+            count++;
+        }
+        foreach (Voxel v in interiorVoxels)
+        {
+            avg += v.transform.position;
+            count++;
+        }
+        avg /= count;
+        return avg;
+    }
+
+    private void calculateInitialInertiaTensor()
+    {
+        identityInertiaTensor = float3x3.zero;
+        Vector3 voxelsCenter = getVoxelsCenter();
+
+        float totalMass = GetComponent<Rigidbody>().mass;
+        float mass = totalMass / (surfaceVoxels.Count + interiorVoxels.Count);
+
+        foreach (Voxel v in interiorVoxels)
+        {
+            float3 r = (voxelsCenter - v.transform.position);
+            identityInertiaTensor = identityInertiaTensor + v.getInertiaTensor(mass) +
+                ((math.dot(r, r) * float3x3.identity) - float3Helpers.crossProductTensor(r, r)) * mass;
+        }
+
+        foreach (Voxel v in surfaceVoxels)
+        {
+            float3 r = (voxelsCenter - v.transform.position);
+            identityInertiaTensor = identityInertiaTensor + v.getInertiaTensor(mass) +
+                ((math.dot(r, r) * float3x3.identity) - float3Helpers.crossProductTensor(r, r)) * mass;
+        }
+    }
+
+    public float3x3 getInertiaTensor()
+    {
+        float3x3 rotationMat = (new float3x3(Matrix4x4.Rotate(transform.rotation)));
+
+        float3x3 tensor = math.mul(math.mul(rotationMat, identityInertiaTensor), math.transpose(rotationMat));
+
+        return tensor;
     }
 }
