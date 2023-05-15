@@ -53,43 +53,13 @@ public class VoxelGrid : MonoBehaviour
         centerVoxels();
         markSurfaceVoxels();
         markNonSurface();
-        //Calculate inertia tensor
-        bool[,,] visited = new bool[voxels.Length, voxels[0].Length, voxels[0][0].Length];
-        //List<Bounds> b = new List<Bounds>();
 
-        //var b = merge(voxels[2][6][8].GetComponent<Voxel>(),visited); //2 6 8
-        foreach (Voxel v in interiorVoxels)
-        {
-            //b.Add(merge(v, visited));
-            if (visited[v.coords.x, v.coords.y, v.coords.z]) continue;
-            var region = merge(v, visited);
-            if (region == v.getBounds())
-            {
-                visited[v.coords.x, v.coords.y, v.coords.z] = false;
-            }
-            else
-            {
-                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity,transform);
-                g.transform.localScale = region.size; //probably should use lossy scale
-                quantizedVoxels.Add(g.GetComponent<Voxel>());
-            }
-        }
-        /*foreach (Voxel v in surfaceVoxels)
-        {
-            //b.Add(merge(v, visited));
-            var region = merge(v, visited);
-            if (region == v.getBounds())
-            {
-                visited[v.coords.x, v.coords.y, v.coords.z] = false;
-            }
-            else
-            {
-                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity);
-                g.transform.localScale = region.size;
-            }
-        }*/
+        buildQuantizedVoxels();
+
         removeOfType(Voxel.Type.EXTERIOR);
+
         calculateInitialInertiaTensor();
+
         removeOfType(Voxel.Type.INTERIOR);// I guess we can do something similar to the inertia tensor thing
         removeOfType(Voxel.Type.SURFACE);
 
@@ -105,6 +75,31 @@ public class VoxelGrid : MonoBehaviour
         for (int i = 0; i < quantizedVoxels.Count; i++)
         {
             quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
+        }
+    }
+
+    private void buildQuantizedVoxels()
+    {
+        bool[,,] visited = new bool[voxels.Length, voxels[0].Length, voxels[0][0].Length];
+        foreach (Voxel v in interiorVoxels)
+        {
+            if (visited[v.coords.x, v.coords.y, v.coords.z]) continue;
+            var region = merge(v, visited);
+            if (region == v.getBounds())
+            {
+                visited[v.coords.x, v.coords.y, v.coords.z] = false;
+            }
+            else
+            {
+                var g = Instantiate(voxelPrefab, region.center, Quaternion.identity, transform);
+                g.transform.localScale = new Vector3(region.size.x / transform.lossyScale.x,
+                                                    region.size.y / transform.lossyScale.y,
+                                                    region.size.z / transform.lossyScale.z);
+                g.GetComponent<Voxel>().init(displayVoxels);
+                g.GetComponent<Voxel>().type = Voxel.Type.SURFACE;
+                g.GetComponent<Voxel>().grid = this;
+                quantizedVoxels.Add(g.GetComponent<Voxel>());
+            }
         }
     }
 
