@@ -133,8 +133,9 @@ public class VoxelGrid : MonoBehaviour
         //     g.GetComponent<Voxel>().init(displayVoxels);
         //     g.GetComponent<Voxel>().type = Voxel.Type.SURFACE;
         //     g.GetComponent<Voxel>().grid = this;
+        //     g.GetComponent<Voxel>().coords=v.coords;
         //     quantizedVoxels.Add(g.GetComponent<Voxel>());
-        // }
+        // } 
     }
 
     private Mesh decimate(Mesh mesh)
@@ -179,7 +180,7 @@ public class VoxelGrid : MonoBehaviour
 
             foreach (Voxel exterior in exteriorVoxels)
             {
-                if (newBounds.Intersects(exterior.getBounds()))
+                if (newBounds.Intersects(errorBounds(exterior.getBounds())))
                 {
                     intersectsExterior = true;
                     break;
@@ -204,6 +205,12 @@ public class VoxelGrid : MonoBehaviour
         }
 
 
+        return bounds;
+    }
+
+    private Bounds errorBounds(Bounds bounds)
+    {
+        bounds.extents -= new Vector3(math.EPSILON, math.EPSILON, math.EPSILON);
         return bounds;
     }
 
