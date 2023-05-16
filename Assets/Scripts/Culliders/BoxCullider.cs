@@ -264,9 +264,6 @@ public class BoxCullider : MonoBehaviour, Cullider
                 Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
 
                 contactPoints.Add((contactPointA + contactPointB) / 2.0f);
-                Debug.Log(tuple.Item1);
-                Debug.Log(tuple.Item2);
-                Debug.Log("END");
             }
             axis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec()).normalized;
             overlap = edgeOverlap;

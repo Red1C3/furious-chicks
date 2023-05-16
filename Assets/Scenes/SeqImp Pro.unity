@@ -425,7 +425,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1091210390}
-  nodeMinSize: 10
   solver: {fileID: 1008137979}
 --- !u!4 &322457363
 Transform:
@@ -811,6 +810,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f89b44661a40dc7609abb1bac59fb2dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  iterations: 20
 --- !u!1 &1091210390
 GameObject:
   m_ObjectHideFlags: 0
