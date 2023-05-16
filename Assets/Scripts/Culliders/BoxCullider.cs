@@ -211,7 +211,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
         }
 
-        if (side != Side.LEN)
+        if (!isEdgeContact)
         {
             Matrix4x4 referenceFace;
             Face incidentFace;
@@ -232,25 +232,25 @@ public class BoxCullider : MonoBehaviour, Cullider
             contactPoints.AddRange(incidentFacePoints);
             axis = Face.normal(referenceFace);
             overlap = faceOverlap;
-            if (isEdgeContact)
-            {
-                Vector3 edgeAxis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
-                if (Vector3.Dot(fixAxis(other, faceOverlap, axis).normalized, fixAxis(other, edgeOverlap, edgeAxis).normalized) < 1.0f - math.EPSILON)
-                {
-                   // Debug.Log("Edge contact 0");
-                    axis = edgeAxis;
-                    overlap = edgeOverlap;
-                    contactPoints.Clear();
-                    foreach (Tuple<Edge, Edge> tuple in contactEdges)
-                    {
-                        Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
-                        Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
+        //     if (isEdgeContact)
+        //     {
+        //         Vector3 edgeAxis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
+        //         if (Vector3.Dot(fixAxis(other, faceOverlap, axis).normalized, fixAxis(other, edgeOverlap, edgeAxis).normalized) < 1.0f - math.EPSILON)
+        //         {
+        //            // Debug.Log("Edge contact 0");
+        //             axis = edgeAxis;
+        //             overlap = edgeOverlap;
+        //             contactPoints.Clear();
+        //             foreach (Tuple<Edge, Edge> tuple in contactEdges)
+        //             {
+        //                 Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
+        //                 Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
 
-                        contactPoints.Add((contactPointA + contactPointB) / 2.0f);
-                    }
-                }
+        //                 contactPoints.Add((contactPointA + contactPointB) / 2.0f);
+        //             }
+        //         }
 
-            }
+        //     }
         }
         else
         {
@@ -261,6 +261,10 @@ public class BoxCullider : MonoBehaviour, Cullider
                 Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
 
                 contactPoints.Add((contactPointA + contactPointB) / 2.0f);
+                //Debug.Log(contactPoints[contactPoints.Count-1]);
+                Debug.Log(tuple.Item1);
+                Debug.Log(tuple.Item2);
+                Debug.Log("END");
             }
             axis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec()).normalized;
             overlap = edgeOverlap;
