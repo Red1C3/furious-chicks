@@ -123,6 +123,7 @@ public class VoxelGrid : MonoBehaviour
             }
         }
 
+        //TODO turn remaining voxels into sphere colliders
         // foreach (Voxel v in surfaceVoxels)
         // {
         //     if (visited[v.coords.x, v.coords.y, v.coords.z]) continue;
@@ -467,7 +468,7 @@ public class VoxelGrid : MonoBehaviour
 
     public Vector3 getVoxelsCenter()
     {
-        return transform.position; //Hot take
+        return transform.position; //Invalid for concave shapes
         /*Vector3 avg = Vector3.zero;
         int count = 0;
         foreach (Voxel v in surfaceVoxels)
