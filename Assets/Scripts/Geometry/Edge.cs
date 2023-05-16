@@ -72,6 +72,7 @@ public struct Edge
         var cross_normal = Vector3.Cross(norm, otherNorm).normalized;
         var rejection = pos_diff - Vector3.Project(pos_diff, otherNorm) - Vector3.Project(pos_diff, cross_normal);
         var distance_to_line_pos = rejection.magnitude / Vector3.Dot(norm, rejection.normalized);
+        distance_to_line_pos = Mathf.Clamp(distance_to_line_pos, -vec().magnitude, 0);
         var closest_approach = point - norm * distance_to_line_pos;
         return closest_approach;
     }
