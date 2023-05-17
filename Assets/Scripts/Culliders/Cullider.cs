@@ -40,7 +40,7 @@ public struct CullisionInfo
         tangentImpulseSum2=0.0f;
 
         this.cullided = cullided;
-        this.normal = normal.normalized;
+        this.normal = -normal.normalized;
         this.depth = depth;
         this.contactPointsA = contactPointsA;
         this.contactPointsB = contactPointsB;
