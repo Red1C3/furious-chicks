@@ -143,7 +143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &192219689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &192219692
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -255,7 +256,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 192219688}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3, y: 1.1, z: -0.3}
+  m_LocalPosition: {x: 0, y: 1.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -296,7 +297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialAngularVelocity: {x: 0, y: 0, z: 0}
-  initialVelocity: {x: 0.5, y: 0, z: 0.5}
+  initialVelocity: {x: 0.5, y: 0, z: 0}
 --- !u!54 &905872146
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -305,7 +306,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 905872144}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -336,6 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361bc1eb76a414201b98e7213eed1f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &905872148
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -394,7 +396,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 905872144}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.145, z: 0}
+  m_LocalPosition: {x: -1.88, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -987,6 +989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361bc1eb76a414201b98e7213eed1f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1617127130
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1126,6 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0.1
 --- !u!23 &1769520632
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1412,6 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1860656458
 MeshRenderer:
   m_ObjectHideFlags: 0

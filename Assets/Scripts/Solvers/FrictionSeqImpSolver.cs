@@ -31,7 +31,7 @@ public class FrictionSeqImpSolver : Solver
                     if (math.abs(cullisions[i].depth) > depthThreshold)
                         bias = -biasFactor * math.abs(cullisions[i].depth) / Time.fixedDeltaTime;
 
-                    Vector3 normal = cullisions[i].normal.normalized*cullisions[i].depth;
+                    Vector3 normal = cullisions[i].normal.normalized * cullisions[i].depth;
                     Vector3 t1 = cullisions[i].t1;
                     Vector3 t2 = cullisions[i].t2;
                     Vector3 rA = cullisions[i].contactPointsA[j] - cullisions[i].first.center();
@@ -80,7 +80,7 @@ public class FrictionSeqImpSolver : Solver
                     cullisions[i].tangentImpulseSum1 += lambdaT1;
                     cullisions[i].tangentImpulseSum2 += lambdaT2;
 
-                    float cf =0.5f;
+                    float cf = (cullisions[i].first.getFrictionCo() + cullisions[i].second.getFrictionCo()) / 2.0f;
 
                     cullisions[i].tangentImpulseSum1 = math.clamp(cullisions[i].tangentImpulseSum1,
                                                                  -cf * cullisions[i].normalImpulseSum,

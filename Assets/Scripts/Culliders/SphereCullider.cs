@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SphereCullider : MonoBehaviour, Cullider
 {
+    [SerializeField]
+    private float frictionCo=0.0f;
     private float radius;
     private Vector3 center;
     private Rigidbody rb;
@@ -116,5 +118,10 @@ public class SphereCullider : MonoBehaviour, Cullider
     public RigidbodyDriver getRigidbodyDriver()
     {
         return GetComponent<RigidbodyDriver>();
+    }
+
+    public float getFrictionCo()
+    {
+        return frictionCo;
     }
 }

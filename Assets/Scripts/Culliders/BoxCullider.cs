@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class BoxCullider : MonoBehaviour, Cullider
 {
+    [SerializeField]
+    private float frictionCo=0.0f;
     public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
     private Vector3 center;
     private Vector3 size;
@@ -650,5 +652,10 @@ public class BoxCullider : MonoBehaviour, Cullider
     public RigidbodyDriver getRigidbodyDriver()
     {
         return GetComponent<RigidbodyDriver>();
+    }
+
+    public float getFrictionCo()
+    {
+        return frictionCo;
     }
 }
