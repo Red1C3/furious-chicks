@@ -13,13 +13,13 @@ public interface Cullider : Shape
 public struct CullisionInfo
 {
     public bool cullided;
-    public Vector3 normal;
+    public Vector3 normal, t1, t2;
     public float depth;
     public bool hasContactPointA, hasContactPointB;
     public Vector3[] contactPointsA, contactPointsB;
 
     public Cullider first, second;
-    public float normalImpulseSum;
+    public float normalImpulseSum,tangentImpulseSum1,tangentImpulseSum2;
 
     public static readonly CullisionInfo NO_CULLISION = new CullisionInfo(false, Vector3.zero, 0, false, false, new Vector3[] { }, new Vector3[] { }, null, null);
 
@@ -36,9 +36,11 @@ public struct CullisionInfo
         bool debug = false;
 
         normalImpulseSum = 0.0f;
+        tangentImpulseSum1=0.0f;
+        tangentImpulseSum2=0.0f;
 
         this.cullided = cullided;
-        this.normal = normal;
+        this.normal = normal.normalized;
         this.depth = depth;
         this.contactPointsA = contactPointsA;
         this.contactPointsB = contactPointsB;
@@ -46,6 +48,18 @@ public struct CullisionInfo
         this.hasContactPointB = hasContactPointB;
         this.first = first;
         this.second = second;
+
+        if (this.normal.x >= 0.57735f)
+        {
+            t1 = new Vector3(this.normal.y, -this.normal.x, 0.0f);
+        }
+        else
+        {
+            t1 = new Vector3(0.0f, this.normal.z, -this.normal.y);
+        }
+
+        t1 = t1.normalized;
+        t2 = Vector3.Cross(this.normal, t1);
 
         if (debug)
         {
