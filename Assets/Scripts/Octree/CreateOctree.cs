@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CreateOctree : MonoBehaviour
 {
-    public GameObject player;
     public Solver solver;
+    GameObject player,Ground;
     Octree octree;
-    public static int nodeMinSize = 1;
+    public static int nodeMinSize = 10;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     private List<GameObject> cullidingObject;
@@ -20,8 +20,14 @@ public class CreateOctree : MonoBehaviour
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
         foreach (GameObject gameObject in gameObjects)
         {
-            if (gameObject.tag == "Player")
+            if (gameObject.tag == "Player"){
+                player=gameObject;
                 continue;
+            }
+            else if(gameObject.tag=="Ground"){
+                Ground=gameObject;
+                continue;
+            }
             Cullider cullider;
             if (gameObject.TryGetComponent<Cullider>(out cullider))
             {
@@ -50,7 +56,10 @@ public class CreateOctree : MonoBehaviour
         {
             rb.applyForces();
         }
+
         octree.search(player, solver);
+        octree.search(Ground, solver);
+
         foreach (GameObject go in cullidingObject)
         {
             octree.search(go, solver);
