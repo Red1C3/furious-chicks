@@ -67,16 +67,16 @@ public class CreateOctree : MonoBehaviour
             Debug.Log("Max: " + maxNodeObjectN + "\n All:" + allObjectsN);
         }
 
-        int cullidingObjectN = cullidingObject.Count;
-        if(2 * cullidingObjectN < allObjectsN){
-            nodeMinSize+=1;
-            Debug.Log("Expanding: " + nodeMinSize);
-            lastActionIsShrink=false;
-        }
-        if(cullidingObjectN < 2 * maxNodeObjectN){
-            nodeMinSize-=1;
-            Debug.Log("Shrinking: " + nodeMinSize);
-            lastActionIsShrink=true;
-        }
+        // int cullidingObjectN = cullidingObject.Count;
+        // if(2 * cullidingObjectN < allObjectsN){
+        //     nodeMinSize+=1;
+        //     Debug.Log("Expanding: " + nodeMinSize);
+        //     lastActionIsShrink=false;
+        // }
+        // if(cullidingObjectN < 2 * maxNodeObjectN){
+        //     nodeMinSize-=1;
+        //     Debug.Log("Shrinking: " + nodeMinSize);
+        //     lastActionIsShrink=true;
+        // }
     }
 }
