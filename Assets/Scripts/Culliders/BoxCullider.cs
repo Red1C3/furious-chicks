@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -5,12 +6,15 @@ using UnityEngine;
 
 public class BoxCullider : MonoBehaviour, Cullider
 {
+    public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
     private Vector3 center;
     private Vector3 size;
     private Quaternion rotation;
 
     private Vector3[] vertices;
+    private Edge[] edges;
     private Vector3 right, up, forward;
+    public Matrix4x4[] facesMats { get; private set; }
 
     public static readonly float axisThreshold = 0.01f;
 
@@ -19,6 +23,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        facesMats = new Matrix4x4[6];
+        edges = new Edge[12];
         updateBoundaries();
     }
 
@@ -73,8 +79,9 @@ public class BoxCullider : MonoBehaviour, Cullider
                 }
             }
             cullisionInfo = cullideWithBox(other as BoxCullider);
-            if(cullisionInfo.cullided == false) return cullisionInfo;
-            return addContactPoint(cullisionInfo);
+            if (cullisionInfo.cullided == false) return cullisionInfo;
+            //return addContactPoint(cullisionInfo);
+            return cullisionInfo;
         }
         if (other is SphereCullider)
         {
@@ -83,13 +90,13 @@ public class BoxCullider : MonoBehaviour, Cullider
             cullisionInfo.second = other;
             cullisionInfo.normal *= -1;
 
-            bool hasContactPointB=cullisionInfo.hasContactPointA;
-            Vector3 contactPointB=cullisionInfo.contactPointA;
+            bool hasContactPointB = cullisionInfo.hasContactPointA;
+            Vector3[] contactPointsB = (Vector3[])cullisionInfo.contactPointsA.Clone();
 
             cullisionInfo.hasContactPointA = cullisionInfo.hasContactPointB;
-            cullisionInfo.contactPointA = cullisionInfo.contactPointB;
+            cullisionInfo.contactPointsA = cullisionInfo.contactPointsB;
             cullisionInfo.hasContactPointB = hasContactPointB;
-            cullisionInfo.contactPointB = contactPointB;
+            cullisionInfo.contactPointsB = contactPointsB;
             //addContactPoint(cullisionInfo);
             return cullisionInfo;
         }
@@ -108,30 +115,211 @@ public class BoxCullider : MonoBehaviour, Cullider
             ci.hasContactPointB = true;
             ci.contactPointB = (ci.second as BoxCullider).center;
         }*/
-        ci.hasContactPointA=true;
-        ci.contactPointA=getDeepestVertex(ci.first as BoxCullider,ci.second as BoxCullider);
-        ci.hasContactPointB=true;
-        ci.contactPointB=getDeepestVertex(ci.second as BoxCullider,ci.first as BoxCullider);
+        /*ci.hasContactPointA = true;
+        ci.contactPointA = getDeepestVertex(ci.first as BoxCullider, ci.second as BoxCullider);
+        ci.hasContactPointB = true;
+        ci.contactPointB = getDeepestVertex(ci.second as BoxCullider, ci.first as BoxCullider);*/
         return ci;
     }
 
-    private Vector3 getDeepestVertex(BoxCullider from,BoxCullider inside){
-        Vector3[] fromVertices=from.vertices;
-        Vector3 insideCenter=inside.center;
-        Vector3 deepestVertex=fromVertices[0];
-        float depth=float.MaxValue;
+    private Vector3 getDeepestVertex(BoxCullider from, BoxCullider inside)
+    {
+        Vector3[] fromVertices = from.vertices;
+        Vector3 insideCenter = inside.center;
+        Vector3 deepestVertex = fromVertices[0];
+        float depth = float.MaxValue;
 
-        foreach(Vector3 vertex in fromVertices){
-            float distance=Vector3.Distance(vertex,insideCenter);
-            if(distance<depth){
-                depth=distance;
-                deepestVertex=vertex;
+        foreach (Vector3 vertex in fromVertices)
+        {
+            float distance = Vector3.Distance(vertex, insideCenter);
+            if (distance < depth)
+            {
+                depth = distance;
+                deepestVertex = vertex;
             }
         }
 
         return deepestVertex;
     }
     private CullisionInfo cullideWithBox(BoxCullider other)
+    {
+        Vector3 axis = Vector3.zero;
+        bool thisOwnsReferenceFace = true;
+        bool isEdgeContact = false;
+        //Vector3 centeralContactPoint = Vector3.zero;
+        float overlap = float.MaxValue;
+        float faceOverlap = float.MaxValue, edgeOverlap = float.MaxValue;
+        Side side = Side.LEN;
+        float tempOverlap;
+        List<Vector3> contactPoints = new List<Vector3>();
+
+
+        //FIXME calculate overlap only takes the vector into account which returns the opposite faces
+        for (int i = 0; i < (int)Side.LEN; i++)
+        {
+            if ((tempOverlap = calculateOverlap(other, faceNormal((Side)i))) < 0)
+            {
+                return CullisionInfo.NO_CULLISION;
+            }
+            else if (isFaceValid(other, facesMats[i]) && tempOverlap < overlap)
+            {
+                overlap = tempOverlap;
+                side = (Side)i;
+                faceOverlap = overlap;
+            }
+        }
+
+        for (int i = 0; i < (int)Side.LEN; i++)
+        {
+            if ((tempOverlap = calculateOverlap(other, other.faceNormal((Side)i))) < 0)
+            {
+                return CullisionInfo.NO_CULLISION;
+            }
+            else if (isFaceValid(other, other.facesMats[i]) && tempOverlap < overlap)
+            {
+                overlap = tempOverlap;
+                side = (Side)i;
+                thisOwnsReferenceFace = false;
+                faceOverlap = overlap;
+            }
+        }
+
+        List<Tuple<Edge, Edge>> contactEdges = new List<Tuple<Edge, Edge>>();
+
+        for (int i = 0; i < edges.Length; i++)
+        {
+            for (int j = 0; j < other.edges.Length; j++)
+            {
+                if ((tempOverlap = calculateOverlap(other, Vector3.Cross(edges[i].vec(), other.edges[j].vec()).normalized)) < 0)
+                {
+                    return CullisionInfo.NO_CULLISION;
+                }
+                else if (isEdgeContact && isEdgeValid(other, edges[i]) && isEdgeValid(this, other.edges[j]) && (math.abs(overlap - tempOverlap)) < math.EPSILON)
+                {
+                    contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
+                }
+                else if (isEdgeValid(other, edges[i]) && isEdgeValid(this, other.edges[j]))
+                {
+                    if (tempOverlap < overlap)
+                    {
+                        contactEdges.Clear();
+                        isEdgeContact = true;
+                        overlap = tempOverlap;
+                        edgeOverlap = overlap;
+                        //thisEdge = edges[i];
+                        //otherEdge = other.edges[j];
+                        contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
+                    }
+                }
+            }
+        }
+
+        if (!isEdgeContact)
+        {
+            Matrix4x4 referenceFace;
+            Face incidentFace;
+            if (thisOwnsReferenceFace)
+            {
+                referenceFace = facesMats[(int)side];
+                incidentFace = other.getIncidentFace(Face.normal(referenceFace));
+            }
+            else
+            {
+                referenceFace = other.facesMats[(int)side];
+                incidentFace = getIncidentFace(Face.normal(referenceFace));
+            }
+            incidentFace.flip();
+
+            Vector3[] incidentFacePoints = incidentFace.clip(referenceFace);
+
+            contactPoints.AddRange(incidentFacePoints);
+            axis = Face.normal(referenceFace);
+            overlap = faceOverlap;
+            //     if (isEdgeContact)
+            //     {
+            //         Vector3 edgeAxis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
+            //         if (Vector3.Dot(fixAxis(other, faceOverlap, axis).normalized, fixAxis(other, edgeOverlap, edgeAxis).normalized) < 1.0f - math.EPSILON)
+            //         {
+            //            // Debug.Log("Edge contact 0");
+            //             axis = edgeAxis;
+            //             overlap = edgeOverlap;
+            //             contactPoints.Clear();
+            //             foreach (Tuple<Edge, Edge> tuple in contactEdges)
+            //             {
+            //                 Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
+            //                 Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
+
+            //                 contactPoints.Add((contactPointA + contactPointB) / 2.0f);
+            //             }
+            //         }
+
+            //     }
+        }
+        else
+        {
+            // Debug.Log("Edge contact 1");
+            foreach (Tuple<Edge, Edge> tuple in contactEdges)
+            {
+                Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
+                Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
+
+                contactPoints.Add((contactPointA + contactPointB) / 2.0f);
+            }
+            axis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec()).normalized;
+            overlap = edgeOverlap;
+        }
+        return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
+                                contactPoints.ToArray(), contactPoints.ToArray(), this, other);
+
+    }
+    private bool isFaceValid(BoxCullider other, Matrix4x4 faceMat)
+    {
+        Vector3 faceCenter = faceMat.GetColumn(3);
+        float dot = Vector3.Dot(center - faceCenter, other.center - faceCenter);
+        return dot < 0;
+    }
+    private bool isEdgeValid(BoxCullider box, Edge edge)
+    {
+        for (int i = 0; i < (int)Side.LEN; i++)
+        {
+            Vector3 faceNormal = box.faceNormal((Side)i);
+            Vector3 faceCenter = box.facesMats[i] * (new Vector4(0, 0, 0, 1));
+
+            Vector3 contactPoint;
+            if (Plane.edgePlaneIntersection(out contactPoint, edge, faceNormal, faceCenter))
+            {
+                contactPoint = box.facesMats[i].inverse * (new Vector4(contactPoint.x, contactPoint.y, contactPoint.z, 1));
+                if (contactPoint.x >= -1 && contactPoint.x <= 1 && contactPoint.z >= -1 && contactPoint.z <= 1) //Error this
+                {
+                    // Debug.Log(faceCenter);
+                    // Debug.Log(faceNormal);
+                    // Debug.Log(edge);
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private Face getIncidentFace(Vector3 normal)
+    {
+        normal = normal.normalized;
+        float smallestDot = float.MaxValue;
+        Matrix4x4 incidentFaceMat = Matrix4x4.identity;
+
+        for (int i = 0; i < (int)Side.LEN; i++)
+        {
+            Vector3 faceNorm = faceNormal((Side)i);
+            float dot = Vector3.Dot(normal, faceNorm);
+            if (dot < smallestDot)
+            {
+                smallestDot = dot;
+                incidentFaceMat = facesMats[i];
+            }
+        }
+        return new Face(incidentFaceMat);
+    }
+    private CullisionInfo cullideWithBoxOld(BoxCullider other)
     {
         float overlap = float.MaxValue;
         //From other to base
@@ -333,19 +521,79 @@ public class BoxCullider : MonoBehaviour, Cullider
 
         vertices = new[]
             {
-                center + rotation * min,
-                center + rotation * new Vector3(max.x, min.y, min.z),
-                center + rotation * new Vector3(min.x, max.y, min.z),
-                center + rotation * new Vector3(max.x, max.y, min.z),
-                center + rotation * new Vector3(min.x, min.y, max.z),
-                center + rotation * new Vector3(max.x, min.y, max.z),
-                center + rotation * new Vector3(min.x, max.y, max.z),
-                center + rotation * max,
+                center + rotation * min,                             //0
+                center + rotation * new Vector3(max.x, min.y, min.z),//1
+                center + rotation * new Vector3(min.x, max.y, min.z),//2
+                center + rotation * new Vector3(max.x, max.y, min.z),//3
+                center + rotation * new Vector3(min.x, min.y, max.z),//4
+                center + rotation * new Vector3(max.x, min.y, max.z),//5
+                center + rotation * new Vector3(min.x, max.y, max.z),//6
+                center + rotation * max,                             //7
            };
 
         right = rotation * Vector3.right;
         up = rotation * Vector3.up;
         forward = rotation * Vector3.forward;
+
+        //Bottom face
+        edges[0] = new Edge(vertices[0], vertices[4]);
+        edges[1] = new Edge(vertices[4], vertices[5]);
+        edges[2] = new Edge(vertices[5], vertices[1]);
+        edges[3] = new Edge(vertices[1], vertices[0]);
+
+        //Top face
+        edges[4] = new Edge(vertices[7], vertices[3]);
+        edges[5] = new Edge(vertices[3], vertices[2]);
+        edges[6] = new Edge(vertices[2], vertices[6]);
+        edges[7] = new Edge(vertices[6], vertices[7]);
+
+        //Side faces
+        edges[8] = new Edge(vertices[7], vertices[5]);
+        edges[9] = new Edge(vertices[0], vertices[2]);
+        edges[10] = new Edge(vertices[6], vertices[4]);
+        edges[11] = new Edge(vertices[1], vertices[3]);
+
+
+        //Top
+        facesMats[(int)Side.TOP] = math.mul(float4x4.Translate(center + up * max.y), new float4x4(new float4(right * max.x, 0),
+                                                                                new float4(up * max.y, 0),
+                                                                                new float4(forward * max.z, 0),
+                                                                                new float4(0, 0, 0, 1)));
+
+        //Bottom
+        facesMats[(int)Side.DOWN] = math.mul(float4x4.Translate(center - up * max.y), new float4x4(new float4(right * max.x, 0),
+                                                                                new float4(-up * max.y, 0),
+                                                                                new float4(-forward * max.z, 0),
+                                                                                new float4(0, 0, 0, 1)));
+
+        //Right
+        facesMats[(int)Side.RIGHT] = math.mul(float4x4.Translate(center + right * max.x), new float4x4(new float4(-up * max.y, 0),
+                                                                        new float4(right * max.x, 0),
+                                                                        new float4(forward * max.z, 0),
+                                                                        new float4(0, 0, 0, 1)));
+
+        //Left
+        facesMats[(int)Side.LEFT] = math.mul(float4x4.Translate(center - right * max.x), new float4x4(new float4(up * max.y, 0),
+                                                                        new float4(-right * max.x, 0),
+                                                                        new float4(forward * max.z, 0),
+                                                                        new float4(0, 0, 0, 1)));
+
+        //Forward
+        facesMats[(int)Side.FORWARD] = math.mul(float4x4.Translate(center + forward * max.z), new float4x4(new float4(right * max.x, 0),
+                                                                        new float4(forward * max.z, 0),
+                                                                        new float4(-up * max.y, 0),
+                                                                        new float4(0, 0, 0, 1)));
+
+        //Backward
+        facesMats[(int)Side.BACKWARD] = math.mul(float4x4.Translate(center - forward * max.z), new float4x4(new float4(right * max.x, 0),
+                                                                        new float4(-forward * max.z, 0),
+                                                                        new float4(up * max.y, 0),
+                                                                        new float4(0, 0, 0, 1)));
+    }
+    private Vector3 faceNormal(Side face)
+    {
+        Vector3 norm = facesMats[(int)face] * Vector3.up;
+        return norm.normalized;
     }
     private Vector3 fixAxis(BoxCullider other, float depth, Vector3 axis)
     {

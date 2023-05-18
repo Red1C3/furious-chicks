@@ -16,43 +16,63 @@ public struct CullisionInfo
     public Vector3 normal;
     public float depth;
     public bool hasContactPointA, hasContactPointB;
-    public Vector3 contactPointA, contactPointB;
+    public Vector3[] contactPointsA, contactPointsB;
 
-    public Cullider first,second;
+    public Cullider first, second;
+    public float normalImpulseSum;
 
-    public static readonly CullisionInfo NO_CULLISION=new CullisionInfo(false,Vector3.zero,0,false,false,Vector3.zero,Vector3.zero,null,null);
-    
+    public static readonly CullisionInfo NO_CULLISION = new CullisionInfo(false, Vector3.zero, 0, false, false, new Vector3[] { }, new Vector3[] { }, null, null);
+
     public CullisionInfo(bool cullided, Vector3 normal, float depth, bool hasContactPointA,
-                    bool hasContactPointB, Vector3 contactPointA, Vector3 contactPointB,
-                    Cullider first,Cullider second)
+                   bool hasContactPointB, Vector3 contactPointA, Vector3 contactPointB,
+                   Cullider first, Cullider second) : this(cullided, normal, depth, hasContactPointA, hasContactPointB,
+                   new[] { contactPointA }, new[] { contactPointB }, first, second)
+    { }
+
+    public CullisionInfo(bool cullided, Vector3 normal, float depth, bool hasContactPointA,
+                    bool hasContactPointB, Vector3[] contactPointsA, Vector3[] contactPointsB,
+                    Cullider first, Cullider second)
     {
-        bool debug=false;
+        bool debug = false;
+
+        normalImpulseSum = 0.0f;
 
         this.cullided = cullided;
         this.normal = normal;
         this.depth = depth;
-        this.contactPointA = contactPointA;
-        this.contactPointB = contactPointB;
+        this.contactPointsA = contactPointsA;
+        this.contactPointsB = contactPointsB;
         this.hasContactPointA = hasContactPointA;
         this.hasContactPointB = hasContactPointB;
-        this.first=first;
-        this.second=second;
+        this.first = first;
+        this.second = second;
 
-        if(debug){
-            if(cullided){
+        if (debug)
+        {
+            if (cullided)
+            {
                 Debug.Log(ToString());
             }
         }
     }
 
-    public override string ToString(){
-        return "Reporting collision\n"+
-                "Colliding objects:"+first.ToString()+","+second.ToString()+"\n"+
-                "depth="+depth+"\n"+
-                "normal="+normal.x+","+normal.y+","+normal.z+"\n"+
-                "has contact point for first:"+hasContactPointA+"\n"+
-                "has contact point for second:"+hasContactPointB+"\n"+
-                "first contact point:"+contactPointA.x+","+contactPointA.y+","+contactPointA.z+"\n"+
-                "second contact point:"+contactPointB.x+","+contactPointB.y+","+contactPointB.z;
+    public override string ToString()
+    {
+        string str = "Reporting collision\n" +
+                "Colliding objects:" + first.ToString() + "," + second.ToString() + "\n" +
+                "depth=" + depth + "\n" +
+                "normal=" + normal.x + "," + normal.y + "," + normal.z + "\n" +
+                "has contact point for first:" + hasContactPointA + "\n" +
+                "has contact point for second:" + hasContactPointB + "\n";
+
+        for (int i = 0; i < contactPointsA.Length; i++)
+        {
+            str += "Contact Point A No" + i + ":" + contactPointsA[i] + "\n";
+        }
+        for (int i = 0; i < contactPointsB.Length; i++)
+        {
+            str += "Contact Point B No" + i + ":" + contactPointsB[i] + "\n";
+        }
+        return str;
     }
 }

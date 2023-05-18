@@ -1,9 +1,10 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public class OffsetSolver : Solver
+//Commented out to reduce maintainance
+/*public class OffsetSolver //Doesn't implement Solver interface any longer
 {
-    public override void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
+    public void resolveCullision(CullisionInfo cullision, Rigidbody A, Rigidbody B)
     {
         if (!cullision.cullided) return;
         //A.GetComponent<RigidbodyDriver>().applyLinearMomentum(B.GetComponent<RigidbodyDriver>());
@@ -75,4 +76,4 @@ public class OffsetSolver : Solver
         A.transform.position += BmassFactor * cullision.normal.normalized * depthA;
         B.transform.position += -AmassFactor * cullision.normal.normalized * depthB;
     }
-}
+}*/
