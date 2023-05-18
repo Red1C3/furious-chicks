@@ -330,6 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &191613480
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -514,6 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &539627879
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -806,10 +808,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1008137976}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f89b44661a40dc7609abb1bac59fb2dd, type: 3}
+  m_Script: {fileID: 11500000, guid: a9b5f2a7193fa15c3859415344584d18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iterations: 20
+  iterations: 10
 --- !u!1 &1091210390
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,6 +903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361bc1eb76a414201b98e7213eed1f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1091210395
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1040,6 +1043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1122306970
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1179,6 +1183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361bc1eb76a414201b98e7213eed1f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1628161745
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1465,6 +1470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0.001
 --- !u!23 &1780567334
 MeshRenderer:
   m_ObjectHideFlags: 0

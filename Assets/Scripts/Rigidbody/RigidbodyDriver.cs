@@ -24,7 +24,7 @@ public class RigidbodyDriver : MonoBehaviour
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
         velocity = initialVelocity;
         if (rb.useGravity)
-            acclumatedForces += gravity;
+            acclumatedForces += gravity*rb.mass;
     }
 
 

@@ -28,7 +28,7 @@ public class SequentialImpulseSolver : Solver
                     if (math.abs(cullisions[i].depth) > depthThreshold)
                         bias = biasFactor * cullisions[i].depth / Time.fixedDeltaTime;
 
-                    Vector3 normal = cullisions[i].normal.normalized * cullisions[i].depth;
+                    Vector3 normal = -cullisions[i].normal.normalized * cullisions[i].depth;  //TODO test me
                     Vector3 rA = cullisions[i].contactPointsA[j] - cullisions[i].first.center();
                     Vector3 rB = cullisions[i].contactPointsB[j] - cullisions[i].second.center();
 
