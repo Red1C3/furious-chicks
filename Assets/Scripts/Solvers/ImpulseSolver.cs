@@ -22,7 +22,7 @@ public class ImpulseSolver : Solver
                 if (math.abs(cullision.depth) > depthThreshold)
                     bias = biasFactor * cullision.depth / Time.fixedDeltaTime;
 
-                Vector3 normal = cullision.normal.normalized * cullision.depth;
+                Vector3 normal = -cullision.normal.normalized * cullision.depth;
                 Vector3 rA = cullision.contactPointsA[i] - cullision.first.center();
                 Vector3 rB = cullision.contactPointsB[i] - cullision.second.center();
 
