@@ -8,7 +8,7 @@ public class FrictionSeqImpSolver : Solver
     [SerializeField]
     private int iterations = 50; //Higher gives better accuracy but needs more cpu power
 
-    const float biasFactor = 0.001f;
+    const float biasFactor = 0.15f;
     const float depthThreshold = 0.01f;
 
 
@@ -31,7 +31,7 @@ public class FrictionSeqImpSolver : Solver
                     if (math.abs(cullisions[i].depth) > depthThreshold)
                         bias = -biasFactor * math.abs(cullisions[i].depth) / Time.fixedDeltaTime;
 
-                    Vector3 normal = cullisions[i].normal.normalized * cullisions[i].depth;
+                    Vector3 normal = cullisions[i].normal.normalized;
                     Vector3 t1 = cullisions[i].t1;
                     Vector3 t2 = cullisions[i].t2;
                     Vector3 rA = cullisions[i].contactPointsA[j] - cullisions[i].first.center();
