@@ -15,6 +15,7 @@ public class VoxelGrid : MonoBehaviour
     private Vector3[] vertices;
 
     private int[] indices;
+    private Vector3 localCenter;
     private static readonly float VOLUME_FACTOR = 50.0f;
     private static readonly float FACE_COUNT_FACTOR = 100.0f;
 
@@ -56,6 +57,8 @@ public class VoxelGrid : MonoBehaviour
         markSurfaceVoxels();
         markNonSurface();
 
+        calculateLocalCenter();
+
         buildQuantizedVoxels();
 
         removeOfType(Voxel.Type.EXTERIOR);
@@ -67,6 +70,20 @@ public class VoxelGrid : MonoBehaviour
 
         addCulliderToQuantized();
         transform.rotation = rotation;
+    }
+    private void calculateLocalCenter()
+    {
+        Vector3 avg = Vector3.zero;
+        foreach (Voxel v in surfaceVoxels)
+        {
+            avg += v.transform.localPosition;
+        }
+        foreach (Voxel v in interiorVoxels)
+        {
+            avg += v.transform.localPosition;
+        }
+        avg /= surfaceVoxels.Count + interiorVoxels.Count;
+        localCenter = avg;
     }
 
     private void addCulliderToQuantized()
@@ -471,7 +488,7 @@ public class VoxelGrid : MonoBehaviour
 
     public Vector3 getVoxelsCenter()
     {
-        return transform.position; //Invalid for concave shapes
+        return transform.TransformPoint(localCenter);
         /*Vector3 avg = Vector3.zero;
         int count = 0;
         foreach (Voxel v in surfaceVoxels)
