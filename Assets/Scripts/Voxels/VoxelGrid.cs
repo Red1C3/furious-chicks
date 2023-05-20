@@ -6,6 +6,8 @@ using UnityMeshDecimation;
 
 public class VoxelGrid : MonoBehaviour
 {
+    [SerializeField]
+    private float friction;
     public GameObject voxelPrefab;
     private Vector3 origin;
     private float density;
@@ -94,7 +96,8 @@ public class VoxelGrid : MonoBehaviour
         // }
         for (int i = 0; i < quantizedVoxels.Count; i++)
         {
-            quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
+            var cullider=quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
+            cullider.setFriction(friction);
         }
     }
 

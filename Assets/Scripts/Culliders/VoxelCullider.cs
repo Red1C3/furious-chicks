@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class VoxelCullider : BoxCullider
 {
-
+    
     private Voxel voxel;
     protected override void Start()
     {
@@ -31,5 +31,7 @@ public class VoxelCullider : BoxCullider
     {
         return voxel.grid.GetComponent<RigidbodyDriver>();
     }
-
+    public void setFriction(float friction){
+        frictionCo=friction;
+    }
 }

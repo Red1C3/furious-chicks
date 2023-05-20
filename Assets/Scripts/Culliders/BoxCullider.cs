@@ -7,7 +7,7 @@ using UnityEngine;
 public class BoxCullider : MonoBehaviour, Cullider
 {
     [SerializeField]
-    private float frictionCo=0.0f;
+    protected float frictionCo=0.0f;
     public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
     private Vector3 boxCenter;
     private Vector3 size;
