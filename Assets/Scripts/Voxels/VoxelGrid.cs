@@ -513,7 +513,7 @@ public class VoxelGrid : MonoBehaviour
         identityInertiaTensor = float3x3.zero;
         Vector3 voxelsCenter = getVoxelsCenter();
 
-        float totalMass = GetComponent<Rigidbody>().mass;
+        float totalMass = GetComponent<RigidbodyDriver>().mass;
         float mass = totalMass / (surfaceVoxels.Count + interiorVoxels.Count);
 
         foreach (Voxel v in interiorVoxels)

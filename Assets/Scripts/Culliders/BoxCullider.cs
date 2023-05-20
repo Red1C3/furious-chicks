@@ -19,12 +19,11 @@ public class BoxCullider : MonoBehaviour, Cullider
     public Matrix4x4[] facesMats { get; protected set; }
 
     public static readonly float axisThreshold = 0.01f;
-
-    private Rigidbody rb;
+    private RigidbodyDriver rigidbodyDriver;
 
     protected virtual void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rigidbodyDriver=GetComponent<RigidbodyDriver>();
         facesMats = new Matrix4x4[6];
         edges = new Edge[12];
         updateBoundaries();
@@ -33,16 +32,6 @@ public class BoxCullider : MonoBehaviour, Cullider
     protected virtual void FixedUpdate()
     {
         updateBoundaries();
-    }
-
-    public Rigidbody getRigidbody()
-    {
-        Voxel voxel;
-        if (TryGetComponent<Voxel>(out voxel))
-        {
-            return voxel.grid.GetComponent<Rigidbody>();
-        }
-        return rb;
     }
     public virtual Bounds getBounds()
     {
@@ -644,7 +633,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     public virtual float3x3 getTensorInertia()
     {
         float3x3 tensor = float3x3.identity;
-        float mass = rb.mass;
+        float mass = rigidbodyDriver.mass;
         float h = transform.localScale.y;
         float d = transform.localScale.z;
         float w = transform.localScale.x;

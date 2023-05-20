@@ -9,11 +9,11 @@ public class SphereCullider : MonoBehaviour, Cullider
     private float frictionCo=0.0f;
     private float radius;
     private Vector3 center;
-    private Rigidbody rb;
+    private RigidbodyDriver rigidbodyDriver;
 
     void Start()
     {
-        rb=GetComponent<Rigidbody>();
+        rigidbodyDriver=GetComponent<RigidbodyDriver>();
         radius = transform.localScale.x / 2.0f;
         center = transform.position;
     }
@@ -21,10 +21,6 @@ public class SphereCullider : MonoBehaviour, Cullider
     void FixedUpdate()
     {
         center = transform.position;
-    }
-
-    public Rigidbody getRigidbody(){
-        return rb;
     }
 
     public Bounds getBounds(){
@@ -99,7 +95,7 @@ public class SphereCullider : MonoBehaviour, Cullider
 
     public float3x3 getTensorInertia()
     {
-        float diag=(2.0f/5.0f)*rb.mass*radius*radius;
+        float diag=(2.0f/5.0f)*rigidbodyDriver.mass*radius*radius;
 
         float3x3 tensor=float3x3.identity;
 

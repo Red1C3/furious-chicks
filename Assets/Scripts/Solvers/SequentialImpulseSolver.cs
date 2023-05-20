@@ -35,9 +35,9 @@ public class SequentialImpulseSolver : Solver
                     float12 jacobian = new float12(-normal, Vector3.Cross(normal, rA)
                                                 , normal, Vector3.Cross(-normal, rB));
 
-                    float12x12 inverseMass = new float12x12(1.0f / cullisions[i].first.getRigidbody().mass,
+                    float12x12 inverseMass = new float12x12(1.0f / cullisions[i].first.getRigidbodyDriver().mass,
                                                     1.0f / Shape.inertiaScalar(cullisions[i].first.getTensorInertia(), (Vector3.Cross(normal, rA))),
-                                                    1.0f / cullisions[i].second.getRigidbody().mass,
+                                                    1.0f / cullisions[i].second.getRigidbodyDriver().mass,
                                                     1.0f / Shape.inertiaScalar(cullisions[i].second.getTensorInertia(), (Vector3.Cross(-normal, rB))));
 
                     float12 velocities = new float12(cullisions[i].first.getRigidbodyDriver().velocity,

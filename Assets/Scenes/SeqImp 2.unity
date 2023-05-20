@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 41721061}
   - component: {fileID: 41721060}
   - component: {fileID: 41721065}
-  - component: {fileID: 41721064}
   m_Layer: 0
   m_Name: default (2)
   m_TagString: Untagged
@@ -156,13 +155,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4de731278230d7ebf8285ee4e9ead3ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  friction: 0
   voxelPrefab: {fileID: 8235633730404023840, guid: dfdb9286b7bad6f7cb55690d182f753f, type: 3}
   surfaceVoxels: []
   interiorVoxels: []
   exteriorVoxels: []
   quantizedVoxels: []
   displayDecimated: 0
-  displayVoxels: 1
+  displayVoxels: 0
 --- !u!23 &41721061
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -170,7 +170,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 41721059}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -228,33 +228,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &41721064
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 41721059}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &41721065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +240,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 1
+  useGravity: 1
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
 --- !u!1 &192219688
@@ -302,6 +277,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 1
+  useGravity: 1
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &192219690
@@ -343,6 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &192219692
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -468,6 +446,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 1
+  useGravity: 1
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
 --- !u!23 &222445990
@@ -547,6 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4de731278230d7ebf8285ee4e9ead3ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  friction: 0
   voxelPrefab: {fileID: 8235633730404023840, guid: dfdb9286b7bad6f7cb55690d182f753f, type: 3}
   surfaceVoxels: []
   interiorVoxels: []
@@ -587,6 +568,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 1
+  useGravity: 1
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &905872146
@@ -628,6 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361bc1eb76a414201b98e7213eed1f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &905872148
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1238,6 +1222,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 1
+  useGravity: 1
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &1617127128
@@ -1279,6 +1265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361bc1eb76a414201b98e7213eed1f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1617127130
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1356,7 +1343,6 @@ GameObject:
   - component: {fileID: 1769520633}
   - component: {fileID: 1769520632}
   - component: {fileID: 1769520631}
-  - component: {fileID: 1769520630}
   - component: {fileID: 1769520629}
   m_Layer: 0
   m_Name: Cube (2)
@@ -1377,35 +1363,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 1e+9
+  useGravity: 0
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
---- !u!54 &1769520630
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1769520628}
-  serializedVersion: 4
-  m_Mass: 1e+9
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &1769520631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1418,6 +1379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1769520632
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1663,6 +1625,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 1
+  useGravity: 1
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &1860656456
@@ -1704,6 +1668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frictionCo: 0
 --- !u!23 &1860656458
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -15,16 +15,15 @@ public class Throw : MonoBehaviour
 
     bool press = false, fired = false;
 
-    private Rigidbody rb;
+    private RigidbodyDriver rigidbodyDriver;
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, -force);
         cam.transform.position = new Vector3(0, 0, -(force+cameraAway));
 
-        rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
-        rb.useGravity = false;
+        rigidbodyDriver=GetComponent<RigidbodyDriver>();
+        rigidbodyDriver.useGravity = false;
 
         lineRenderer.SetPosition(0, Vector3.zero);
         lineRenderer.SetPosition(1, transform.position);
@@ -53,11 +52,11 @@ public class Throw : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E))
             {
                 fired = true;
-                rb.useGravity = true;
+                rigidbodyDriver.useGravity = true;
                 Vector3 distance = -transform.position;
                 float magnitude = distance.magnitude;
                 Vector3 direction = distance.normalized;
-                Vector3 Force = direction * magnitude * rb.mass;
+                Vector3 Force = direction * magnitude * rigidbodyDriver.mass;
                 GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity, ForceMode.Force);
                 GetComponent<RigidbodyDriver>().addForce(Force * 500, ForceMode.Impulse);
                 lineRenderer.enabled = false;

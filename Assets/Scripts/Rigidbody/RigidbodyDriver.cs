@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class RigidbodyDriver : MonoBehaviour
 {
+    public float mass=1.0f;
+    public bool useGravity=true;
     public Vector3 initialAngularVelocity; //In radians
     public Vector3 initialVelocity;
-    private Rigidbody rb;
     public Vector3 velocity { get; private set; }
     //w component is always 0
     private Quaternion angularVelocity;
@@ -19,19 +20,18 @@ public class RigidbodyDriver : MonoBehaviour
     private Vector3 acclumatedImpulses;
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
         shape = GetComponent<Shape>();
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
         velocity = initialVelocity;
-        if (rb.useGravity)
-            acclumatedForces += gravity*rb.mass;
+        if (useGravity)
+            acclumatedForces += gravity*mass;
     }
 
 
     public void applyForces()
     {
         Vector3 frameForces = acclumatedForces + acclumatedImpulses;
-        Vector3 acceleration = frameForces / rb.mass;
+        Vector3 acceleration = frameForces / mass;
         velocity += acceleration * Time.fixedDeltaTime;
         acclumatedImpulses = Vector3.zero;
     }
@@ -73,9 +73,9 @@ public class RigidbodyDriver : MonoBehaviour
 
     public void applyLinearMomentum(RigidbodyDriver other)
     {
-        float alpha = (rb.mass - other.rb.mass) / (rb.mass + other.rb.mass);
-        float beta = other.rb.mass / (rb.mass + other.rb.mass);
-        float gamma = rb.mass / (rb.mass + other.rb.mass);
+        float alpha = (mass - other.mass) / (mass + other.mass);
+        float beta = other.mass / (mass + other.mass);
+        float gamma = mass / (mass + other.mass);
 
         Vector3 newVelocity = alpha * velocity + 2 * beta * other.velocity;
         Vector3 newOtherVelocity = 2 * gamma * velocity - alpha * other.velocity;
