@@ -27,6 +27,8 @@ public class VoxelGrid : MonoBehaviour
 
     void Awake()
     {
+        Quaternion rotation = transform.rotation;
+        transform.rotation = Quaternion.identity;
         surfaceVoxels = new List<Voxel>();
         interiorVoxels = new List<Voxel>();
         exteriorVoxels = new List<Voxel>();
@@ -64,6 +66,7 @@ public class VoxelGrid : MonoBehaviour
         removeOfType(Voxel.Type.SURFACE);
 
         addCulliderToQuantized();
+        transform.rotation = rotation;
     }
 
     private void addCulliderToQuantized()
