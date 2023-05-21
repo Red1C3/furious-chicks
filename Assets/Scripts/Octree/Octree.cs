@@ -17,8 +17,8 @@ public class Octree
         }
     }
 
-    public void search(GameObject player,Solver solver){
-        rootNode.search(player,solver);
+    public void search(GameObject player,mainGo mainGo){
+        rootNode.search(player,mainGo);
     }
 
     public void Update(List<GameObject> world,float minNodeSize){

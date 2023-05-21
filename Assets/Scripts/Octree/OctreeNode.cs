@@ -68,15 +68,15 @@ public class OctreeNode
         return (c.first!=null && c.second!=null);
     }
 
-    public void search(GameObject player,Solver solver){   
-        Bounds bounds = player.GetComponent<Cullider>().getBounds();  
+    public void search(GameObject mainGo,Solver solver){   
+        Bounds bounds = mainGo.GetComponent<Cullider>().getBounds();  
         if(!Intersects(bounds)){
             return;
         }      
         if(child==null){
-            Cullider firstGo = player.GetComponent<Cullider>();
+            Cullider firstGo = mainGo.GetComponent<Cullider>();
             foreach(GameObject go in gos){
-                if(go == player || bothAreVoxelsBelongingToSameGrid(go,player)) continue;
+                if(go == mainGo || bothAreVoxelsBelongingToSameGrid(go,mainGo)) continue;
 
                 Cullider secondGo = go.GetComponent<Cullider>();
                 if(!notNull(CreateOctree.culls.Find(x => (x.first==secondGo && firstGo==x.second)))
@@ -92,7 +92,7 @@ public class OctreeNode
         {
             for (int i = 0; i < 8; i++)
             {
-                child[i].search(player,solver);
+                child[i].search(mainGo,solver);
             }       
         }
     }
