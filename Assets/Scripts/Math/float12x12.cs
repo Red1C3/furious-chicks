@@ -3,10 +3,13 @@ using UnityEngine;
 public struct float12x12
 {
     public float[,] floats;
-    private static float12 medium;
+    private static float12 medium, result0, result1;
     public float12x12(float firstThreeDiag, float secondThreeDiag, float thirdThreeDiag, float fourthThreeDiag)
     {
         if (medium.floats == null) medium.floats = new float[12];
+        if (result0.floats == null) result0.floats = new float[12];
+        if (result1.floats == null) result1.floats = new float[12];
+
         floats = new float[12, 12];
         for (int i = 0; i < 3; i++)
         {
@@ -28,15 +31,12 @@ public struct float12x12
 
     public static float12 operator *(float12 vec, float12x12 mat)
     {
-        float12 res = new float12();
-        res.floats = new float[12];
-
         for (int i = 0; i < 12; i++)
         {
-            res.floats[i] = rowColMult(vec, mat.column(i));
+            result0.floats[i] = rowColMult(vec, mat.column(i));
         }
 
-        return res;
+        return result0;
     }
 
     public static float12 operator *(float12x12 mat, float12 vec)
