@@ -68,23 +68,25 @@ public class OctreeNode
         return (c.first!=null && c.second!=null);
     }
 
-    public void search(GameObject player,Solver solver){        
+    public void search(GameObject player,Solver solver){   
         Bounds bounds = player.GetComponent<Cullider>().getBounds();  
         if(!Intersects(bounds)){
             return;
         }      
         if(child==null){
+            Cullider firstGo = player.GetComponent<Cullider>();
             foreach(GameObject go in gos){
-                if(go == player)
-                    continue;
-                if(bothAreVoxelsBelongingToSameGrid(go,player)) continue;
+                if(go == player || bothAreVoxelsBelongingToSameGrid(go,player)) continue;
 
-                
-                CullisionInfo returned = player.GetComponent<Cullider>().cullideWith(go.GetComponent<Cullider>());
-                CullisionInfo swaped = CreateOctree.culls.Find(x => (x.first==returned.second && returned.first==x.second));
-                CullisionInfo duplicated = CreateOctree.culls.Find(x => (x.first==returned.first && returned.second==x.second));
-                if(notNull(returned) && !notNull(swaped)&& !notNull(duplicated))
-                    CreateOctree.culls.Add(returned);
+                Cullider secondGo = go.GetComponent<Cullider>();
+                if(!notNull(CreateOctree.culls.Find(x => (x.first==secondGo && firstGo==x.second)))
+                && !notNull(CreateOctree.culls.Find(x => (x.first==firstGo && secondGo==x.second)))){
+                    CullisionInfo returned = firstGo.cullideWith(secondGo);
+                    x++;
+                    if(notNull(returned)){
+                        CreateOctree.culls.Add(returned);
+                    }
+                }
             } 
         }
         else
