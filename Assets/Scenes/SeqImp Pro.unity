@@ -810,7 +810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 1
-  useGravity: 0
+  useGravity: 1
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
 --- !u!114 &1091210394
@@ -1326,7 +1326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 1e+9
+  mass: 1
   useGravity: 0
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
