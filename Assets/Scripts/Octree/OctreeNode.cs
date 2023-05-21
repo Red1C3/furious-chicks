@@ -82,7 +82,6 @@ public class OctreeNode
                 if(!notNull(CreateOctree.culls.Find(x => (x.first==secondGo && firstGo==x.second)))
                 && !notNull(CreateOctree.culls.Find(x => (x.first==firstGo && secondGo==x.second)))){
                     CullisionInfo returned = firstGo.cullideWith(secondGo);
-                    x++;
                     if(notNull(returned)){
                         CreateOctree.culls.Add(returned);
                     }
