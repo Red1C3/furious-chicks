@@ -22,7 +22,7 @@ public class Octree
     }
 
     public void Update(List<GameObject> world,float minNodeSize){
-        Bounds bounds = new Bounds();
+        Bounds bounds = new Bounds(world[0].GetComponent<Cullider>().getBounds().center,world[0].GetComponent<Cullider>().getBounds().size);
         foreach (GameObject go in world)
         {
             bounds.Encapsulate(go.GetComponent<Cullider>().getBounds());
