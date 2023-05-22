@@ -8,9 +8,9 @@ public class FrictionSeqImpSolver : Solver
     [SerializeField]
     private int iterations = 50; //Higher gives better accuracy but needs more cpu power
 
-    const float biasFactor = 0.15f;
-    const float depthThreshold = 0.01f;
-
+    private const float biasFactor = 0.15f;
+    private const float depthThreshold = 0.01f;
+    private static float12 jacobian = new float12(0, 0, 0, 0), jacobianT1 = new float12(0, 0, 0, 0), jacobianT2 = new float12(0, 0, 0, 0);
 
     public override void resolveCullision(CullisionInfo[] cullisions)
     {
@@ -37,8 +37,8 @@ public class FrictionSeqImpSolver : Solver
                     Vector3 rA = cullisions[i].contactPointsA[j] - cullisions[i].first.center();
                     Vector3 rB = cullisions[i].contactPointsB[j] - cullisions[i].second.center();
 
-                    float12 jacobian = new float12(-normal, Vector3.Cross(-rA, normal)
-                                                , normal, Vector3.Cross(rB, normal));
+                    jacobian.set(-normal, Vector3.Cross(-rA, normal)
+                                , normal, Vector3.Cross(rB, normal));
 
                     float12x12 inverseMass = new float12x12(1.0f / cullisions[i].first.getRigidbodyDriver().mass,
                                                     1.0f / Shape.inertiaScalar(cullisions[i].first.getTensorInertia(), (Vector3.Cross(-rA, normal))),
@@ -64,11 +64,11 @@ public class FrictionSeqImpSolver : Solver
                     cullisions[i].second.getRigidbodyDriver().addLinearVelocity(new Vector3(deltaV.floats[6], deltaV.floats[7], deltaV.floats[8]));
                     cullisions[i].second.getRigidbodyDriver().addAngularVelocity(new Vector3(deltaV.floats[9], deltaV.floats[10], deltaV.floats[11]));
 
-                    float12 jacobianT1 = new float12(-t1, Vector3.Cross(-rA, t1),
-                                            t1, Vector3.Cross(rB, t1));
+                    jacobianT1.set(-t1, Vector3.Cross(-rA, t1),
+                                    t1, Vector3.Cross(rB, t1));
 
-                    float12 jacobianT2 = new float12(-t2, Vector3.Cross(-rA, t2),
-                                            t2, Vector3.Cross(rB, t2));
+                    jacobianT2.set(-t2, Vector3.Cross(-rA, t2),
+                                    t2, Vector3.Cross(rB, t2));
 
                     float lambdaT1 = -(float12x12.rowColMult(jacobianT1, velocities)) / (float12x12.rowColMult((jacobianT1 * inverseMass), jacobianT1));
 
