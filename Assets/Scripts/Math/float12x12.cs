@@ -3,7 +3,7 @@ using UnityEngine;
 public struct float12x12
 {
     public float[,] floats;
-    private static float12 medium, result0, result1;
+    private static float12 medium, result0, result1;    
     public float12x12(float firstThreeDiag, float secondThreeDiag, float thirdThreeDiag, float fourthThreeDiag)
     {
         if (medium.floats == null) medium.floats = new float[12];
@@ -46,13 +46,11 @@ public struct float12x12
 
     public static float12 operator *(float12x12 mat, float12 vec)
     {
-        float12 res = new float12();
-        res.floats = new float[12];
         for (int i = 0; i < 12; i++)
         {
-            res.floats[i] = rowColMult(mat.row(i), vec);
+            result1.floats[i] = rowColMult(mat.row(i), vec);
         }
-        return res;
+        return result1;
     }
     //Uses static medium, may not be used with another expression that uses it
     private float12 column(int i)

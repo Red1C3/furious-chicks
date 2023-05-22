@@ -96,13 +96,13 @@ public class FrictionSeqImpSolver : Solver
 
 
                     float12 deltaVT1 = inverseMass * jacobianT1 * lambdaT1;
-                    float12 deltaVT2 = inverseMass * jacobianT2 * lambdaT2;
 
                     cullisions[i].first.getRigidbodyDriver().addLinearVelocity(new Vector3(deltaVT1.floats[0], deltaVT1.floats[1], deltaVT1.floats[2]));
                     cullisions[i].first.getRigidbodyDriver().addAngularVelocity(new Vector3(deltaVT1.floats[3], deltaVT1.floats[4], deltaVT1.floats[5]));
                     cullisions[i].second.getRigidbodyDriver().addLinearVelocity(new Vector3(deltaVT1.floats[6], deltaVT1.floats[7], deltaVT1.floats[8]));
                     cullisions[i].second.getRigidbodyDriver().addAngularVelocity(new Vector3(deltaVT1.floats[9], deltaVT1.floats[10], deltaVT1.floats[11]));
 
+                    float12 deltaVT2 = inverseMass * jacobianT2 * lambdaT2;
                     cullisions[i].first.getRigidbodyDriver().addLinearVelocity(new Vector3(deltaVT2.floats[0], deltaVT2.floats[1], deltaVT2.floats[2]));
                     cullisions[i].first.getRigidbodyDriver().addAngularVelocity(new Vector3(deltaVT2.floats[3], deltaVT2.floats[4], deltaVT2.floats[5]));
                     cullisions[i].second.getRigidbodyDriver().addLinearVelocity(new Vector3(deltaVT2.floats[6], deltaVT2.floats[7], deltaVT2.floats[8]));
