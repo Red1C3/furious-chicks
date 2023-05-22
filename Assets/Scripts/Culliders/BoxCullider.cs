@@ -7,7 +7,7 @@ using UnityEngine;
 public class BoxCullider : MonoBehaviour, Cullider
 {
     [SerializeField]
-    protected float frictionCo=0.0f;
+    protected float frictionCo = 0.0f;
     public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
     private Vector3 boxCenter;
     private Vector3 size;
@@ -23,7 +23,7 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     protected virtual void Start()
     {
-        rigidbodyDriver=GetComponent<RigidbodyDriver>();
+        rigidbodyDriver = GetComponent<RigidbodyDriver>();
         facesMats = new Matrix4x4[6];
         edges = new Edge[12];
         updateBoundaries();
@@ -197,6 +197,17 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
 
         List<Tuple<Edge, Edge>> contactEdges = new List<Tuple<Edge, Edge>>();
+        bool[] thisEdgeValid = new bool[12];
+        bool[] otherEdgeValid = new bool[12];
+        for (int i = 0; i < edges.Length; i++)
+        {
+            thisEdgeValid[i] = isEdgeValid(other, edges[i]);
+        }
+        for (int i = 0; i < other.edges.Length; i++)
+        {
+            otherEdgeValid[i] = isEdgeValid(this, other.edges[i]);
+        }
+
 
         for (int i = 0; i < edges.Length; i++)
         {
@@ -206,11 +217,11 @@ public class BoxCullider : MonoBehaviour, Cullider
                 {
                     return CullisionInfo.NO_CULLISION;
                 }
-                else if (isEdgeContact && isEdgeValid(other, edges[i]) && isEdgeValid(this, other.edges[j]) && (math.abs(overlap - tempOverlap)) < math.EPSILON)
+                else if (isEdgeContact && thisEdgeValid[i] && otherEdgeValid[j] && (math.abs(overlap - tempOverlap)) < math.EPSILON)
                 {
                     contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
                 }
-                else if (isEdgeValid(other, edges[i]) && isEdgeValid(this, other.edges[j]))
+                else if (thisEdgeValid[i] && otherEdgeValid[j])
                 {
                     if (tempOverlap < overlap)
                     {
