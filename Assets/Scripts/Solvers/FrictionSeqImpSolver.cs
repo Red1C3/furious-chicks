@@ -11,7 +11,8 @@ public class FrictionSeqImpSolver : Solver
     private const float biasFactor = 0.15f;
     private const float depthThreshold = 0.01f;
     private static float12 jacobian = new float12(0, 0, 0, 0), jacobianT1 = new float12(0, 0, 0, 0), jacobianT2 = new float12(0, 0, 0, 0);
-
+    private static float12 velocities = new float12(0, 0, 0, 0);
+    private static float12x12 inverseMass = new float12x12(0, 0, 0, 0);
     public override void resolveCullision(CullisionInfo[] cullisions)
     {
         for (int iter = 0; iter < iterations; iter++)
@@ -40,15 +41,15 @@ public class FrictionSeqImpSolver : Solver
                     jacobian.set(-normal, Vector3.Cross(-rA, normal)
                                 , normal, Vector3.Cross(rB, normal));
 
-                    float12x12 inverseMass = new float12x12(1.0f / cullisions[i].first.getRigidbodyDriver().mass,
-                                                    1.0f / Shape.inertiaScalar(cullisions[i].first.getTensorInertia(), (Vector3.Cross(-rA, normal))),
-                                                    1.0f / cullisions[i].second.getRigidbodyDriver().mass,
-                                                    1.0f / Shape.inertiaScalar(cullisions[i].second.getTensorInertia(), (Vector3.Cross(rB, normal))));
+                    inverseMass.set(1.0f / cullisions[i].first.getRigidbodyDriver().mass,
+                                    1.0f / Shape.inertiaScalar(cullisions[i].first.getTensorInertia(), (Vector3.Cross(-rA, normal))),
+                                    1.0f / cullisions[i].second.getRigidbodyDriver().mass,
+                                    1.0f / Shape.inertiaScalar(cullisions[i].second.getTensorInertia(), (Vector3.Cross(rB, normal))));
 
-                    float12 velocities = new float12(cullisions[i].first.getRigidbodyDriver().velocity,
-                                                    cullisions[i].first.getRigidbodyDriver().getAngularVelocity(),
-                                                    cullisions[i].second.getRigidbodyDriver().velocity,
-                                                    cullisions[i].second.getRigidbodyDriver().getAngularVelocity());
+                    velocities.set(cullisions[i].first.getRigidbodyDriver().velocity,
+                                    cullisions[i].first.getRigidbodyDriver().getAngularVelocity(),
+                                    cullisions[i].second.getRigidbodyDriver().velocity,
+                                    cullisions[i].second.getRigidbodyDriver().getAngularVelocity());
 
                     float lambda = -(float12x12.rowColMult(jacobian, velocities) + bias) / (float12x12.rowColMult((jacobian * inverseMass), jacobian));
 

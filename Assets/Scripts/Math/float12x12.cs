@@ -11,6 +11,11 @@ public struct float12x12
         if (result1.floats == null) result1.floats = new float[12];
 
         floats = new float[12, 12];
+        set(firstThreeDiag, secondThreeDiag, thirdThreeDiag, fourthThreeDiag);
+    }
+    public void set(float firstThreeDiag, float secondThreeDiag, float thirdThreeDiag, float fourthThreeDiag)
+    {
+        if (floats == null) return;
         for (int i = 0; i < 3; i++)
         {
             floats[i, i] = firstThreeDiag;
