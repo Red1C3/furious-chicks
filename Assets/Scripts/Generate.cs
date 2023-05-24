@@ -20,7 +20,7 @@ public class Generate : MonoBehaviour
 
             cubes[3].GetComponent<RigidbodyDriver>().initialVelocity = new Vector3( size/10.0f+0.2f ,0,  size/10.0f+0.2f);
             cubes[2].GetComponent<RigidbodyDriver>().initialVelocity = new Vector3( size/10.0f+0.2f ,0, -size/10.0f-0.2f);
-            cubes[1].GetComponent<RigidbodyDriver>().initialVelocity = new Vector3(-size/10.0f-0.2f ,0,  size/10.0f+0.5f);
+            cubes[1].GetComponent<RigidbodyDriver>().initialVelocity = new Vector3(-size/10.0f-0.2f ,0,  size/10.0f+0.2f);
             cubes[0].GetComponent<RigidbodyDriver>().initialVelocity = new Vector3(-size/10.0f-0.2f ,0, -size/10.0f-0.2f);
         }
         else
