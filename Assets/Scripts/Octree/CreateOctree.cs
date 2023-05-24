@@ -7,7 +7,7 @@ public class CreateOctree : MonoBehaviour
     public Solver solver;
     GameObject player,Ground;
     Octree octree;
-    public static int nodeMinSize = 10;
+    public static int nodeMinSize = 1;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     private List<GameObject> cullidingObject;
@@ -34,8 +34,12 @@ public class CreateOctree : MonoBehaviour
                 cullidingObject.Add(gameObject);
             }
         }
-
-        octree = new Octree(cullidingObject, nodeMinSize);
+        if(nodeMinSize==0){
+            octree = new Octree(cullidingObject);
+            Debug.Log("Node Size: "+nodeMinSize);
+        }
+        else
+            octree = new Octree(cullidingObject,nodeMinSize);
     }
 
     void OnDrawGizmos()
@@ -74,12 +78,14 @@ public class CreateOctree : MonoBehaviour
 
         int cullidingObjectN = cullidingObject.Count;
         if(2 * cullidingObjectN < allObjectsN){
+            Debug.Log("Expand");
             if(nodeMinSize > 10)
                 nodeMinSize += (int) Mathf.Ceil(nodeMinSize / 2);
             else
                 nodeMinSize += 1;
         }
         if(2 * cullidingObjectN < nodeMinSize * maxNodeObjectN){
+            Debug.Log("Shrinking");
             if(nodeMinSize > 10)
                 nodeMinSize -= (int) Mathf.Ceil(nodeMinSize / 2);
             else

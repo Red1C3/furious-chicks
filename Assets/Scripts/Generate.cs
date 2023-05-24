@@ -7,7 +7,7 @@ public class Generate : MonoBehaviour
     public GameObject ground;
     public GameObject[] cubes;
     public int size;
-    public bool shrink=true;
+    public bool shrink=true,dynamicStart=false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -36,6 +36,8 @@ public class Generate : MonoBehaviour
             cubes[0].GetComponent<RigidbodyDriver>().initialVelocity = new Vector3(+size/10.0f+0.2f ,0, +size/10.0f+0.2f);
         
         }
+        if(dynamicStart)
+            CreateOctree.nodeMinSize=0;
     }
 
 
