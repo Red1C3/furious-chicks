@@ -10,6 +10,8 @@ public class CreateOctree : MonoBehaviour
     public static int nodeMinSize = 1;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
+    bool lastActionIsShrink=false;
+
     private List<GameObject> cullidingObject;
     public static List<CullisionInfo> culls = new List<CullisionInfo>();
 
@@ -77,14 +79,14 @@ public class CreateOctree : MonoBehaviour
         }
 
         int cullidingObjectN = cullidingObject.Count;
-        if(2 * cullidingObjectN < allObjectsN){
+        if((lastActionIsShrink && 2 * cullidingObjectN < allObjectsN) || (4 * cullidingObjectN < allObjectsN)){
             Debug.Log("Expand");
             if(nodeMinSize > 10)
                 nodeMinSize += (int) Mathf.Ceil(nodeMinSize / 2);
             else
                 nodeMinSize += 1;
         }
-        if(2 * cullidingObjectN < nodeMinSize * maxNodeObjectN){
+        if((!lastActionIsShrink && 2 * cullidingObjectN < nodeMinSize * maxNodeObjectN) || (2 * cullidingObjectN < nodeMinSize * maxNodeObjectN)){
             Debug.Log("Shrinking");
             if(nodeMinSize > 10)
                 nodeMinSize -= (int) Mathf.Ceil(nodeMinSize / 2);
