@@ -3,7 +3,7 @@ using UnityEngine;
 public struct float12x12
 {
     public float[,] floats;
-    private static float12 medium, result0, result1;    
+    private static float12 medium, result0, result1;
     public float12x12(float firstThreeDiag, float secondThreeDiag, float thirdThreeDiag, float fourthThreeDiag)
     {
         if (medium.floats == null) medium.floats = new float[12];
@@ -32,6 +32,22 @@ public struct float12x12
         {
             floats[i, i] = fourthThreeDiag;
         }
+    }
+    public void set(Vector3 firstDiag, Vector3 secondDiag, Vector3 thirdDiag, Vector3 fourthDiag)
+    {
+        if (floats == null) return;
+        floats[0, 0] = firstDiag.x;
+        floats[1, 1] = firstDiag.y;
+        floats[2, 2] = firstDiag.z;
+        floats[3, 3] = secondDiag.x;
+        floats[4, 4] = secondDiag.y;
+        floats[5, 5] = secondDiag.z;
+        floats[6, 6] = thirdDiag.x;
+        floats[7, 7] = thirdDiag.y;
+        floats[8, 8] = thirdDiag.z;
+        floats[9, 9] = fourthDiag.x;
+        floats[10, 10] = fourthDiag.y;
+        floats[11, 11] = fourthDiag.z;
     }
 
     public static float12 operator *(float12 vec, float12x12 mat)

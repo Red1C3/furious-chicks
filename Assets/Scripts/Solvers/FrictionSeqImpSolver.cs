@@ -41,10 +41,10 @@ public class FrictionSeqImpSolver : Solver
                     jacobian.set(-normal, Vector3.Cross(-rA, normal)
                                 , normal, Vector3.Cross(rB, normal));
 
-                    inverseMass.set(1.0f / cullisions[i].first.getRigidbodyDriver().mass,
-                                    1.0f / Shape.inertiaScalar(cullisions[i].first.getTensorInertia(), (Vector3.Cross(-rA, normal))),
-                                    1.0f / cullisions[i].second.getRigidbodyDriver().mass,
-                                    1.0f / Shape.inertiaScalar(cullisions[i].second.getTensorInertia(), (Vector3.Cross(rB, normal))));
+                    inverseMass.set(cullisions[i].first.getRigidbodyDriver().getInverseMassVector3(),
+                                    cullisions[i].first.getRigidbodyDriver().getInverseInertiaVector3((Vector3.Cross(-rA, normal))),
+                                    cullisions[i].second.getRigidbodyDriver().getInverseMassVector3(),
+                                    cullisions[i].second.getRigidbodyDriver().getInverseInertiaVector3((Vector3.Cross(rB, normal))));
 
                     velocities.set(cullisions[i].first.getRigidbodyDriver().velocity,
                                     cullisions[i].first.getRigidbodyDriver().getAngularVelocity(),

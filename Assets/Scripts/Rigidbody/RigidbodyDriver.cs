@@ -5,13 +5,39 @@ using UnityEngine;
 
 public class RigidbodyDriver : MonoBehaviour
 {
-    public float mass=1.0f;
-    public bool useGravity=true;
+    [SerializeField]
+    private bool freezePX, freezePY, freezePZ, freezeRX, freezeRY, freezeRZ;
+    public float mass = 1.0f;
+    public bool useGravity = true;
     public Vector3 initialAngularVelocity; //In radians
     public Vector3 initialVelocity;
-    public Vector3 velocity { get; private set; }
+    private Vector3 _velocity;
+    public Vector3 velocity
+    {
+        get
+        {
+            Vector3 v = Vector3.zero;
+            if (!freezePX) v.x = _velocity.x;
+            if (!freezePY) v.y = _velocity.y;
+            if (!freezePZ) v.z = _velocity.z;
+            return v;
+        }
+        private set { _velocity = value; }
+    }
+    private Quaternion _angularVelocity;
     //w component is always 0
-    private Quaternion angularVelocity;
+    private Quaternion angularVelocity
+    {
+        get
+        {
+            Quaternion q = new Quaternion(0, 0, 0, 0);
+            if (!freezeRX) q.x = _angularVelocity.x;
+            if (!freezeRY) q.y = _angularVelocity.y;
+            if (!freezeRZ) q.z = _angularVelocity.z;
+            return q;
+        }
+        set { _angularVelocity = value; }
+    }
     public readonly static Vector3 gravity = new Vector3(0, -9.8f, 0);
 
     private Shape shape;
@@ -24,7 +50,7 @@ public class RigidbodyDriver : MonoBehaviour
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
         velocity = initialVelocity;
         if (useGravity)
-            acclumatedForces += gravity*mass;
+            acclumatedForces += gravity * mass;
     }
 
 
@@ -115,9 +141,11 @@ public class RigidbodyDriver : MonoBehaviour
 
     public void addAngularVelocity(Vector3 vector3)
     {
-        angularVelocity.x += vector3.x;
-        angularVelocity.y += vector3.y;
-        angularVelocity.z += vector3.z;
+        Quaternion aVelocity = angularVelocity;
+        aVelocity.x += vector3.x;
+        aVelocity.y += vector3.y;
+        aVelocity.z += vector3.z;
+        angularVelocity = aVelocity;
     }
     public void addLinearVelocity(Vector3 vector3)
     {
@@ -147,5 +175,27 @@ public class RigidbodyDriver : MonoBehaviour
                 Debug.Log("unsupported force mode passed to Rigidbody.addForce");
                 break;
         }
+    }
+    public Vector3 getInverseMassVector3()
+    {
+        Vector3 inverseMassVector3 = Vector3.zero;
+        if (freezePX && freezePY && freezePZ) return inverseMassVector3;
+        
+        float inverseMass = 1.0f / mass;
+        if (!freezePX) inverseMassVector3.x = inverseMass;
+        if (!freezePY) inverseMassVector3.y = inverseMass;
+        if (!freezePZ) inverseMassVector3.z = inverseMass;
+        return inverseMassVector3;
+    }
+    public Vector3 getInverseInertiaVector3(float3 axis)
+    {
+        Vector3 inverseInertiaVector3 = Vector3.zero;
+        if (freezeRX && freezeRY && freezeRZ) return inverseInertiaVector3;
+
+        float inverseInertiaScalar = 1.0f / Shape.inertiaScalar(getInertiaTensor(), axis);
+        if (!freezeRX) inverseInertiaVector3.x = inverseInertiaScalar;
+        if (!freezeRY) inverseInertiaVector3.y = inverseInertiaScalar;
+        if (!freezeRZ) inverseInertiaVector3.z = inverseInertiaScalar;
+        return inverseInertiaVector3;
     }
 }
