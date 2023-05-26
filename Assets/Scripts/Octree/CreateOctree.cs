@@ -38,7 +38,6 @@ public class CreateOctree : MonoBehaviour
         }
         if(nodeMinSize==0){
             octree = new Octree(cullidingObject);
-            Debug.Log("Node Size: "+nodeMinSize);
         }
         else
             octree = new Octree(cullidingObject,nodeMinSize);
@@ -80,14 +79,12 @@ public class CreateOctree : MonoBehaviour
 
         int cullidingObjectN = cullidingObject.Count;
         if((lastActionIsShrink && 2 * cullidingObjectN < allObjectsN) || (4 * cullidingObjectN < allObjectsN)){
-            Debug.Log("Expand");
             if(nodeMinSize > 10)
                 nodeMinSize += (int) Mathf.Ceil(nodeMinSize / 2);
             else
                 nodeMinSize += 1;
         }
         if((!lastActionIsShrink && 2 * cullidingObjectN < nodeMinSize * maxNodeObjectN) || (2 * cullidingObjectN < nodeMinSize * maxNodeObjectN)){
-            Debug.Log("Shrinking");
             if(nodeMinSize > 10)
                 nodeMinSize -= (int) Mathf.Ceil(nodeMinSize / 2);
             else
