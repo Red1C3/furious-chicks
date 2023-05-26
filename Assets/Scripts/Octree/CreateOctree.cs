@@ -7,7 +7,7 @@ public class CreateOctree : MonoBehaviour
     public Solver solver;
     GameObject player,Ground;
     Octree octree;
-    public static int nodeMinSize = 1;
+    public static int nodeMinSize = 0;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     bool lastActionIsShrink=false;
