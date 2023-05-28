@@ -28,9 +28,6 @@ public class FrictionSeqImpSolver : Solver
                         Debug.Log(cullisions[i]);
                     }
 
-                    float bias = 0;
-                    if (math.abs(cullisions[i].depth) > depthThreshold)
-                        bias = -biasFactor * math.abs(cullisions[i].depth) / Time.fixedDeltaTime;
 
                     Vector3 normal = cullisions[i].normal.normalized;
                     Vector3 t1 = cullisions[i].t1;
@@ -50,6 +47,21 @@ public class FrictionSeqImpSolver : Solver
                                     cullisions[i].first.getRigidbodyDriver().getAngularVelocity(),
                                     cullisions[i].second.getRigidbodyDriver().velocity,
                                     cullisions[i].second.getRigidbodyDriver().getAngularVelocity());
+
+
+                    float bias = 0;
+                    if (math.abs(cullisions[i].depth) > depthThreshold)
+                    {
+                        float cR = 1.0f;
+                        Vector3 wRA=Vector3.Cross(cullisions[i].first.getRigidbodyDriver().getAngularVelocity(),rA);
+                        Vector3 wRB=Vector3.Cross(cullisions[i].second.getRigidbodyDriver().getAngularVelocity(),rB);
+                        Vector3 vA=cullisions[i].first.getRigidbodyDriver().velocity;
+                        Vector3 vB=cullisions[i].second.getRigidbodyDriver().velocity;
+                        float bouncinessTerm=Vector3.Dot(-vA-wRA+vB+wRB,normal);
+                        bouncinessTerm*=cR;
+                        bias = (-biasFactor * math.abs(cullisions[i].depth) / Time.fixedDeltaTime)+bouncinessTerm;
+                    }
+
 
                     float lambda = -(float12x12.rowColMult(jacobian, velocities) + bias) / (float12x12.rowColMult((jacobian * inverseMass), jacobian));
 
