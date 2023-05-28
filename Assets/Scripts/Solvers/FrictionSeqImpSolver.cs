@@ -85,11 +85,11 @@ public class FrictionSeqImpSolver : Solver
 
                     cullisions[i].tangentImpulseSum1 = math.clamp(cullisions[i].tangentImpulseSum1,
                                                                  -cf * cullisions[i].normalImpulseSum,
-                                                                 cf * cullisions[i].normalImpulseSum);
+                                                                 cf * cullisions[i].normalImpulseSum + math.EPSILON);
 
                     cullisions[i].tangentImpulseSum2 = math.clamp(cullisions[i].tangentImpulseSum2,
                                                                                      -cf * cullisions[i].normalImpulseSum,
-                                                                                     cf * cullisions[i].normalImpulseSum);
+                                                                                     cf * cullisions[i].normalImpulseSum + math.EPSILON);
 
                     lambdaT1 = cullisions[i].tangentImpulseSum1 - tangentImpulseSum1Copy;
                     lambdaT2 = cullisions[i].tangentImpulseSum2 - tangentImpulseSum2Copy;
