@@ -5,7 +5,7 @@ using UnityEngine;
 public class CreateOctree : MonoBehaviour
 {
     public Solver solver;
-    GameObject player,Ground;
+    GameObject player,ground;
     Octree octree;
     public static int nodeMinSize = 0;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
@@ -27,7 +27,7 @@ public class CreateOctree : MonoBehaviour
                 continue;
             }
             else if(gameObject.tag=="Ground"){
-                Ground=gameObject;
+                ground=gameObject;
                 continue;
             }
             Cullider cullider;
@@ -63,7 +63,7 @@ public class CreateOctree : MonoBehaviour
         }
 
         octree.search(player, solver);
-        octree.search(Ground, solver);
+        octree.search(ground, solver);
 
         foreach (GameObject go in cullidingObject)
         {
