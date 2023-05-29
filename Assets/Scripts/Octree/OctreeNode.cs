@@ -64,8 +64,8 @@ public class OctreeNode
         return nodeBounds.Intersects(bounds);
     }
 
-    public bool notNull(CullisionInfo c){
-        return (c.first!=null && c.second!=null);
+    public bool isNull(CullisionInfo c){
+        return (c.first==null || c.second==null);
     }
 
     public void search(GameObject mainGo,Solver solver){   
@@ -79,10 +79,10 @@ public class OctreeNode
                 if(go == mainGo || bothAreVoxelsBelongingToSameGrid(go,mainGo)) continue;
 
                 Cullider secondGo = go.GetComponent<Cullider>();
-                if(!notNull(CreateOctree.culls.Find(x => (x.first==secondGo && firstGo==x.second)))
-                && !notNull(CreateOctree.culls.Find(x => (x.first==firstGo && secondGo==x.second)))){
+                if(isNull(CreateOctree.culls.Find(x => (x.first==secondGo && firstGo==x.second)))
+                && isNull(CreateOctree.culls.Find(x => (x.first==firstGo && secondGo==x.second)))){
                     CullisionInfo returned = firstGo.cullideWith(secondGo);
-                    if(notNull(returned)){
+                    if(!isNull(returned)){
                         CreateOctree.culls.Add(returned);
                     }
                 }
