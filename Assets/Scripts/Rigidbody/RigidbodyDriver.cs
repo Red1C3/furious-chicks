@@ -8,7 +8,7 @@ public class RigidbodyDriver : MonoBehaviour
     [SerializeField]
     private bool freezePX, freezePY, freezePZ, freezeRX, freezeRY, freezeRZ;
     [SerializeField]
-    private bool startFrozen = false;
+    private bool startFrozen = true;
     public bool psudoFreeze { get; private set; }
     public float mass = 1.0f;
     public bool useGravity = true;
@@ -51,7 +51,8 @@ public class RigidbodyDriver : MonoBehaviour
     private Vector3 acclumatedImpulses;
     void Start()
     {
-        psudoFreeze = startFrozen;
+        if (gameObject.tag != "Player")
+            psudoFreeze = startFrozen;
         shape = GetComponent<Shape>();
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
         velocity = initialVelocity;
