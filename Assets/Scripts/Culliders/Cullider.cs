@@ -8,6 +8,7 @@ public interface Cullider : Shape
     Bounds getBounds();
     RigidbodyDriver getRigidbodyDriver();
     float getFrictionCo();
+    float getBouncinessCo();
 }
 
 public struct CullisionInfo

@@ -7,6 +7,8 @@ public class SphereCullider : MonoBehaviour, Cullider
 {
     [SerializeField]
     private float frictionCo=0.0f;
+    [SerializeField]
+    private float bouncinessCo=0.0f;
     private float radius;
     private Vector3 center;
     private RigidbodyDriver rigidbodyDriver;
@@ -119,5 +121,8 @@ public class SphereCullider : MonoBehaviour, Cullider
     public float getFrictionCo()
     {
         return frictionCo;
+    }
+    public float getBouncinessCo(){
+        return bouncinessCo;
     }
 }

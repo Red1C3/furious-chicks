@@ -50,7 +50,7 @@ public class FrictionSeqImpSolver : Solver
 
 
                     float bias = 0;
-                    float cR = 1.0f;
+                    float cR = (cullisions[i].first.getBouncinessCo() + cullisions[i].second.getBouncinessCo()) / 2.0f;
                     Vector3 wRA = Vector3.Cross(cullisions[i].first.getRigidbodyDriver().getAngularVelocity(), rA);
                     Vector3 wRB = Vector3.Cross(cullisions[i].second.getRigidbodyDriver().getAngularVelocity(), rB);
                     Vector3 vA = cullisions[i].first.getRigidbodyDriver().velocity;

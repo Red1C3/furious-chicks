@@ -8,6 +8,8 @@ public class BoxCullider : MonoBehaviour, Cullider
 {
     [SerializeField]
     protected float frictionCo = 0.0f;
+    [SerializeField]
+    protected float bouncinessCo=0.0f;
     public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
     private Vector3 boxCenter;
     private Vector3 size;
@@ -678,5 +680,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     public float getFrictionCo()
     {
         return frictionCo;
+    }
+    public float getBouncinessCo(){
+        return bouncinessCo;
     }
 }
