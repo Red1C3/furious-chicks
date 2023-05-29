@@ -50,16 +50,19 @@ public class FrictionSeqImpSolver : Solver
 
 
                     float bias = 0;
+                    float cR = 1.0f;
+                    Vector3 wRA = Vector3.Cross(cullisions[i].first.getRigidbodyDriver().getAngularVelocity(), rA);
+                    Vector3 wRB = Vector3.Cross(cullisions[i].second.getRigidbodyDriver().getAngularVelocity(), rB);
+                    Vector3 vA = cullisions[i].first.getRigidbodyDriver().velocity;
+                    Vector3 vB = cullisions[i].second.getRigidbodyDriver().velocity;
+                    float bouncinessTerm = Vector3.Dot(-vA - wRA + vB + wRB, normal);
+                    bouncinessTerm *= cR;
+                    if (bouncinessTerm > 0.1f || bouncinessTerm < -0.1f)
+                        bias = -bouncinessTerm;
                     if (math.abs(cullisions[i].depth) > depthThreshold)
                     {
-                        float cR = 1.0f;
-                        Vector3 wRA=Vector3.Cross(cullisions[i].first.getRigidbodyDriver().getAngularVelocity(),rA);
-                        Vector3 wRB=Vector3.Cross(cullisions[i].second.getRigidbodyDriver().getAngularVelocity(),rB);
-                        Vector3 vA=cullisions[i].first.getRigidbodyDriver().velocity;
-                        Vector3 vB=cullisions[i].second.getRigidbodyDriver().velocity;
-                        float bouncinessTerm=Vector3.Dot(-vA-wRA+vB+wRB,normal);
-                        bouncinessTerm*=cR;
-                        bias = (-biasFactor * math.abs(cullisions[i].depth) / Time.fixedDeltaTime)+bouncinessTerm;
+
+                        bias += (-biasFactor * math.abs(cullisions[i].depth) / Time.fixedDeltaTime);
                     }
 
 
