@@ -64,7 +64,7 @@ public class CreateOctree : MonoBehaviour
 
         octree.search(player, solver);
         octree.search(ground, solver);
-        checkPlayerCullideWithGround();
+        octree.rootNode.checkCulliding(player.GetComponent<Cullider>(),ground.GetComponent<Cullider>());
 
         foreach (GameObject go in cullidingObject)
         {
@@ -90,22 +90,6 @@ public class CreateOctree : MonoBehaviour
                 nodeMinSize -= (int) Mathf.Ceil(nodeMinSize / 2);
             else
                 nodeMinSize -= 1;
-        }
-    }
-
-    public bool isNull(CullisionInfo c){
-        return (c.first==null || c.second==null);
-    }
-
-    public void checkPlayerCullideWithGround(){
-        Cullider playerCullider = player.GetComponent<Cullider>();
-        Cullider groundCullider = ground.GetComponent<Cullider>();
-        if(isNull(CreateOctree.culls.Find(x => (x.first==groundCullider && playerCullider==x.second)))
-        && isNull(CreateOctree.culls.Find(x => (x.first==playerCullider && groundCullider==x.second)))){
-            CullisionInfo returned = playerCullider.cullideWith(groundCullider);
-            if(!isNull(returned)){
-                CreateOctree.culls.Add(returned);
-            }
         }
     }
 }
