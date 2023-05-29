@@ -5,7 +5,7 @@ using UnityEngine;
 public class CreateOctree : MonoBehaviour
 {
     public Solver solver;
-    GameObject player,Ground;
+    GameObject player,ground;
     Octree octree;
     public static int nodeMinSize = 0;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
@@ -27,7 +27,7 @@ public class CreateOctree : MonoBehaviour
                 continue;
             }
             else if(gameObject.tag=="Ground"){
-                Ground=gameObject;
+                ground=gameObject;
                 continue;
             }
             Cullider cullider;
@@ -38,7 +38,6 @@ public class CreateOctree : MonoBehaviour
         }
         if(nodeMinSize==0){
             octree = new Octree(cullidingObject);
-            Debug.Log("Node Size: "+nodeMinSize);
         }
         else
             octree = new Octree(cullidingObject,nodeMinSize);
@@ -64,7 +63,8 @@ public class CreateOctree : MonoBehaviour
         }
 
         octree.search(player, solver);
-        octree.search(Ground, solver);
+        octree.search(ground, solver);
+        octree.rootNode.checkCulliding(player.GetComponent<Cullider>(),ground.GetComponent<Cullider>());
 
         foreach (GameObject go in cullidingObject)
         {
@@ -80,14 +80,12 @@ public class CreateOctree : MonoBehaviour
 
         int cullidingObjectN = cullidingObject.Count;
         if((lastActionIsShrink && 2 * cullidingObjectN < allObjectsN) || (4 * cullidingObjectN < allObjectsN)){
-            Debug.Log("Expand");
             if(nodeMinSize > 10)
                 nodeMinSize += (int) Mathf.Ceil(nodeMinSize / 2);
             else
                 nodeMinSize += 1;
         }
         if((!lastActionIsShrink && 2 * cullidingObjectN < nodeMinSize * maxNodeObjectN) || (2 * cullidingObjectN < nodeMinSize * maxNodeObjectN)){
-            Debug.Log("Shrinking");
             if(nodeMinSize > 10)
                 nodeMinSize -= (int) Mathf.Ceil(nodeMinSize / 2);
             else
