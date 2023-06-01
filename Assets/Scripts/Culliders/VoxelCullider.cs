@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class VoxelCullider : BoxCullider
 {
-    
+
     private Voxel voxel;
     protected override void Start()
     {
@@ -31,7 +32,16 @@ public class VoxelCullider : BoxCullider
     {
         return voxel.grid.GetComponent<RigidbodyDriver>();
     }
-    public void setFriction(float friction){
-        frictionCo=friction;
+    public void setFriction(float friction) //TODO setBounciness
+    {
+        frictionCo = friction;
+    }
+    public override HashSet<Cullider> getFrameCulliders()
+    {
+        return voxel.grid.frameCulliders;
+    }
+    public override HashSet<Cullider> getStayedCulliders()
+    {
+        return voxel.grid.stayedCulliders;
     }
 }

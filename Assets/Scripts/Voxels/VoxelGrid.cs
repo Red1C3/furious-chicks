@@ -27,6 +27,7 @@ public class VoxelGrid : MonoBehaviour
     [SerializeField]
     private bool displayVoxels = false;
     private float3x3 identityInertiaTensor;
+    public HashSet<Cullider> frameCulliders,stayedCulliders;
 
     void Awake()
     {
@@ -72,6 +73,10 @@ public class VoxelGrid : MonoBehaviour
 
         addCulliderToQuantized();
         transform.rotation = rotation;
+    }
+    private void Start(){
+        frameCulliders=new HashSet<Cullider>();
+        stayedCulliders=new HashSet<Cullider>();
     }
     private void calculateLocalCenter()
     {

@@ -22,9 +22,12 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     public static readonly float axisThreshold = 0.01f;
     private RigidbodyDriver rigidbodyDriver;
+    private HashSet<Cullider> frameCulliders,stayedCulliders;
 
     protected virtual void Start()
     {
+        frameCulliders=new HashSet<Cullider>();
+        stayedCulliders=new HashSet<Cullider>();
         rigidbodyDriver = GetComponent<RigidbodyDriver>();
         facesMats = new Matrix4x4[6];
         edges = new Edge[12];
@@ -683,5 +686,11 @@ public class BoxCullider : MonoBehaviour, Cullider
     }
     public float getBouncinessCo(){
         return bouncinessCo;
+    }
+    public virtual HashSet<Cullider> getFrameCulliders(){
+        return frameCulliders;
+    }
+    public virtual HashSet<Cullider> getStayedCulliders(){
+        return stayedCulliders;
     }
 }

@@ -9,6 +9,36 @@ public interface Cullider : Shape
     RigidbodyDriver getRigidbodyDriver();
     float getFrictionCo();
     float getBouncinessCo();
+    HashSet<Cullider> getFrameCulliders(); //Must initialize at start
+    HashSet<Cullider> getStayedCulliders();
+    void triggerCulliders()
+    {
+        HashSet<Cullider> frameCulliders = getFrameCulliders();
+        HashSet<Cullider> stayedCulliders = getStayedCulliders();
+
+        foreach (Cullider cullider in frameCulliders)
+        {
+            if (stayedCulliders.Contains(cullider))
+            {
+                getRigidbodyDriver().onCullisionStay(cullider);
+            }
+            else
+            {
+                getRigidbodyDriver().onCullisionEnter(cullider);
+                stayedCulliders.Add(cullider);
+            }
+        }
+
+        HashSet<Cullider> clonedStayed = new HashSet<Cullider>(stayedCulliders);
+        foreach (Cullider cullider in clonedStayed)
+        {
+            if (!frameCulliders.Contains(cullider))
+            {
+                getRigidbodyDriver().onCullisionExit(cullider);
+                stayedCulliders.Remove(cullider);
+            }
+        }
+    }
 }
 
 public struct CullisionInfo
@@ -20,7 +50,7 @@ public struct CullisionInfo
     public Vector3[] contactPointsA, contactPointsB;
 
     public Cullider first, second;
-    public float normalImpulseSum,tangentImpulseSum1,tangentImpulseSum2;
+    public float normalImpulseSum, tangentImpulseSum1, tangentImpulseSum2;
 
     public static readonly CullisionInfo NO_CULLISION = new CullisionInfo(false, Vector3.zero, 0, false, false, new Vector3[] { }, new Vector3[] { }, null, null);
 
@@ -37,8 +67,8 @@ public struct CullisionInfo
         bool debug = false;
 
         normalImpulseSum = 0.0f;
-        tangentImpulseSum1=0.0f;
-        tangentImpulseSum2=0.0f;
+        tangentImpulseSum1 = 0.0f;
+        tangentImpulseSum2 = 0.0f;
 
         this.cullided = cullided;
         this.normal = -normal.normalized;
@@ -68,6 +98,11 @@ public struct CullisionInfo
             {
                 Debug.Log(ToString());
             }
+        }
+        if (cullided)
+        {
+            first.getFrameCulliders().Add(second);
+            second.getFrameCulliders().Add(first);
         }
     }
 
