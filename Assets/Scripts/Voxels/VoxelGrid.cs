@@ -26,6 +26,8 @@ public class VoxelGrid : MonoBehaviour
     private bool displayDecimated = false;
     [SerializeField]
     private bool displayVoxels = false;
+    [SerializeField]
+    private bool applyDecimation = true;
     private float3x3 identityInertiaTensor;
 
     void Awake()
@@ -46,7 +48,10 @@ public class VoxelGrid : MonoBehaviour
 
 
         density = (mesh.triangles.Length / 3.0f) * math.sqrt(getApproxAABBVolume());
-        mesh = decimate(mesh);
+        if (applyDecimation)
+        {
+            mesh = decimate(mesh);
+        }
         vertices = mesh.vertices;
         indices = mesh.triangles;
         if (displayDecimated)
@@ -96,7 +101,7 @@ public class VoxelGrid : MonoBehaviour
         // }
         for (int i = 0; i < quantizedVoxels.Count; i++)
         {
-            var cullider=quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
+            var cullider = quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
             cullider.setFriction(friction);
         }
     }
