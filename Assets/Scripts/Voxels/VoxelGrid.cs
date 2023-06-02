@@ -17,6 +17,7 @@ public class VoxelGrid : MonoBehaviour
     private Vector3[] vertices;
 
     private int[] indices;
+    [SerializeField]
     private Vector3 localCenter;
     private static readonly float VOLUME_FACTOR = 50.0f;
     private static readonly float FACE_COUNT_FACTOR = 100.0f;
@@ -28,10 +29,14 @@ public class VoxelGrid : MonoBehaviour
     private bool displayVoxels = false;
     [SerializeField]
     private bool applyDecimation = true;
+    [SerializeField]
+    private bool isBaked=false;
+    [SerializeField]
     private float3x3 identityInertiaTensor;
 
     void Awake()
     {
+        if(isBaked) return;
         Quaternion rotation = transform.rotation;
         transform.rotation = Quaternion.identity;
         surfaceVoxels = new List<Voxel>();
@@ -77,6 +82,7 @@ public class VoxelGrid : MonoBehaviour
 
         addCulliderToQuantized();
         transform.rotation = rotation;
+        isBaked=true;
     }
     private void calculateLocalCenter()
     {
