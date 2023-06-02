@@ -201,7 +201,16 @@ public class RigidbodyDriver : MonoBehaviour
         if (psudoFreeze) return inverseInertiaVector3;
         if (freezeRX && freezeRY && freezeRZ) return inverseInertiaVector3;
 
-        float inverseInertiaScalar = 1.0f / Shape.inertiaScalar(getInertiaTensor(), axis);
+        VoxelGrid grid;
+        float inverseInertiaScalar;
+        if (TryGetComponent<VoxelGrid>(out grid))
+        {
+            inverseInertiaScalar = 1.0f / Shape.inertiaScalar(grid.getInertiaTensor(), axis);
+        }
+        else
+        {
+            inverseInertiaScalar = 1.0f / Shape.inertiaScalar(getInertiaTensor(), axis);
+        }
         if (!freezeRX) inverseInertiaVector3.x = inverseInertiaScalar;
         if (!freezeRY) inverseInertiaVector3.y = inverseInertiaScalar;
         if (!freezeRZ) inverseInertiaVector3.z = inverseInertiaScalar;
