@@ -9,7 +9,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     [SerializeField]
     protected float frictionCo = 0.0f;
     [SerializeField]
-    protected float bouncinessCo=0.0f;
+    protected float bouncinessCo = 0.0f;
     public enum Side { TOP, DOWN, LEFT, RIGHT, FORWARD, BACKWARD, LEN }
     private Vector3 boxCenter;
     private Vector3 size;
@@ -239,7 +239,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
         }
 
-        if (!isEdgeContact)
+        if (!isEdgeContact && side != Side.LEN)
         {
             Matrix4x4 referenceFace;
             Face incidentFace;
@@ -280,7 +280,7 @@ public class BoxCullider : MonoBehaviour, Cullider
 
             //     }
         }
-        else
+        else if (isEdgeContact)
         {
             // Debug.Log("Edge contact 1");
             foreach (Tuple<Edge, Edge> tuple in contactEdges)
@@ -292,6 +292,18 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
             axis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec()).normalized;
             overlap = edgeOverlap;
+        }
+        foreach (Vector3 contactPoint in contactPoints)
+        {
+            if (math.any(math.isnan(contactPoint)))
+            {
+                contactPoints.Clear();
+                break;
+            }
+        }
+        if (contactPoints.Count == 0)
+        {
+            contactPoints.Add((boxCenter + other.boxCenter) / 2.0f);
         }
         return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, true, true,
                                 contactPoints.ToArray(), contactPoints.ToArray(), this, other);
@@ -681,7 +693,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         return frictionCo;
     }
-    public float getBouncinessCo(){
+    public float getBouncinessCo()
+    {
         return bouncinessCo;
     }
 }
