@@ -17,6 +17,7 @@ public class VoxelGrid : MonoBehaviour
     private Vector3[] vertices;
 
     private int[] indices;
+    [SerializeField]
     private Vector3 localCenter;
     private static readonly float VOLUME_FACTOR = 50.0f;
     private static readonly float FACE_COUNT_FACTOR = 100.0f;
@@ -26,11 +27,17 @@ public class VoxelGrid : MonoBehaviour
     private bool displayDecimated = false;
     [SerializeField]
     private bool displayVoxels = false;
+    [SerializeField]
+    private bool applyDecimation = true;
+    [SerializeField]
+    private bool isBaked=false;
+    [SerializeField]
     private float3x3 identityInertiaTensor;
     public HashSet<Cullider> frameCulliders,stayedCulliders;
 
     void Awake()
     {
+        if(isBaked) return;
         Quaternion rotation = transform.rotation;
         transform.rotation = Quaternion.identity;
         surfaceVoxels = new List<Voxel>();
@@ -47,7 +54,10 @@ public class VoxelGrid : MonoBehaviour
 
 
         density = (mesh.triangles.Length / 3.0f) * math.sqrt(getApproxAABBVolume());
-        mesh = decimate(mesh);
+        if (applyDecimation)
+        {
+            mesh = decimate(mesh);
+        }
         vertices = mesh.vertices;
         indices = mesh.triangles;
         if (displayDecimated)
@@ -73,6 +83,7 @@ public class VoxelGrid : MonoBehaviour
 
         addCulliderToQuantized();
         transform.rotation = rotation;
+        isBaked=true;
     }
     private void Start(){
         frameCulliders=new HashSet<Cullider>();
@@ -101,7 +112,7 @@ public class VoxelGrid : MonoBehaviour
         // }
         for (int i = 0; i < quantizedVoxels.Count; i++)
         {
-            var cullider=quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
+            var cullider = quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
             cullider.setFriction(friction);
         }
     }
