@@ -8,6 +8,7 @@ public class CreateOctree : MonoBehaviour
     GameObject player, ground;
     Octree octree;
     public static int nodeMinSize = 0;
+    public static float allSpeed=0, threshhold=0.02f;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     bool lastActionIsShrink = false;
@@ -56,6 +57,7 @@ public class CreateOctree : MonoBehaviour
 
     void FixedUpdate()
     {
+        allSpeed=0;
         allObjectsN = 0;
         maxNodeObjectN = 0;
         culls.Clear();
@@ -68,7 +70,9 @@ public class CreateOctree : MonoBehaviour
                 cullider.getFrameCulliders().Clear();
             }
             rb.applyForces();
+            allSpeed+=rb.velocity.magnitude;
         }
+        allSpeed+=player.GetComponent<RigidbodyDriver>().velocity.magnitude;
 
         octree.search(player, solver);
         octree.search(ground, solver);
@@ -109,5 +113,9 @@ public class CreateOctree : MonoBehaviour
             else
                 nodeMinSize -= 1;
         }
+        if(allSpeed > 0.0f && allSpeed*threshhold > 2.0f)
+            Time.fixedDeltaTime=2.0f/allSpeed;
+        else
+            Time.fixedDeltaTime=threshhold;
     }
 }
