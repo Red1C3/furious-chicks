@@ -220,13 +220,13 @@ public class RigidbodyDriver : MonoBehaviour
     {
         psudoFreeze = false;
     }
-    public void onCullisionEnter(Cullider other){
+    public virtual void onCullisionEnter(Cullider other){
         Debug.Log("Start");
     }
-    public void onCullisionExit(Cullider other){
+    public virtual void onCullisionExit(Cullider other){
         Debug.Log("Exit");
     }
-    public void onCullisionStay(Cullider other){
+    public virtual void onCullisionStay(Cullider other){
         Debug.Log("Stay");
     }
 }
