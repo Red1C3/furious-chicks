@@ -6,10 +6,13 @@ using UnityEngine;
 public class RigidbodyDriver : MonoBehaviour
 {
     [SerializeField]
+    private bool drag, angularDrag;
+    [SerializeField]
     private bool freezePX, freezePY, freezePZ, freezeRX, freezeRY, freezeRZ;
     [SerializeField]
     private bool startFrozen = true;
     public bool psudoFreeze { get; private set; }
+    private static float linearDragVal = 0.001f, angularDragVal = 0.01f;
     public float mass = 1.0f;
     public bool useGravity = true;
     public Vector3 initialAngularVelocity; //In radians
@@ -83,6 +86,15 @@ public class RigidbodyDriver : MonoBehaviour
         transform.rotation = quatQuatAdd(transform.rotation,
                             floatQuatMult(0.5f * Time.fixedDeltaTime,
                             (angularVelocity * transform.rotation)));
+
+        if (drag)
+        {
+            velocity = velocity - velocity * linearDragVal;
+        }
+        if (angularDrag)
+        {
+            angularVelocity = quatQuatAdd(angularVelocity, floatQuatMult(-angularDragVal, angularVelocity));
+        }
 
     }
 
