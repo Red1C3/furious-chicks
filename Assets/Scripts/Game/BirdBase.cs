@@ -10,6 +10,9 @@ public class BirdBase : RigidbodyDriver
     private float stoppedTimestamp;
     private bool hasStopped = false;
     public bool hasFired = false;
+    protected static int firstDamage = 20; //speed=0-2
+    protected static int secondDamage = 50; //speed=2-20
+    protected static int thirdDamage = 100; //speed>20
     protected override void Start()
     {
         base.Start();
@@ -43,5 +46,21 @@ public class BirdBase : RigidbodyDriver
     public bool isDead()
     {
         return hasStopped; //Maybe if bird beneath ground level too
+    }
+    public int getDamage()
+    {
+        float speed = velocity.magnitude;
+        if (speed < 2)
+        {
+            return firstDamage;
+        }
+        else if (speed < 20)
+        {
+            return secondDamage;
+        }
+        else
+        {
+            return thirdDamage;
+        }
     }
 }
