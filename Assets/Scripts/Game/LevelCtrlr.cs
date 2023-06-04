@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelCtrlr : MonoBehaviour
 {
@@ -11,26 +12,48 @@ public class LevelCtrlr : MonoBehaviour
     [SerializeField]
     private GameObject linePrefab;
     private LineRenderer line;
+    private Throw currentBirdThrow;
+    private bool isOver = false;
+    private CreateOctree engine;
 
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
+        engine = FindObjectOfType<CreateOctree>();
     }
 
 
     private void Update()
     {
+        if (isOver) return;
+
         if (throwingPhase)
         {
-            Throw throwInst = birds[currentBird].gameObject.AddComponent<Throw>();
-            throwInst.lineRenderer = line;
-            throwInst.cam = Camera.main;
-            throwingPhase=false;
+            currentBirdThrow = birds[currentBird].gameObject.AddComponent<Throw>();
+            currentBirdThrow.lineRenderer = line;
+            currentBirdThrow.cam = Camera.main;
+            throwingPhase = false;
         }
-        else
+        else if (currentBirdThrow.hasFired())
         {
-            //Check if currentBird is dead, if dead check pigs count, if zero end level
-            //if not zero increment current bird, destroy previous bird and start throwing
+            birds[currentBird].hasFired = true;
+            if (birds[currentBird].isDead())
+            {
+                //if all pigs are dead, game over
+                //else...
+                Destroy(birds[currentBird].gameObject);
+                if (currentBird + 1 == birds.Length)
+                {
+                    isOver = true;
+                    SceneManager.LoadScene("Gameover");
+                }
+                else
+                {
+                    currentBird++;
+                    engine.setPlayer(birds[currentBird].gameObject);
+                    throwingPhase = true;
+                }
+            }
         }
     }
 }

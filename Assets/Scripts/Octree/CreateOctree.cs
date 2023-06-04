@@ -118,4 +118,7 @@ public class CreateOctree : MonoBehaviour
         else
             Time.fixedDeltaTime=threshhold;
     }
+    public void setPlayer(GameObject player){
+        this.player=player;
+    }  
 }

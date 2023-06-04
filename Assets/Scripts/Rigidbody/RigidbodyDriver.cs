@@ -49,7 +49,7 @@ public class RigidbodyDriver : MonoBehaviour
 
     public Vector3 acclumatedForces { get; private set; }
     private Vector3 acclumatedImpulses;
-    void Start()
+    protected virtual void Start()
     {
         if (gameObject.tag != "Player")
             psudoFreeze = startFrozen;
@@ -221,12 +221,9 @@ public class RigidbodyDriver : MonoBehaviour
         psudoFreeze = false;
     }
     public virtual void onCullisionEnter(Cullider other){
-        Debug.Log("Start");
     }
     public virtual void onCullisionExit(Cullider other){
-        Debug.Log("Exit");
     }
     public virtual void onCullisionStay(Cullider other){
-        Debug.Log("Stay");
     }
 }

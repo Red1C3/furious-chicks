@@ -67,4 +67,7 @@ public class Throw : MonoBehaviour
             }
         }
     }
+    public bool hasFired(){
+        return fired;
+    }
 }
