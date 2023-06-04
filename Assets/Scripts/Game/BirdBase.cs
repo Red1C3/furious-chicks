@@ -5,8 +5,8 @@ using UnityEngine;
 public class BirdBase : RigidbodyDriver
 {
     private static float timeTillDeath = 2.0f;
-    private static float linearStoppingThreshold = 0.01f;
-    private static float angularStoppingThreshold = 0.001f;
+    private static float linearStoppingThreshold = 0.1f;
+    private static float angularStoppingThreshold = 0.1f;
     private float stoppedTimestamp;
     private bool hasStopped = false;
     public bool hasFired = false;
