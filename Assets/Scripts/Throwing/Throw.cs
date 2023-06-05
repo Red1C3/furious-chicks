@@ -49,11 +49,12 @@ public class Throw : MonoBehaviour
                 cam.transform.LookAt(Vector3.zero);
                 lineRenderer.SetPosition(1, transform.position);
             }
-            else if(press && force<=0.1f){
+            else if(press && force<=0.01f){
                 force=1.0f;
             }
-            if(Input.GetKey(KeyCode.UpArrow))
-                force-=0.1f;
+            if(Input.GetKey(KeyCode.UpArrow)){
+                force = Mathf.Max(0.1f,force-0.1f);
+            }
             else if(Input.GetKey(KeyCode.DownArrow))
                 force+=0.1f;
             if (Input.GetKeyDown(KeyCode.E))
