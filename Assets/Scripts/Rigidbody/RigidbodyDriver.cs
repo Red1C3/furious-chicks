@@ -230,6 +230,7 @@ public class RigidbodyDriver : MonoBehaviour
     }
     public void psudoUnfreeze()
     {
+        if (freezePX && freezePY && freezePZ && freezeRX && freezeRY && freezeRZ) return;
         psudoFreeze = false;
     }
     public virtual void onCullisionEnter(Cullider other){
