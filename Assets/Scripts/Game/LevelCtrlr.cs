@@ -56,13 +56,18 @@ public class LevelCtrlr : MonoBehaviour
     }
     public void destroyPig(PigBase pig)
     {
-        engine.removeCullider(gameObject);
-        Destroy(gameObject);
+        engine.removeCullider(pig.gameObject);
+        Destroy(pig.gameObject);
         destroyedPigs++;
         if (destroyedPigs == pigsCount)
         {
             gameOver();
         }
+    }
+    public void destroyFC(FCObject fcObj)
+    {
+        engine.removeCullider(fcObj.gameObject);
+        Destroy(fcObj.gameObject);
     }
     private void gameOver()
     {
