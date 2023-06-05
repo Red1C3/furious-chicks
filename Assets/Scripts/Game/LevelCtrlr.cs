@@ -22,6 +22,7 @@ public class LevelCtrlr : MonoBehaviour
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
         engine = FindObjectOfType<CreateOctree>();
         pigsCount = FindObjectsOfType<PigBase>().Length;
+        engine.setPlayer(birds[currentBird].gameObject);
     }
 
 

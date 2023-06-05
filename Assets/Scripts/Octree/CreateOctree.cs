@@ -24,10 +24,7 @@ public class CreateOctree : MonoBehaviour
         foreach (GameObject gameObject in gameObjects)
         {
             if (gameObject.tag == "Player")
-            {
-                player = gameObject;
                 continue;
-            }
             else if (gameObject.tag == "Ground")
             {
                 ground = gameObject;
