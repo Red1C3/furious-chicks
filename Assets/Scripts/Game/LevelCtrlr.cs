@@ -13,20 +13,20 @@ public class LevelCtrlr : MonoBehaviour
     private GameObject linePrefab;
     private LineRenderer line;
     private Throw currentBirdThrow;
-    private bool isOver = false;
-    private CreateOctree engine;
+    public CreateOctree engine { get; private set; }
+    private int pigsCount;
+    private int destroyedPigs = 0;
 
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
         engine = FindObjectOfType<CreateOctree>();
+        pigsCount = FindObjectsOfType<PigBase>().Length;
     }
 
 
     private void Update()
     {
-        if (isOver) return;
-
         if (throwingPhase)
         {
             currentBirdThrow = birds[currentBird].gameObject.AddComponent<Throw>();
@@ -39,13 +39,10 @@ public class LevelCtrlr : MonoBehaviour
             birds[currentBird].hasFired = true;
             if (birds[currentBird].isDead())
             {
-                //if all pigs are dead, game over
-                //else...
                 Destroy(birds[currentBird].gameObject);
                 if (currentBird + 1 == birds.Length)
                 {
-                    isOver = true;
-                    SceneManager.LoadScene("Gameover");
+                    gameOver();
                 }
                 else
                 {
@@ -55,5 +52,19 @@ public class LevelCtrlr : MonoBehaviour
                 }
             }
         }
+    }
+    public void destroyPig(PigBase pig)
+    {
+        engine.removeCullider(gameObject);
+        Destroy(gameObject);
+        destroyedPigs++;
+        if (destroyedPigs == pigsCount)
+        {
+            gameOver();
+        }
+    }
+    private void gameOver()
+    {
+        SceneManager.LoadScene("Gameover");
     }
 }

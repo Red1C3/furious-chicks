@@ -74,6 +74,7 @@ public class CreateOctree : MonoBehaviour
         }
         allSpeed+=player.GetComponent<RigidbodyDriver>().velocity.magnitude;
 
+        octree.Update(cullidingObject, nodeMinSize);
         octree.search(player, solver);
         octree.search(ground, solver);
         octree.rootNode.checkCulliding(player.GetComponent<Cullider>(), ground.GetComponent<Cullider>());
@@ -82,7 +83,6 @@ public class CreateOctree : MonoBehaviour
         {
             octree.search(go, solver);
         }
-        octree.Update(cullidingObject, nodeMinSize);
 
         solver.resolveCullision(culls.ToArray());
         foreach (RigidbodyDriver rb in rigidbodies)
@@ -121,4 +121,7 @@ public class CreateOctree : MonoBehaviour
     public void setPlayer(GameObject player){
         this.player=player;
     }  
+    public void removeCullider(GameObject cullider){
+        cullidingObject.Remove(cullider);
+    }
 }

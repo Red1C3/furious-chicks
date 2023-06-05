@@ -5,10 +5,11 @@ public class PigBase : RigidbodyDriver
     [SerializeField]
     protected int health = 100;
     public bool toBeDeleted = false;
-
-    protected void destroy()
+    private LevelCtrlr levelCtrlr;
+    protected override void Start()
     {
-        //Destroy(gameObject); breaks octree
+        base.Start();
+        levelCtrlr = FindObjectOfType<LevelCtrlr>();
     }
     public override void onCullisionEnter(Cullider other)
     {
@@ -16,8 +17,7 @@ public class PigBase : RigidbodyDriver
         {
             BirdBase bird = (BirdBase)other.getRigidbodyDriver();
             health -= bird.getDamage();
-            Debug.Log(health);
-            if (health <= 0) destroy();
+            if (health <= 0) levelCtrlr.destroyPig(this);
         }
     }
 }
