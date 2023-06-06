@@ -69,6 +69,16 @@ public class LevelCtrlr : MonoBehaviour
         engine.removeCullider(fcObj.gameObject);
         Destroy(fcObj.gameObject);
     }
+    public void destroyMulti(MultiObstacleBase multi)
+    {
+        Cullider[] culliders = multi.children;
+        foreach (Cullider cullider in culliders)
+        {
+            VoxelCullider voxelCullider = (VoxelCullider)cullider;
+            engine.removeCullider(voxelCullider.gameObject);
+        }
+        Destroy(multi.gameObject);
+    }
     private void gameOver()
     {
         SceneManager.LoadScene("Gameover");
