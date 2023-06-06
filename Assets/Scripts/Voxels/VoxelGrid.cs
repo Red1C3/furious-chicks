@@ -8,6 +8,8 @@ public class VoxelGrid : MonoBehaviour
 {
     [SerializeField]
     private float friction;
+    [SerializeField]
+    private float bounciess;
     public GameObject voxelPrefab;
     private Vector3 origin;
     private float density;
@@ -109,6 +111,7 @@ public class VoxelGrid : MonoBehaviour
         {
             var cullider = quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
             cullider.setFriction(friction);
+            cullider.setBounciness(bounciess);
         }
     }
 

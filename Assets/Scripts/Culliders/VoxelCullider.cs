@@ -34,4 +34,7 @@ public class VoxelCullider : BoxCullider
     public void setFriction(float friction){
         frictionCo=friction;
     }
+    public void setBounciness(float bounciness){
+        bouncinessCo=bounciness;
+    }
 }
