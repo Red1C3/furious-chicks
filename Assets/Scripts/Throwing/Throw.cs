@@ -45,6 +45,7 @@ public class Throw : MonoBehaviour
             {
                 float pz = -Mathf.Sqrt(pzSq);
                 transform.position = new Vector3(worldPosition.x,worldPosition.y,pz);
+                transform.LookAt(Vector3.zero);
                 cam.transform.position = new Vector3(worldPosition.x,worldPosition.y,-(force+cameraAway));
                 cam.transform.LookAt(Vector3.zero);
                 lineRenderer.SetPosition(1, transform.position);
