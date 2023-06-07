@@ -18,6 +18,7 @@ public class BirdBase : FCObject
     protected override void Start()
     {
         base.Start();
+        useGravity=false;
         stoppedTimestamp = Time.time;
     }
 

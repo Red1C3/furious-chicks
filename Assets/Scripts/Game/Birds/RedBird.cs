@@ -5,6 +5,6 @@ using UnityEngine;
 public class RedBird : BirdBase
 {
     protected override void ability(){
-        addForce(velocity*100,ForceMode.Impulse);
+        addForce(velocity.normalized *500,ForceMode.Impulse);
     }
 }
