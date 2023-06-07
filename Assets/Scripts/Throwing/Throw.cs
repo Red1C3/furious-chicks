@@ -72,6 +72,9 @@ public class Throw : MonoBehaviour
                 lineRenderer.enabled = false;
             }
         }
+        else{
+                cam.transform.position = new Vector3(transform.position.x,transform.position.y,transform.position.z-cameraAway);
+        }
     }
     public bool hasFired(){
         return fired;
