@@ -25,8 +25,9 @@ public class Throw : MonoBehaviour
         rigidbodyDriver=GetComponent<RigidbodyDriver>();
         rigidbodyDriver.useGravity = false;
 
-        lineRenderer.SetPosition(0, Vector3.zero);
+        lineRenderer.SetPosition(0, new Vector3(-1,0,0));
         lineRenderer.SetPosition(1, transform.position);
+        lineRenderer.SetPosition(2, new Vector3(1,0,0));
     }
 
     // Update is called once per frame
