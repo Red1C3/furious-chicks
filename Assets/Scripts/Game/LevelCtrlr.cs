@@ -16,6 +16,11 @@ public class LevelCtrlr : MonoBehaviour
     public CreateOctree engine { get; private set; }
     private int pigsCount;
     private int destroyedPigs = 0;
+    public static bool playerView {get; private set;}
+    private bool once;
+    public static Camera cam;
+    Quaternion currentRotation;
+    Vector3 currentEulerAngles;
 
     private void Start()
     {
@@ -23,6 +28,9 @@ public class LevelCtrlr : MonoBehaviour
         engine = FindObjectOfType<CreateOctree>();
         pigsCount = FindObjectsOfType<PigBase>().Length;
         engine.setPlayer(birds[currentBird].gameObject);
+        cam = FindObjectOfType<Camera>();
+        playerView = true;
+        once = true;
     }
 
 
@@ -32,7 +40,6 @@ public class LevelCtrlr : MonoBehaviour
         {
             currentBirdThrow = birds[currentBird].gameObject.AddComponent<Throw>();
             currentBirdThrow.lineRenderer = line;
-            currentBirdThrow.cam = Camera.main;
             throwingPhase = false;
         }
         else if (currentBirdThrow.hasFired())
@@ -52,6 +59,25 @@ public class LevelCtrlr : MonoBehaviour
                     throwingPhase = true;
                 }
             }
+        }
+        if(Input.GetKeyDown(KeyCode.C)){
+            playerView=!playerView;
+            once = true;
+        }
+        
+        if(playerView && once){
+            currentRotation.eulerAngles = Vector3.zero;
+            cam.transform.rotation = currentRotation;
+
+            cam.transform.position = new Vector3(birds[currentBird].transform.position.x, birds[currentBird].transform.position.y, -(currentBirdThrow.force+currentBirdThrow.cameraAway));
+            once=false;
+        }
+        else if(once){
+            currentRotation.eulerAngles = new Vector3(0,90,0);
+            cam.transform.rotation = currentRotation;
+            Vector3 temp = new Vector3(-CreateOctree.maxZ/2.0f,CreateOctree.maxZ/10.0f,CreateOctree.maxZ/2.0f);
+            cam.transform.position = temp;
+            once=false;
         }
     }
     public void destroyPig(PigBase pig)
