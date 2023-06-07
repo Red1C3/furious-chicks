@@ -98,6 +98,7 @@ public class CreateOctree : MonoBehaviour
                 cullider.triggerCulliders();
             }
         }
+        player.GetComponent<Cullider>().triggerCulliders();
 
         int cullidingObjectN = cullidingObject.Count;
         if ((lastActionIsShrink && 2 * cullidingObjectN < allObjectsN) || (4 * cullidingObjectN < allObjectsN))
