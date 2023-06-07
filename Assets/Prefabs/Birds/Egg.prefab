@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2683011126410115248}
   - component: {fileID: 2377468606089877827}
   - component: {fileID: 6171975433177133607}
-  - component: {fileID: 5801644425075834038}
+  - component: {fileID: -5216912784798717596}
   m_Layer: 0
   m_Name: Egg
   m_TagString: Player
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frictionCo: 0
   bouncinessCo: 0
---- !u!114 &5801644425075834038
+--- !u!114 &-5216912784798717596
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4040935626910586188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a2dc128a530bd87fa1e99b6f97a1a67, type: 3}
+  m_Script: {fileID: 11500000, guid: a98285af2cb03c8f6ad8ce841fc1893d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   drag: 0
