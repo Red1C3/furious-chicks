@@ -127,4 +127,8 @@ public class CreateOctree : MonoBehaviour
     {
         cullidingObject.Remove(cullider);
     }
+    public void addCullider(GameObject cullider)
+    {
+        cullidingObject.Add(cullider);
+    }
 }
