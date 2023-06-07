@@ -6,18 +6,19 @@ public class MultiObstacleBase : FCObject
 {
     [SerializeField]
     protected int health = 100;
-    public Cullider[] children{get;private set;}
+    protected static new int firstDamage = 0;
+    public Cullider[] children { get; private set; }
     protected override void Start()
     {
         base.Start();
-        children=GetComponentsInChildren<Cullider>();
+        children = GetComponentsInChildren<Cullider>();
     }
     public override void onCullisionEnter(Cullider other)
     {
         if (other.getRigidbodyDriver() is FCObject)
         {
             FCObject otherFC = (FCObject)other.getRigidbodyDriver();
-            health -= otherFC.getDamage();
+            health -= (otherFC.getDamage() + getDamage()) / 2;
             if (health <= 0) levelCtrlr.destroyMulti(this);
         }
     }

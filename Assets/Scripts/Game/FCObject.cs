@@ -16,11 +16,11 @@ public class FCObject : RigidbodyDriver
     public int getDamage()
     {
         float speed = velocity.magnitude;
-        if (speed < 2)
+        if (speed < 10)
         {
             return firstDamage;
         }
-        else if (speed < 20)
+        else if (speed < 50)
         {
             return secondDamage;
         }
