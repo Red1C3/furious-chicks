@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2683011126410115248}
   - component: {fileID: 2377468606089877827}
   - component: {fileID: 6171975433177133607}
-  - component: {fileID: 5101770587569943094}
+  - component: {fileID: 5118446527340366739}
   m_Layer: 0
-  m_Name: Simple Bird
+  m_Name: White Bird
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5c9e30ae5cf668ba598c6a69ea9b4f5a, type: 2}
+  - {fileID: 2100000, guid: d8e9063d26e1a4845ac8d6f56a284dc3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frictionCo: 0
   bouncinessCo: 0
---- !u!114 &5101770587569943094
+--- !u!114 &5118446527340366739
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,11 +108,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4040935626910586188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d8c8d77e838f1b7b9de0f630f1ae4c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 16c89ac26dc75c441a54b61162bcb338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drag: 1
-  angularDrag: 1
+  drag: 0
+  angularDrag: 0
   freezePX: 0
   freezePY: 0
   freezePZ: 0
@@ -125,3 +125,5 @@ MonoBehaviour:
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
   hasFired: 0
+  eggPrefab: {fileID: 4040935626910586188, guid: cae6baeb08f24e34e8e1d5679d01850d, type: 3}
+  lvlctr: {fileID: 0}

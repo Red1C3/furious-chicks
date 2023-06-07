@@ -6,7 +6,6 @@ using UnityEngine;
 public class Throw : MonoBehaviour
 {
     public float force;
-    public Camera cam;
     private float angleX;
     private float angleY;
     private float angleZ;
@@ -20,41 +19,43 @@ public class Throw : MonoBehaviour
     void Start()
     {
         transform.position = new Vector3(0, 0, -force);
-        cam.transform.position = new Vector3(0, 0, -(force+cameraAway));
+        LevelCtrlr.cam.transform.position = new Vector3(0, 0, -(force+cameraAway));
 
         rigidbodyDriver=GetComponent<RigidbodyDriver>();
         rigidbodyDriver.useGravity = false;
 
-        lineRenderer.SetPosition(0, Vector3.zero);
+        lineRenderer.SetPosition(0, new Vector3(-1,0,0));
         lineRenderer.SetPosition(1, transform.position);
+        lineRenderer.SetPosition(2, new Vector3(1,0,0));
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!fired)
+        if (!fired && LevelCtrlr.playerView)
         {
             if (Input.GetMouseButtonDown(0))
                 press = true;
             if (Input.GetKey(KeyCode.Z))
                 press = false;
             Vector3 mousePosition = Input.mousePosition;
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z - force));
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -LevelCtrlr.cam.transform.position.z - force));
             float pzSq = (force*force)-(worldPosition.x*worldPosition.x)-(worldPosition.y*worldPosition.y);
             if (press && pzSq>=0)
             {
                 float pz = -Mathf.Sqrt(pzSq);
                 transform.position = new Vector3(worldPosition.x,worldPosition.y,pz);
                 transform.LookAt(Vector3.zero);
-                cam.transform.position = new Vector3(worldPosition.x,worldPosition.y,-(force+cameraAway));
-                cam.transform.LookAt(Vector3.zero);
+                LevelCtrlr.cam.transform.position = new Vector3(worldPosition.x,worldPosition.y,-(force+cameraAway));
+                LevelCtrlr.cam.transform.LookAt(Vector3.zero);
                 lineRenderer.SetPosition(1, transform.position);
             }
-            else if(press && force<=0.1f){
+            else if(press && force<=0.01f){
                 force=1.0f;
             }
-            if(Input.GetKey(KeyCode.UpArrow))
-                force-=0.1f;
+            if(Input.GetKey(KeyCode.UpArrow)){
+                force = Mathf.Max(0.1f,force-0.1f);
+            }
             else if(Input.GetKey(KeyCode.DownArrow))
                 force+=0.1f;
             if (Input.GetKeyDown(KeyCode.E))
@@ -69,6 +70,9 @@ public class Throw : MonoBehaviour
                 GetComponent<RigidbodyDriver>().addForce(Force * 500, ForceMode.Impulse);
                 lineRenderer.enabled = false;
             }
+        }
+        else if(LevelCtrlr.playerView){
+            LevelCtrlr.cam.transform.position = new Vector3(transform.position.x,transform.position.y,transform.position.z-cameraAway);
         }
     }
     public bool hasFired(){

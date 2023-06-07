@@ -8,7 +8,7 @@ public class CreateOctree : MonoBehaviour
     GameObject player, ground;
     Octree octree;
     public static int nodeMinSize = 0;
-    public static float allSpeed = 0, threshhold = 0.02f;
+    public static float allSpeed = 0, threshhold = 0.02f, maxZ=0.0f;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     bool lastActionIsShrink = false;
@@ -126,5 +126,9 @@ public class CreateOctree : MonoBehaviour
     public void removeCullider(GameObject cullider)
     {
         cullidingObject.Remove(cullider);
+    }
+    public void addCullider(GameObject cullider)
+    {
+        cullidingObject.Add(cullider);
     }
 }
