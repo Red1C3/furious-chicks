@@ -8,18 +8,20 @@ public class CreateOctree : MonoBehaviour
     GameObject player, ground;
     Octree octree;
     public static int nodeMinSize = 0;
-    public static float allSpeed=0, threshhold=0.02f;
+    public static float allSpeed = 0, threshhold = 0.02f;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     bool lastActionIsShrink = false;
 
     private List<GameObject> cullidingObject;
     public static List<CullisionInfo> culls = new List<CullisionInfo>();
+    private List<GameObject> cullidingObjectsCopy;
 
     // Start is called before the first frame update
     void Start()
     {
         cullidingObject = new List<GameObject>();
+        cullidingObjectsCopy=new List<GameObject>();
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
         foreach (GameObject gameObject in gameObjects)
         {
@@ -54,10 +56,11 @@ public class CreateOctree : MonoBehaviour
 
     void FixedUpdate()
     {
-        allSpeed=0;
+        allSpeed = 0;
         allObjectsN = 0;
         maxNodeObjectN = 0;
         culls.Clear();
+        cullidingObjectsCopy.Clear();
         RigidbodyDriver[] rigidbodies = FindObjectsOfType<RigidbodyDriver>();
         foreach (RigidbodyDriver rb in rigidbodies)
         {
@@ -67,9 +70,9 @@ public class CreateOctree : MonoBehaviour
                 cullider.getFrameCulliders().Clear();
             }
             rb.applyForces();
-            allSpeed+=rb.velocity.magnitude;
+            allSpeed += rb.velocity.magnitude;
         }
-        allSpeed+=player.GetComponent<RigidbodyDriver>().velocity.magnitude;
+        allSpeed += player.GetComponent<RigidbodyDriver>().velocity.magnitude;
 
         octree.Update(cullidingObject, nodeMinSize);
         octree.search(player, solver);
@@ -86,10 +89,11 @@ public class CreateOctree : MonoBehaviour
         {
             rb.physicsUpdate();
         }
-        foreach (RigidbodyDriver rigidbody in rigidbodies)
+        cullidingObjectsCopy.AddRange(cullidingObject);
+        foreach (GameObject obj in cullidingObjectsCopy)
         {
             Cullider cullider;
-            if (rigidbody.TryGetComponent<Cullider>(out cullider))
+            if (obj.TryGetComponent<Cullider>(out cullider))
             {
                 cullider.triggerCulliders();
             }
@@ -110,15 +114,17 @@ public class CreateOctree : MonoBehaviour
             else
                 nodeMinSize -= 1;
         }
-        if(allSpeed > 0.0f && allSpeed*threshhold > 2.0f)
-            Time.fixedDeltaTime=2.0f/allSpeed;
+        if (allSpeed > 0.0f && allSpeed * threshhold > 2.0f)
+            Time.fixedDeltaTime = 2.0f / allSpeed;
         else
-            Time.fixedDeltaTime=threshhold;
+            Time.fixedDeltaTime = threshhold;
     }
-    public void setPlayer(GameObject player){
-        this.player=player;
-    }  
-    public void removeCullider(GameObject cullider){
+    public void setPlayer(GameObject player)
+    {
+        this.player = player;
+    }
+    public void removeCullider(GameObject cullider)
+    {
         cullidingObject.Remove(cullider);
     }
 }

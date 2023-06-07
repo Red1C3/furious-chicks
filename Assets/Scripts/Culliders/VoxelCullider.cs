@@ -44,4 +44,7 @@ public class VoxelCullider : BoxCullider
     {
         return voxel.grid.stayedCulliders;
     }
+    public void setBounciness(float bounciness){
+        bouncinessCo=bounciness;
+    }
 }
