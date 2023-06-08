@@ -8,8 +8,9 @@ public class WhiteBird : BirdBase
     private GameObject eggPrefab;
 
     private GameObject egg;
-    protected override void ability(){
-        Vector3 eggPos = transform.position + new Vector3(0.0f,-0.5f,0.2f);
+    protected override void ability()
+    {
+        Vector3 eggPos = transform.position + (-0.5f * transform.up + 0.2f * transform.forward);
         egg = Instantiate(eggPrefab, eggPos, Quaternion.identity);
         levelCtrlr.engine.addCullider(egg);
     }
