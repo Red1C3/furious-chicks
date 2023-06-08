@@ -4,7 +4,6 @@ public class SingleObstacleBase : FCObject
 {
     [SerializeField]
     protected int health = 100;
-    protected static new int firstDamage = 0;
     public override void onCullisionEnter(Cullider other)
     {
         if (other.getRigidbodyDriver() is FCObject)
@@ -13,6 +12,11 @@ public class SingleObstacleBase : FCObject
             health -= (otherFC.getDamage() + getDamage()) / 2;
             if (health <= 0) levelCtrlr.destroyFC(this);
         }
+    }
+
+    protected override int firstDamage()
+    {
+        return 0;
     }
 
 }

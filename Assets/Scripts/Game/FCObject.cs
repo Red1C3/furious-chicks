@@ -5,9 +5,6 @@ using UnityEngine;
 public class FCObject : RigidbodyDriver
 {
     protected LevelCtrlr levelCtrlr;
-    protected static int firstDamage = 20; //speed=0-2
-    protected static int secondDamage = 50; //speed=2-20
-    protected static int thirdDamage = 100; //speed>20
     protected override void Start()
     {
         base.Start();
@@ -18,15 +15,24 @@ public class FCObject : RigidbodyDriver
         float speed = velocity.magnitude;
         if (speed < 10)
         {
-            return firstDamage;
+            return firstDamage();
         }
         else if (speed < 50)
         {
-            return secondDamage;
+            return secondDamage();
         }
         else
         {
-            return thirdDamage;
+            return thirdDamage();
         }
+    }
+    protected virtual int firstDamage(){
+        return 20;
+    }
+    protected virtual int secondDamage(){
+        return 50;
+    }
+    protected virtual int thirdDamage(){
+        return 100;
     }
 }

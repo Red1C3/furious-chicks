@@ -10,9 +10,6 @@ public class BirdBase : FCObject
     private float stoppedTimestamp;
     private bool hasStopped = false;
     public bool hasFired = false;
-    protected static new int firstDamage = 20; //speed=0-2
-    protected static new int secondDamage = 50; //speed=2-20
-    protected static new int thirdDamage = 100; //speed>20
     protected bool collidedWithSomething = false;
     protected bool hasAbility=true;
     protected override void Start()
@@ -53,7 +50,7 @@ public class BirdBase : FCObject
     }
     public bool isDead()
     {
-        return hasStopped; //Maybe if bird beneath ground level too
+        return hasStopped || Input.GetKeyDown(KeyCode.Q); //Maybe if bird beneath ground level too
     }
     public override void onCullisionEnter(Cullider other)
     {

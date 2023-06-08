@@ -6,7 +6,6 @@ public class MultiObstacleBase : FCObject
 {
     [SerializeField]
     protected int health = 100;
-    protected static new int firstDamage = 0;
     public Cullider[] children { get; private set; }
     protected override void Start()
     {
@@ -21,5 +20,9 @@ public class MultiObstacleBase : FCObject
             health -= (otherFC.getDamage() + getDamage()) / 2;
             if (health <= 0) levelCtrlr.destroyMulti(this);
         }
+    }
+    protected override int firstDamage()
+    {
+        return 0;
     }
 }
