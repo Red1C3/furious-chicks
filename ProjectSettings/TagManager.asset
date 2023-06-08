@@ -6,6 +6,7 @@ TagManager:
   tags:
   - VoxelGrid
   - Ground
+  - Egg
   layers:
   - Default
   - TransparentFX
