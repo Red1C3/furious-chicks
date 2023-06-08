@@ -48,7 +48,7 @@ public class BirdBase : FCObject
         return velocity.magnitude < linearStoppingThreshold &&
                 getAngularVelocity().magnitude < angularStoppingThreshold;
     }
-    public bool isDead()
+    public virtual bool isDead()
     {
         return hasStopped || Input.GetKeyDown(KeyCode.Q); //Maybe if bird beneath ground level too
     }

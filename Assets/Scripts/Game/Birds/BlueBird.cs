@@ -6,21 +6,47 @@ public class BlueBird : BirdBase
 {
     [SerializeField]
     private GameObject birdPrefab;
-    private GameObject child;
+    private GameObject[] children;
+    protected override void Start()
+    {
+        base.Start();
+        children = null;
+    }
     protected override void ability()
     {
-        child = Instantiate(birdPrefab, transform.position + 0.5f * transform.right,
+        children = new GameObject[2];
+
+        children[0] = Instantiate(birdPrefab, transform.position + 0.5f * transform.right,
          Quaternion.identity);
-        child.GetComponent<Throw>().enabled = false;
-        child.GetComponent<RigidbodyDriver>().initialVelocity = velocity;
-        child.GetComponent<RigidbodyDriver>().initialAngularVelocity = getAngularVelocity();
-        levelCtrlr.engine.addCullider(child);
-        child = Instantiate(birdPrefab, transform.position - 0.5f * transform.right,
+        children[0].GetComponent<Throw>().enabled = false;
+        children[0].GetComponent<RigidbodyDriver>().initialVelocity = velocity;
+        children[0].GetComponent<RigidbodyDriver>().initialAngularVelocity = getAngularVelocity();
+        levelCtrlr.engine.addCullider(children[0]);
+
+        children[1] = Instantiate(birdPrefab, transform.position - 0.5f * transform.right,
          Quaternion.identity);
-        child.GetComponent<Throw>().enabled = false;
-        child.GetComponent<RigidbodyDriver>().initialVelocity = velocity;
-        child.GetComponent<RigidbodyDriver>().initialAngularVelocity = getAngularVelocity();
-        levelCtrlr.engine.addCullider(child);
+        children[1].GetComponent<Throw>().enabled = false;
+        children[1].GetComponent<RigidbodyDriver>().initialVelocity = velocity;
+        children[1].GetComponent<RigidbodyDriver>().initialAngularVelocity = getAngularVelocity();
+        levelCtrlr.engine.addCullider(children[1]);
     }
-    //TODO is dead
+    public override bool isDead()
+    {
+        if (children == null)
+        {
+            return base.isDead();
+        }
+        else
+        {
+            return base.isDead() &&
+                    children[0].GetComponent<BlueBird>().isDead() &&
+                    children[1].GetComponent<BlueBird>().isDead();
+        }
+    }
+    private void OnDestroy(){
+        if(children!=null){
+            levelCtrlr.destroyFC(children[0].GetComponent<FCObject>());
+            levelCtrlr.destroyFC(children[1].GetComponent<FCObject>());
+        }
+    }
 }
