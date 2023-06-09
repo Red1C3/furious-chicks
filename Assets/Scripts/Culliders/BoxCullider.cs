@@ -24,6 +24,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     private RigidbodyDriver rigidbodyDriver;
     private HashSet<Cullider> frameCulliders, stayedCulliders;
     private float3x3 localInertiaTensor;
+    private float3x3 tempRotMat;
 
     protected virtual void Start()
     {
@@ -678,11 +679,17 @@ public class BoxCullider : MonoBehaviour, Cullider
     }
     public virtual float3x3 getTensorInertia()
     {
+        //TODO if rotation is identity return localinertiatensor
+
         //Rotate tensor (in other words, take rotation into account when calculating inertia tensor)
 
-        float3x3 rotationMat = new float3x3(Matrix4x4.Rotate(rotation));
+        Matrix4x4 rotMat = Matrix4x4.Rotate(rotation);
 
-        return math.mul(math.mul(rotationMat, localInertiaTensor), math.transpose(rotationMat));
+        tempRotMat.c0 = (Vector3)rotMat.GetColumn(0);
+        tempRotMat.c1 = (Vector3)rotMat.GetColumn(1);
+        tempRotMat.c2 = (Vector3)rotMat.GetColumn(2);
+
+        return math.mul(math.mul(tempRotMat, localInertiaTensor), math.transpose(tempRotMat));
     }
 
     public virtual Vector3 center()
