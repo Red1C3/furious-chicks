@@ -699,7 +699,7 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     public virtual RigidbodyDriver getRigidbodyDriver()
     {
-        return GetComponent<RigidbodyDriver>();
+        return rigidbodyDriver;
     }
 
     public float getFrictionCo()

@@ -6,11 +6,13 @@ public class VoxelCullider : BoxCullider
 {
 
     private Voxel voxel;
+    private RigidbodyDriver gridRigidbodyDriver;
     protected override void Start()
     {
         facesMats = new Matrix4x4[6];
         edges = new Edge[12];
         voxel = GetComponent<Voxel>();
+        gridRigidbodyDriver = voxel.grid.GetComponent<RigidbodyDriver>();
         updateBoundaries();
     }
     protected override void FixedUpdate()
@@ -30,9 +32,9 @@ public class VoxelCullider : BoxCullider
 
     public override RigidbodyDriver getRigidbodyDriver()
     {
-        return voxel.grid.GetComponent<RigidbodyDriver>();
+        return gridRigidbodyDriver;
     }
-    public void setFriction(float friction) //TODO setBounciness
+    public void setFriction(float friction)
     {
         frictionCo = friction;
     }
@@ -44,7 +46,8 @@ public class VoxelCullider : BoxCullider
     {
         return voxel.grid.stayedCulliders;
     }
-    public void setBounciness(float bounciness){
-        bouncinessCo=bounciness;
+    public void setBounciness(float bounciness)
+    {
+        bouncinessCo = bounciness;
     }
 }

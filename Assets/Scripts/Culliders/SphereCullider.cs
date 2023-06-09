@@ -131,7 +131,7 @@ public class SphereCullider : MonoBehaviour, Cullider
 
     public RigidbodyDriver getRigidbodyDriver()
     {
-        return GetComponent<RigidbodyDriver>();
+        return rigidbodyDriver;
     }
 
     public float getFrictionCo()
