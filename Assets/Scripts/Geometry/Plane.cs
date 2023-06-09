@@ -24,7 +24,8 @@ public class Plane
     public static bool edgePlaneIntersection(out Vector3 contactPoint, Edge edge, Vector3 planeNorm, Vector3 planePoint)
     {
         contactPoint = Vector3.zero;
-        Vector3 direction = edge.vec().normalized;
+        Vector3 edgeVec = edge.vec();
+        Vector3 direction = edgeVec.normalized;
 
         float d = Vector3.Dot(planeNorm, planePoint);
 
@@ -39,7 +40,7 @@ public class Plane
 
         contactPoint = edgeOrigin + direction * x;
 
-        if (x > edge.vec().magnitude || x < 0)
+        if (x > edgeVec.magnitude || x < 0)
         {
             return false;
         }
