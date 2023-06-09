@@ -10,7 +10,7 @@ public class Throw : MonoBehaviour
     private float angleY;
     private float angleZ;
     public LineRenderer lineRenderer;
-    public int cameraAway = 3;
+    public float cameraAway = 3;
 
     bool press = false, fired = false;
 
