@@ -37,7 +37,7 @@ public class Plane
 
         float x = (d - Vector3.Dot(planeNorm, edgeOrigin)) / Vector3.Dot(planeNorm, direction);
 
-        contactPoint = edgeOrigin + direction.normalized * x;
+        contactPoint = edgeOrigin + direction * x;
 
         if (x > edge.vec().magnitude || x < 0)
         {
