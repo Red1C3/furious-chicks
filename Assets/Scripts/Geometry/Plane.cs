@@ -29,14 +29,16 @@ public class Plane
 
         float d = Vector3.Dot(planeNorm, planePoint);
 
-        if (Vector3.Dot(planeNorm, direction) == 0)
+        float planeNormDirectionDot = Vector3.Dot(planeNorm, direction);
+
+        if (planeNormDirectionDot == 0)
         {
             return false;
         }
 
         Vector3 edgeOrigin = edge.from;
 
-        float x = (d - Vector3.Dot(planeNorm, edgeOrigin)) / Vector3.Dot(planeNorm, direction);
+        float x = (d - Vector3.Dot(planeNorm, edgeOrigin)) / planeNormDirectionDot;
 
         contactPoint = edgeOrigin + direction * x;
 
