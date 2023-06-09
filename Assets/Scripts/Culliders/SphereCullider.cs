@@ -12,15 +12,17 @@ public class SphereCullider : MonoBehaviour, Cullider
     private float radius;
     private Vector3 center;
     private RigidbodyDriver rigidbodyDriver;
-    private HashSet<Cullider> frameCulliders,stayedCulliders;
+    private HashSet<Cullider> frameCulliders, stayedCulliders;
+    private float3x3 inertiaTensor;
 
     void Start()
     {
-        frameCulliders=new HashSet<Cullider>();
-        stayedCulliders=new HashSet<Cullider>();
+        frameCulliders = new HashSet<Cullider>();
+        stayedCulliders = new HashSet<Cullider>();
         rigidbodyDriver = GetComponent<RigidbodyDriver>();
         radius = transform.localScale.x / 2.0f;
         center = transform.position;
+        inertiaTensor = calculateInertiaTensor();
     }
 
     void FixedUpdate()
@@ -105,7 +107,7 @@ public class SphereCullider : MonoBehaviour, Cullider
         }
     }
 
-    public float3x3 getTensorInertia()
+    private float3x3 calculateInertiaTensor()
     {
         float diag = (2.0f / 5.0f) * rigidbodyDriver.mass * radius * radius;
 
@@ -116,6 +118,10 @@ public class SphereCullider : MonoBehaviour, Cullider
         tensor[2][2] = diag;
 
         return tensor;
+    }
+    public float3x3 getTensorInertia()
+    {
+        return inertiaTensor;
     }
 
     Vector3 Shape.center()
