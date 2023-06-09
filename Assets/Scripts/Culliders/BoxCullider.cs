@@ -680,11 +680,9 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         //Rotate tensor (in other words, take rotation into account when calculating inertia tensor)
 
-        float3x3 rotationMat = (new float3x3(Matrix4x4.Rotate(rotation)));
-
-        float3x3 tensor = math.mul(math.mul(rotationMat, localInertiaTensor), math.transpose(rotationMat));
-
-        return tensor;
+        float3x3 rotationMat = new float3x3(rotation);
+        
+        return math.mul(math.mul(rotationMat, localInertiaTensor), math.transpose(rotationMat));
     }
 
     public virtual Vector3 center()
