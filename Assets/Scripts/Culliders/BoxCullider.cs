@@ -22,15 +22,17 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     public static readonly float axisThreshold = 0.01f;
     private RigidbodyDriver rigidbodyDriver;
-    private HashSet<Cullider> frameCulliders,stayedCulliders;
+    private HashSet<Cullider> frameCulliders, stayedCulliders;
+    private float3x3 localInertiaTensor;
 
     protected virtual void Start()
     {
-        frameCulliders=new HashSet<Cullider>();
-        stayedCulliders=new HashSet<Cullider>();
+        frameCulliders = new HashSet<Cullider>();
+        stayedCulliders = new HashSet<Cullider>();
         rigidbodyDriver = GetComponent<RigidbodyDriver>();
         facesMats = new Matrix4x4[6];
         edges = new Edge[12];
+        localInertiaTensor = calculateLocalInertiaTensor();
         updateBoundaries();
     }
 
@@ -658,11 +660,11 @@ public class BoxCullider : MonoBehaviour, Cullider
         return base.ToString();
     }
 
-    public virtual float3x3 getTensorInertia()
+    private float3x3 calculateLocalInertiaTensor()
     {
         float3x3 tensor = float3x3.identity;
         float mass = rigidbodyDriver.mass;
-        float h = transform.localScale.y;
+        float h = transform.localScale.y; //FIXME in case of voxels, multply by parents scale
         float d = transform.localScale.z;
         float w = transform.localScale.x;
 
@@ -672,12 +674,15 @@ public class BoxCullider : MonoBehaviour, Cullider
         tensor[1][1] = mass * (w * w + d * d);
         tensor[2][2] = mass * (w * w + h * h);
 
-
+        return tensor;
+    }
+    public virtual float3x3 getTensorInertia()
+    {
         //Rotate tensor (in other words, take rotation into account when calculating inertia tensor)
 
         float3x3 rotationMat = (new float3x3(Matrix4x4.Rotate(rotation)));
 
-        tensor = math.mul(math.mul(rotationMat, tensor), math.transpose(rotationMat));
+        float3x3 tensor = math.mul(math.mul(rotationMat, localInertiaTensor), math.transpose(rotationMat));
 
         return tensor;
     }
@@ -700,10 +705,12 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         return bouncinessCo;
     }
-    public virtual HashSet<Cullider> getFrameCulliders(){
+    public virtual HashSet<Cullider> getFrameCulliders()
+    {
         return frameCulliders;
     }
-    public virtual HashSet<Cullider> getStayedCulliders(){
+    public virtual HashSet<Cullider> getStayedCulliders()
+    {
         return stayedCulliders;
     }
 }
