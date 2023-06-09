@@ -1,9 +1,11 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public struct Edge
 {
     public Vector3 from { get; private set; }
     public Vector3 to { get; private set; }
+    private static List<Vector3> clipTemp = new List<Vector3>(2);
     public Edge(Vector3 from, Vector3 to)
     {
         this.from = from;
@@ -17,8 +19,10 @@ public struct Edge
         to = mat.inverse * (new Vector4(to.x, to.y, to.z, 1));
     }
 
-    public Vector3[] clip(Edge clipper, Vector3 clippingPlaneNorm)
+    public List<Vector3> clip(Edge clipper, Vector3 clippingPlaneNorm)
     {
+        clipTemp.Clear();
+
         float fromSign = (clipper.to.x - clipper.from.x) * (from.z - clipper.from.z) -
                         (clipper.to.z - clipper.from.z) * (from.x - clipper.from.x);
 
@@ -29,7 +33,8 @@ public struct Edge
         //Both vertices are inside the clipping area
         if (fromSign <= 0 && toSign <= 0)
         {
-            return new[] { to };
+            clipTemp.Add(to);
+            return clipTemp;
         }
         else if (toSign <= 0)
         { //Only the 2nd vertex is inside
@@ -37,8 +42,9 @@ public struct Edge
             Vector3 intersectionPoint;
             Plane.linePlaneIntersection(out intersectionPoint, to - from, from,
                                         clippingPlaneNorm, clipper.from);
-            return new Vector3[] { intersectionPoint, to };
-
+            clipTemp.Add(intersectionPoint);
+            clipTemp.Add(to);
+            return clipTemp;
         }
         else if (fromSign <= 0)
         {
@@ -46,12 +52,12 @@ public struct Edge
             Vector3 intersectionPoint;
             Plane.linePlaneIntersection(out intersectionPoint, to - from, from,
                                         clippingPlaneNorm, clipper.from);
-            return new Vector3[] { intersectionPoint };
-
+            clipTemp.Add(intersectionPoint);
+            return clipTemp;
         }
         else
         {
-            return new Vector3[] { };
+            return clipTemp;
         }
 
     }
