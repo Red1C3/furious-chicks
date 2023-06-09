@@ -22,6 +22,7 @@ public class OrangeBird : BirdBase
             transform.localScale += new Vector3(1, 1, 1) * updateRate;
             mass += 1 * updateRate * mass;
             levelCtrlr.currentBirdThrow.cameraAway += 2 * updateRate;
+            GetComponent<SphereCullider>().updateRadius();
         }
     }
 }

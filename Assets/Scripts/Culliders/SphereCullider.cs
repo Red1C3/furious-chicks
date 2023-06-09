@@ -12,12 +12,12 @@ public class SphereCullider : MonoBehaviour, Cullider
     private float radius;
     private Vector3 center;
     private RigidbodyDriver rigidbodyDriver;
-    private HashSet<Cullider> frameCulliders,stayedCulliders;
+    private HashSet<Cullider> frameCulliders, stayedCulliders;
 
     void Start()
     {
-        frameCulliders=new HashSet<Cullider>();
-        stayedCulliders=new HashSet<Cullider>();
+        frameCulliders = new HashSet<Cullider>();
+        stayedCulliders = new HashSet<Cullider>();
         rigidbodyDriver = GetComponent<RigidbodyDriver>();
         radius = transform.localScale.x / 2.0f;
         center = transform.position;
@@ -143,5 +143,11 @@ public class SphereCullider : MonoBehaviour, Cullider
     public HashSet<Cullider> getStayedCulliders()
     {
         return stayedCulliders;
+    }
+
+    public void updateRadius()
+    {
+        radius = transform.localScale.x / 2.0f;
+        //FIXME after megring optimzation-2 do recalcuate inertia tensor
     }
 }
