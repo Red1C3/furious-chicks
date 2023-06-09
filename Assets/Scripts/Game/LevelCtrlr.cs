@@ -12,7 +12,7 @@ public class LevelCtrlr : MonoBehaviour
     [SerializeField]
     private GameObject linePrefab;
     private LineRenderer line;
-    private Throw currentBirdThrow;
+    public Throw currentBirdThrow{get; private set; }
     public CreateOctree engine { get; private set; }
     private int pigsCount;
     private int destroyedPigs = 0;
