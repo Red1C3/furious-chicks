@@ -679,7 +679,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     }
     public virtual float3x3 getTensorInertia()
     {
-        //TODO if rotation is identity return localinertiatensor
+        if (rotation == Quaternion.identity) return localInertiaTensor;
 
         //Rotate tensor (in other words, take rotation into account when calculating inertia tensor)
 
