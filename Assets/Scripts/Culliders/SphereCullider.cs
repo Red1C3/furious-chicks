@@ -150,4 +150,10 @@ public class SphereCullider : MonoBehaviour, Cullider
     {
         return stayedCulliders;
     }
+
+    public void updateRadius()
+    {
+        radius = transform.localScale.x / 2.0f;
+        inertiaTensor = calculateInertiaTensor();
+    }
 }

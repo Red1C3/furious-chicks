@@ -14,4 +14,10 @@ public class WhiteBird : BirdBase
         egg = Instantiate(eggPrefab, eggPos, Quaternion.identity);
         levelCtrlr.engine.addCullider(egg);
     }
+
+    private void OnDestroy(){
+        if(egg!=null){
+            levelCtrlr.destroyFC(egg.GetComponent<FCObject>());
+        }
+    }
 }
