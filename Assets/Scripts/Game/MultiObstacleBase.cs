@@ -12,6 +12,10 @@ public class MultiObstacleBase : FCObject
         base.Start();
         children = GetComponentsInChildren<Cullider>();
     }
+    protected void Update(){
+        if(shape.center().y<CreateOctree.ground.transform.position.y-10.0f)
+            levelCtrlr.destroyMulti(this);
+    }
     public override void onCullisionEnter(Cullider other)
     {
         if (other.getRigidbodyDriver() is FCObject)

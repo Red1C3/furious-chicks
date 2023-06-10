@@ -13,7 +13,11 @@ public class SingleObstacleBase : FCObject
             if (health <= 0) levelCtrlr.destroyFC(this);
         }
     }
-
+    protected void Update()
+    {
+        if (shape.center().y < CreateOctree.ground.transform.position.y-10.0f)
+            levelCtrlr.destroyFC(this);
+    }
     protected override int firstDamage()
     {
         return 0;
