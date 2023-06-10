@@ -13,6 +13,10 @@ public class PigBase : FCObject
             if (health <= 0) levelCtrlr.destroyPig(this);
         }
     }
+    protected void Update(){
+        if(shape.center().y<CreateOctree.ground.transform.position.y-10.0f)
+            levelCtrlr.destroyPig(this);
+    }
     protected override int firstDamage()
     {
         return 0;

@@ -11,11 +11,11 @@ public class BirdBase : FCObject
     private bool hasStopped = false;
     public bool hasFired = false;
     protected bool collidedWithSomething = false;
-    protected bool hasAbility=true;
+    protected bool hasAbility = true;
     protected override void Start()
     {
         base.Start();
-        useGravity=false;
+        useGravity = false;
         stoppedTimestamp = Time.time;
     }
 
@@ -26,7 +26,7 @@ public class BirdBase : FCObject
             if (!collidedWithSomething && hasAbility && Input.GetKeyDown(KeyCode.F))
             {
                 ability();
-                hasAbility=false;
+                hasAbility = false;
             }
             if (Time.time - stoppedTimestamp >= timeTillDeath)
             {
@@ -50,7 +50,8 @@ public class BirdBase : FCObject
     }
     public virtual bool isDead()
     {
-        return hasStopped || Input.GetKeyDown(KeyCode.Q); //Maybe if bird beneath ground level too
+        return hasStopped || Input.GetKeyDown(KeyCode.Q)
+        || shape.center().y < CreateOctree.ground.transform.position.y - 10.0f;
     }
     public override void onCullisionEnter(Cullider other)
     {
