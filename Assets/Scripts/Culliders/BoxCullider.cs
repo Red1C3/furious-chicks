@@ -106,6 +106,7 @@ public class BoxCullider : MonoBehaviour, Cullider
         if (other is SphereCullider)
         {
             cullisionInfo = (other as SphereCullider).cullideWithBox(this);
+            if (!cullisionInfo.cullided) return CullisionInfo.NO_CULLISION;
             cullisionInfo.first = this;
             cullisionInfo.second = other;
             cullisionInfo.normal *= -1;
