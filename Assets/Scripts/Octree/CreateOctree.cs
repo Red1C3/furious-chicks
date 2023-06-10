@@ -8,7 +8,7 @@ public class CreateOctree : MonoBehaviour
     GameObject player, ground;
     Octree octree;
     public static int nodeMinSize = 0;
-    public static float allSpeed = 0, threshhold = 0.02f, maxZ=0.0f;
+    public static float allSpeed = 0, threshhold = 0.02f, maxZ = 0.0f;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     bool lastActionIsShrink = false;
@@ -21,7 +21,7 @@ public class CreateOctree : MonoBehaviour
     void Start()
     {
         cullidingObject = new List<GameObject>();
-        cullidingObjectsCopy=new List<GameObject>();
+        cullidingObjectsCopy = new List<GameObject>();
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
         foreach (GameObject gameObject in gameObjects)
         {
@@ -44,6 +44,8 @@ public class CreateOctree : MonoBehaviour
         }
         else
             octree = new Octree(cullidingObject, nodeMinSize);
+
+        Cullider.clonedStayed = new List<Cullider>(cullidingObject.Count + 16);
     }
 
     void OnDrawGizmos()

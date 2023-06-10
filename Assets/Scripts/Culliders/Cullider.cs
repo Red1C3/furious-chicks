@@ -11,6 +11,7 @@ public interface Cullider : Shape
     float getBouncinessCo();
     HashSet<Cullider> getFrameCulliders(); //Must initialize at start
     HashSet<Cullider> getStayedCulliders();
+    static List<Cullider> clonedStayed;
     void triggerCulliders()
     {
         HashSet<Cullider> frameCulliders = getFrameCulliders();
@@ -29,7 +30,8 @@ public interface Cullider : Shape
             }
         }
 
-        HashSet<Cullider> clonedStayed = new HashSet<Cullider>(stayedCulliders);
+        clonedStayed.Clear();
+        clonedStayed.AddRange(stayedCulliders);
         foreach (Cullider cullider in clonedStayed)
         {
             if (!frameCulliders.Contains(cullider))
