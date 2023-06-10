@@ -5,10 +5,11 @@ using UnityEngine;
 public class CreateOctree : MonoBehaviour
 {
     public Solver solver;
-    GameObject player, ground;
+    GameObject player;
+    public static GameObject ground { get; private set; }
     Octree octree;
     public static int nodeMinSize = 0;
-    public static float maxSpeed = 0, threshhold = 0.02f, maxZ=0.0f;
+    public static float maxSpeed = 0, threshhold = 0.02f, maxZ = 0.0f;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     bool lastActionIsShrink = false;
@@ -21,7 +22,7 @@ public class CreateOctree : MonoBehaviour
     void Start()
     {
         cullidingObject = new List<GameObject>();
-        cullidingObjectsCopy=new List<GameObject>();
+        cullidingObjectsCopy = new List<GameObject>();
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
         foreach (GameObject gameObject in gameObjects)
         {
@@ -70,7 +71,7 @@ public class CreateOctree : MonoBehaviour
                 cullider.getFrameCulliders().Clear();
             }
             rb.applyForces();
-            maxSpeed = Mathf.Max(rb.velocity.magnitude,maxSpeed);
+            maxSpeed = Mathf.Max(rb.velocity.magnitude, maxSpeed);
         }
 
         octree.Update(cullidingObject, nodeMinSize);
