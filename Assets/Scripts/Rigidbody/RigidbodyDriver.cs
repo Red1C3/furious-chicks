@@ -48,7 +48,7 @@ public class RigidbodyDriver : MonoBehaviour
     }
     public readonly static Vector3 gravity = new Vector3(0, -9.8f, 0);
 
-    private Shape shape;
+    protected Shape shape;
 
     public Vector3 acclumatedForces { get; private set; }
     private Vector3 acclumatedImpulses;
