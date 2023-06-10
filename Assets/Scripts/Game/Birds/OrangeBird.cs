@@ -16,7 +16,7 @@ public class OrangeBird : BirdBase
         maxScale *= 4;
     }
 
-    protected void Update()
+    new protected void Update()
     {
         base.Update();
         if (!hasAbility && transform.localScale.x <= maxScale)
