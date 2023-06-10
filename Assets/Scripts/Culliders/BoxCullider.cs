@@ -25,6 +25,11 @@ public class BoxCullider : MonoBehaviour, Cullider
     private HashSet<Cullider> frameCulliders, stayedCulliders;
     private float3x3 localInertiaTensor;
     private float3x3 tempRotMat;
+    private static List<Vector3> contactPoints=new List<Vector3>(8);
+    private static List<Tuple<Edge,Edge>> contactEdges=new List<Tuple<Edge, Edge>>(8);
+
+    private static bool[] thisEdgeValid = new bool[12];
+    private static bool[] otherEdgeValid = new bool[12];
 
     protected virtual void Start()
     {
@@ -172,10 +177,9 @@ public class BoxCullider : MonoBehaviour, Cullider
         float faceOverlap = float.MaxValue, edgeOverlap = float.MaxValue;
         Side side = Side.LEN;
         float tempOverlap;
-        List<Vector3> contactPoints = new List<Vector3>();
+        contactPoints.Clear();
 
 
-        //FIXME calculate overlap only takes the vector into account which returns the opposite faces
         for (int i = 0; i < (int)Side.LEN; i++)
         {
             if ((tempOverlap = calculateOverlap(other, faceNormal((Side)i))) < 0)
@@ -205,9 +209,8 @@ public class BoxCullider : MonoBehaviour, Cullider
             }
         }
 
-        List<Tuple<Edge, Edge>> contactEdges = new List<Tuple<Edge, Edge>>();
-        bool[] thisEdgeValid = new bool[12];
-        bool[] otherEdgeValid = new bool[12];
+        contactEdges.Clear();
+        
         for (int i = 0; i < edges.Length; i++)
         {
             thisEdgeValid[i] = isEdgeValid(other, edges[i]);
