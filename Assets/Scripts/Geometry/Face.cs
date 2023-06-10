@@ -6,6 +6,20 @@ public struct Face
     public enum Winding { CW, CCW }
     private Edge[] edges;
     public Winding winding { get; set; }
+    private static Edge[] clippingArea = new Edge[]{
+        new Edge(new Vector3(-1, 0, -1), new Vector3(-1, 0, 1)),
+        new Edge(new Vector3(-1, 0, 1), new Vector3(1, 0, 1)),
+        new Edge(new Vector3(1, 0, 1), new Vector3(1, 0, -1)),
+        new Edge(new Vector3(1, 0, -1), new Vector3(-1, 0, -1))};
+
+    private static Vector3[] clippingNorms = new Vector3[]{
+        new Vector3(1, 0, 0),
+        new Vector3(0, 0, -1),
+        new Vector3(-1, 0, 0),
+        new Vector3(0, 0, 1)};
+
+    private static List<Vector3> vertList = new List<Vector3>(24);
+    private static List<Vector3> projectedList = new List<Vector3>(24);
     public Face(Vector3[] vertices, bool flipWinding)
     {
         if (vertices.Length == 3)
@@ -71,17 +85,6 @@ public struct Face
             Debug.Log("Can't clip CCW winded faces");
             return null;
         }
-        Edge[] clippingArea = new Edge[4]; //Can be computed once by making it static
-        clippingArea[0] = new Edge(new Vector3(-1, 0, -1), new Vector3(-1, 0, 1));// Must be CW
-        clippingArea[1] = new Edge(new Vector3(-1, 0, 1), new Vector3(1, 0, 1));
-        clippingArea[2] = new Edge(new Vector3(1, 0, 1), new Vector3(1, 0, -1));
-        clippingArea[3] = new Edge(new Vector3(1, 0, -1), new Vector3(-1, 0, -1));
-
-        Vector3[] clippingNorms = new Vector3[4];
-        clippingNorms[0] = new Vector3(1, 0, 0);
-        clippingNorms[1] = new Vector3(0, 0, -1);
-        clippingNorms[2] = new Vector3(-1, 0, 0);
-        clippingNorms[3] = new Vector3(0, 0, 1);
 
         Face clipped = this; //A copy
         clipped.edges = (Edge[])edges.Clone();
@@ -89,7 +92,7 @@ public struct Face
         clipped.toLocal(mat);
 
 
-        List<Vector3> vertList = new List<Vector3>();
+        vertList.Clear();
         foreach (Edge edge in clipped.edges)
         {
             vertList.Add(edge.from);
@@ -97,7 +100,7 @@ public struct Face
 
         for (int i = 0; i < clippingArea.Length; i++)
         {
-            List<Vector3> newList = new List<Vector3>();
+            List<Vector3> newList = new List<Vector3>(vertList.Count);
             for (int j = 0; j < vertList.Count; j++)
             {
                 Edge edge = new Edge(vertList[j], vertList[(j + 1) % vertList.Count]);
@@ -106,7 +109,7 @@ public struct Face
             vertList = newList;
         }
 
-        List<Vector3> projectedList = new List<Vector3>();
+        projectedList.Clear();
         for (int i = 0; i < vertList.Count; i++)
         {
             if (vertList[i].y <= 0)
