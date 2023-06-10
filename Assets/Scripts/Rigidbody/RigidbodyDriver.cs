@@ -52,11 +52,13 @@ public class RigidbodyDriver : MonoBehaviour
 
     public Vector3 acclumatedForces { get; private set; }
     private Vector3 acclumatedImpulses;
+    private VoxelGrid voxelGrid;
     protected virtual void Start()
     {
         if (gameObject.tag != "Player")
             psudoFreeze = startFrozen;
         shape = GetComponent<Shape>();
+        voxelGrid = GetComponent<VoxelGrid>();
         angularVelocity = new Quaternion(initialAngularVelocity.x, initialAngularVelocity.y, initialAngularVelocity.z, 0);
         velocity = initialVelocity;
         if (useGravity)
@@ -213,11 +215,10 @@ public class RigidbodyDriver : MonoBehaviour
         if (psudoFreeze) return inverseInertiaVector3;
         if (freezeRX && freezeRY && freezeRZ) return inverseInertiaVector3;
 
-        VoxelGrid grid;
         float inverseInertiaScalar;
-        if (TryGetComponent<VoxelGrid>(out grid))
+        if (voxelGrid != null)
         {
-            inverseInertiaScalar = 1.0f / Shape.inertiaScalar(grid.getInertiaTensor(), axis);
+            inverseInertiaScalar = 1.0f / Shape.inertiaScalar(voxelGrid.getInertiaTensor(), axis);
         }
         else
         {
@@ -233,10 +234,13 @@ public class RigidbodyDriver : MonoBehaviour
         if (freezePX && freezePY && freezePZ && freezeRX && freezeRY && freezeRZ) return;
         psudoFreeze = false;
     }
-    public virtual void onCullisionEnter(Cullider other){
+    public virtual void onCullisionEnter(Cullider other)
+    {
     }
-    public virtual void onCullisionExit(Cullider other){
+    public virtual void onCullisionExit(Cullider other)
+    {
     }
-    public virtual void onCullisionStay(Cullider other){
+    public virtual void onCullisionStay(Cullider other)
+    {
     }
 }
