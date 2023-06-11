@@ -59,16 +59,11 @@ public class RandomGen : MonoBehaviour
     }
 
     public Vector3 getCenterVector(){
-        while (true)
-        {
-            int x = (int) Random.Range(0,groundScale);
-            int z = (int) Random.Range(0,groundScale);
-            if(scale.x==scale.z && scale.x==1){
-                heights[x][z]+=scale.y;
-                return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
-            }
-
-            
+        int x = (int) Random.Range(0,groundScale);
+        int z = (int) Random.Range(0,groundScale);
+        if(scale.x==scale.z && scale.x==1){
+            heights[x][z]+=scale.y;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
         }
     }
 }
