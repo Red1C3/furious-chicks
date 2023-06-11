@@ -93,7 +93,7 @@ public class SphereCullider : MonoBehaviour, Cullider
                 Vector3 closestFacePoint = BoxCullider.clampToClosestFace(localSphereCenter);
                 Vector3 penetration = localSphereCenter - closestFacePoint;
 
-                mtv = -1 * (radius + boxTransform.TransformVector(penetration).magnitude) * boxTransform.TransformVector(penetration).normalized;
+                mtv = (radius - boxTransform.TransformVector(penetration).magnitude) * boxTransform.TransformVector(penetration).normalized;
                 contactPoint = boxTransform.TransformPoint(closestFacePoint);
             }
 
