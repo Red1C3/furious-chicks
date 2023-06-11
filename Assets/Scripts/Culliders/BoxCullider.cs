@@ -532,12 +532,12 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     static public Vector3 clampToClosestFace(Vector3 local)
     {
-        float disToX = Mathf.Abs(0.5f - local.x);
-        float disToMX = Mathf.Abs(-0.5f - local.x);
-        float disToY = Mathf.Abs(0.5f - local.y);
-        float disToMY = Mathf.Abs(-0.5f - local.y);
-        float disToZ = Mathf.Abs(0.5f - local.z);
-        float disToMZ = Mathf.Abs(-0.5f - local.z);
+        float disToX = Vector3.Distance(local, new Vector3(0.5f, 0, 0));
+        float disToMX = Vector3.Distance(local, new Vector3(-0.5f, 0, 0));
+        float disToY = Vector3.Distance(local, new Vector3(0, 0.5f, 0));
+        float disToMY = Vector3.Distance(local, new Vector3(0, -0.5f, 0));
+        float disToZ = Vector3.Distance(local, new Vector3(0, 0, 0.5f));
+        float disToMZ = Vector3.Distance(local, new Vector3(0, 0, -0.5f));
 
         float min = Mathf.Min(disToX, disToMX, disToY, disToMY, disToZ, disToMZ);
 
