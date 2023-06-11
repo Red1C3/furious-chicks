@@ -10,14 +10,17 @@ public class RandomGen : MonoBehaviour
     public GameObject[] blocksPrefabs;
     public float[] blocksPros;
     public int objectNumber;
+    private int copyNumber;
     
     Vector3 scale;
 
     List<List<float>> heights;
     void Awake()
     {
-        ground.transform.localScale = new Vector3(groundScale,0.1f,groundScale);
-        ground.transform.position = new Vector3(0,0,groundScale*3.0f/4.0f);
+        copyNumber=objectNumber;
+
+        ground.transform.localScale = new Vector3(2*groundScale,0.1f,2*groundScale);
+        ground.transform.position = new Vector3(0,0,groundScale*3.0f/2.0f);
         heights = new List<List<float>>();
         for (int i = 0; i < groundScale; i++)
         {
@@ -36,14 +39,15 @@ public class RandomGen : MonoBehaviour
         {
             blocksPros[i]/=sum;
         }
-        for (int i = 0; i < objectNumber; i++)
+        for (int i = 0; i < copyNumber; i++)
         {
-            // scale=new Vector3(Random.Range(1, 6),Random.Range(1, 6),Random.Range(1, 6));
-            scale=new Vector3(1,Random.Range(1, 6),1);
+            scale=new Vector3(Random.Range(1, 6),Random.Range(1, 6),Random.Range(1, 6));
 
-            GameObject randPrefab = Instantiate(blocksPrefabs[randomPrefabIndex()], getCenterVector(), Quaternion.identity);
-            randPrefab.transform.localScale = scale;
-            
+            Vector3 pos = getCenterVector();
+            if(copyNumber<=0)
+                break;
+            GameObject randPrefab = Instantiate(blocksPrefabs[randomPrefabIndex()], pos , Quaternion.identity);
+            randPrefab.transform.localScale = scale;            
         }
         
     }
@@ -59,16 +63,69 @@ public class RandomGen : MonoBehaviour
     }
 
     public Vector3 getCenterVector(){
-        while (true)
-        {
-            int x = (int) Random.Range(0,groundScale);
-            int z = (int) Random.Range(0,groundScale);
-            if(scale.x==scale.z && scale.x==1){
-                heights[x][z]+=scale.y;
-                return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
-            }
-
-            
+        int x = (int) Random.Range(0,groundScale);
+        int z = (int) Random.Range(0,groundScale);
+        if(scale.x==scale.z && scale.x==1){
+            heights[x][z]+=scale.y;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
         }
+
+        else if(scale.x==1){
+            float dz = Mathf.Abs(scale.z/2.0f-0.5f);
+            int z1=(int)Mathf.Max(z-dz,0),z2=(int)Mathf.Min(z+dz,groundScale-1);
+            float newH = heights[x][z];
+            for(int i=z1;i<=z2;i++)
+                newH = Mathf.Max(newH,heights[x][i]);
+            makePilier(newH,x,z1);
+            makePilier(newH,x,z2);
+            for(int i=z1;i<=z2;i++)
+                heights[x][i]=newH+scale.y;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
+        }
+
+        else if(scale.z==1){
+            float dx = Mathf.Abs(scale.x/2.0f-0.5f);
+            int x1=(int)Mathf.Max(x-dx,0),x2=(int)Mathf.Min(x+dx,groundScale-1);
+            float newH = heights[x][z];
+            for(int j=x1;j<=x2;j++)
+                newH = Mathf.Max(newH,heights[j][z]);
+            makePilier(newH,x1,z);
+            makePilier(newH,x2,z);
+            for(int j=x1;j<=x2;j++)
+                heights[j][z]=newH+scale.y;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
+        }
+        else{
+            float dx = Mathf.Abs(scale.x/2.0f-0.5f);
+            int x1=(int)Mathf.Max(x-dx,0),x2=(int)Mathf.Min(x+dx,groundScale-1);
+            
+            float dz = Mathf.Abs(scale.z/2.0f-0.5f);
+            int z1=(int)Mathf.Max(z-dz,0),z2=(int)Mathf.Min(z+dz,groundScale-1);
+            
+            float newH = heights[x][z];
+            for(int i=z1;i<=z2;i++)
+                for(int j=x1;j<=x2;j++)
+                    newH = Mathf.Max(newH,heights[j][i]);
+            makePilier(newH,x1,z1);
+            makePilier(newH,x1,z2);
+            makePilier(newH,x2,z1);
+            makePilier(newH,x2,z2);
+            for(int i=z1;i<=z2;i++)
+                for(int j=x1;j<=x2;j++)
+                    heights[j][i]=newH+scale.y;            
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
+        }
+    }
+
+    public void makePilier(float maxH, int x, int z){
+        float y = maxH - heights[x][z];
+        if (y<=1e-8 || copyNumber<=0){
+            return;
+        }
+        GameObject pilier = Instantiate(blocksPrefabs[randomPrefabIndex()],new Vector3(x-(int) (groundScale/2.0f),y/2,z-(int) (groundScale/2.0f))+ground.transform.position , Quaternion.identity);
+        pilier.transform.localScale = new Vector3(1,y,1);
+        pilier.tag = "Pilier";
+        copyNumber--;
+        return;
     }
 }
