@@ -11,6 +11,7 @@ public class RandomGen : MonoBehaviour
     public float[] blocksPros;
     public int objectNumber;
     private int copyNumber;
+    public bool scaleX=true,scaleZ=true;
     
     Vector3 scale;
 
@@ -27,7 +28,11 @@ public class RandomGen : MonoBehaviour
         
         for (int i = 0; i < copyNumber; i++)
         {
-            scale=new Vector3(2*Random.Range(1, 3)+1,2*Random.Range(1, 3)+1,2*Random.Range(1, 3)+1);
+            int x = scaleX?getRandOdd():1;
+            int y = getRandOdd();
+            int z = scaleZ?getRandOdd():1;
+
+            scale=new Vector3(x,y,z);
 
             Vector3 pos = getCenterVector();
             if(copyNumber<=0)
@@ -38,6 +43,10 @@ public class RandomGen : MonoBehaviour
 
         }
         
+    }
+
+    private int getRandOdd(){
+        return 2*Random.Range(1, 3)+1;
     }
 
     private Vector3 getCenterVector(){        
