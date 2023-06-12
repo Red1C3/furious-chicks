@@ -40,15 +40,13 @@ public class RandomGen : MonoBehaviour
         
     }
 
-    private Vector3 getCenterVector(){
-        int x = (int) Random.Range(0,groundScale);
-        int z = (int) Random.Range(0,groundScale);
+    private Vector3 getCenterVector(){        
+        int x = (int) Random.Range((int)scale.x/2.0f,groundScale-((int)scale.x/2.0f));
+        int z = (int) Random.Range((int)scale.z/2.0f,groundScale-((int)scale.z/2.0f));
         
-        // int x = (int) Random.Range((int)scale.x/2.0f,groundScale-((int)scale.x/2.0f));
-        // int z = (int) Random.Range((int)scale.z/2.0f,groundScale-((int)scale.z/2.0f));
         if(scale.x==scale.z && scale.x==1){
             heights[x][z]+=scale.y;
-            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-0.5f*scale.y, z-(int) (groundScale/2.0f))+ground.transform.position;
         }
 
         else if(scale.x==1){
@@ -62,7 +60,7 @@ public class RandomGen : MonoBehaviour
             makePilier(newH,x,z2);
             for(int i=z1;i<=z2;i++)
                 heights[x][i]=newH+scale.y;
-            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-0.5f*scale.y, z-(int) (groundScale/2.0f))+ground.transform.position;
         }
 
         else if(scale.z==1){
@@ -76,7 +74,7 @@ public class RandomGen : MonoBehaviour
             makePilier(newH,x2,z);
             for(int j=x1;j<=x2;j++)
                 heights[j][z]=newH+scale.y;
-            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-0.5f*scale.y, z-(int) (groundScale/2.0f))+ground.transform.position;
         }
         else{
             int dx =(int) Mathf.Abs(scale.x/2.0f);
@@ -96,7 +94,7 @@ public class RandomGen : MonoBehaviour
             for(int i=z1;i<=z2;i++)
                 for(int j=x1;j<=x2;j++)
                     heights[j][i]=newH+scale.y;            
-            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-scale.y, z-(int) (groundScale/2.0f))+0.5f*scale+ground.transform.position;
+            return new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-0.5f*scale.y, z-(int) (groundScale/2.0f))+ground.transform.position;
         }
     }
 
@@ -107,7 +105,7 @@ public class RandomGen : MonoBehaviour
         }
         Vector3 pilierScale = new Vector3(1,y,1);
         heights[x][z]+=pilierScale.y;
-        Vector3 pos = new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-pilierScale.y, z-(int) (groundScale/2.0f))+0.5f*pilierScale+ground.transform.position;
+        Vector3 pos = new Vector3(x-(int) (groundScale/2.0f), heights[x][z]-0.5f*pilierScale.y, z-(int) (groundScale/2.0f))+ground.transform.position;
         
         GameObject pilier = Instantiate(blocksPrefabs[randomPrefabIndex()],pos , Quaternion.identity);
         pilier.transform.localScale = pilierScale;
