@@ -73,12 +73,12 @@ public class CreateOctree : MonoBehaviour
             rb.applyForces();
             maxSpeed = Mathf.Max(rb.velocity.magnitude, maxSpeed);
         }
-
-        octree.Update(cullidingObject, nodeMinSize);
-        octree.search(player, solver);
-        octree.search(ground, solver);
+        if(cullidingObject.Count>0){
+            octree.Update(cullidingObject, nodeMinSize);
+            octree.search(player, solver);
+            octree.search(ground, solver);
+        }
         octree.rootNode.checkCulliding(player.GetComponent<Cullider>(), ground.GetComponent<Cullider>());
-
         foreach (GameObject go in cullidingObject)
         {
             octree.search(go, solver);
