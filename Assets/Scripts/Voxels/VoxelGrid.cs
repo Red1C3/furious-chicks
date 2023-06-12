@@ -253,7 +253,8 @@ public class VoxelGrid : MonoBehaviour
 
     private Bounds errorBounds(Bounds bounds)
     {
-        bounds.extents -= new Vector3(math.EPSILON, math.EPSILON, math.EPSILON);
+        float err=0.0001f;
+        bounds.extents -= new Vector3(err ,err, err);
         return bounds;
     }
 

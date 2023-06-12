@@ -7,13 +7,16 @@ public class MultiObstacleBase : FCObject
     [SerializeField]
     protected int health = 100;
     public Cullider[] children { get; private set; }
+    private VoxelGrid voxelGrid;
     protected override void Start()
     {
         base.Start();
         children = GetComponentsInChildren<Cullider>();
+        voxelGrid = GetComponent<VoxelGrid>();
     }
-    protected void Update(){
-        if(shape.center().y<CreateOctree.ground.transform.position.y-10.0f)
+    protected void Update()
+    {
+        if (voxelGrid.getVoxelsCenter().y < CreateOctree.ground.transform.position.y - 10.0f)
             levelCtrlr.destroyMulti(this);
     }
     public override void onCullisionEnter(Cullider other)

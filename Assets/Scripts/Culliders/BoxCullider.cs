@@ -31,6 +31,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     private static bool[] thisEdgeValid = new bool[12];
     private static bool[] otherEdgeValid = new bool[12];
 
+    private static float[] closestDistances = new float[6];
     protected virtual void Start()
     {
         frameCulliders = new HashSet<Cullider>();
@@ -538,22 +539,41 @@ public class BoxCullider : MonoBehaviour, Cullider
 
     static public Vector3 clampToClosestFace(Vector3 local)
     {
-        float disToX = Vector3.Distance(local, new Vector3(0.5f, 0, 0));
-        float disToMX = Vector3.Distance(local, new Vector3(-0.5f, 0, 0));
-        float disToY = Vector3.Distance(local, new Vector3(0, 0.5f, 0));
-        float disToMY = Vector3.Distance(local, new Vector3(0, -0.5f, 0));
-        float disToZ = Vector3.Distance(local, new Vector3(0, 0, 0.5f));
-        float disToMZ = Vector3.Distance(local, new Vector3(0, 0, -0.5f));
+        float disToX = closestDistances[0] = Vector3.Distance(local, new Vector3(0.5f, 0, 0));
+        float disToMX = closestDistances[1] = Vector3.Distance(local, new Vector3(-0.5f, 0, 0));
+        float disToY = closestDistances[2] = Vector3.Distance(local, new Vector3(0, 0.5f, 0));
+        float disToMY = closestDistances[3] = Vector3.Distance(local, new Vector3(0, -0.5f, 0));
+        float disToZ = closestDistances[4] = Vector3.Distance(local, new Vector3(0, 0, 0.5f));
+        float disToMZ = closestDistances[5] = Vector3.Distance(local, new Vector3(0, 0, -0.5f));
 
-        float min = Mathf.Min(disToX, disToMX, disToY, disToMY, disToZ, disToMZ);
+        Array.Sort(closestDistances);
+        for (int i = 0; i < closestDistances.Length; i++)
+        {
+            Vector3 clampedPoint;
+            if (closestDistances[i] == disToX) clampedPoint = new Vector3(0.5f, local.y, local.z);
+            else if (closestDistances[i] == disToMX) clampedPoint = new Vector3(-0.5f, local.y, local.z);
+            else if (closestDistances[i] == disToY) clampedPoint = new Vector3(local.x, 0.5f, local.z);
+            else if (closestDistances[i] == disToMY) clampedPoint = new Vector3(local.x, -0.5f, local.z);
+            else if (closestDistances[i] == disToZ) clampedPoint = new Vector3(local.x, local.y, 0.5f);
+            else clampedPoint = new Vector3(local.x, local.y, -0.5f);
 
-        if (min == disToX) return new Vector3(0.5f, local.y, local.z);
-        if (min == disToMX) return new Vector3(-0.5f, local.y, local.z);
-        if (min == disToY) return new Vector3(local.x, 0.5f, local.z);
-        if (min == disToMY) return new Vector3(local.x, -0.5f, local.z);
-        if (min == disToZ) return new Vector3(local.x, local.y, 0.5f);
-        if (min == disToMZ) return new Vector3(local.x, local.y, -0.5f);
-        return new Vector3(0.5f, local.y, local.z);
+
+            if (clampedPoint.x <= 0.5f && clampedPoint.x >= -0.5f &&
+            clampedPoint.y <= 0.5f && clampedPoint.y >= -0.5f &&
+            clampedPoint.z <= 0.5f && clampedPoint.z >= -0.5f)
+                return clampedPoint;
+        }
+        return  Vector3.zero;
+
+        // float min = Mathf.Min(disToX, disToMX, disToY, disToMY, disToZ, disToMZ);
+
+        // if (min == disToX) return new Vector3(0.5f, local.y, local.z);
+        // if (min == disToMX) return new Vector3(-0.5f, local.y, local.z);
+        // if (min == disToY) return new Vector3(local.x, 0.5f, local.z);
+        // if (min == disToMY) return new Vector3(local.x, -0.5f, local.z);
+        // if (min == disToZ) return new Vector3(local.x, local.y, 0.5f);
+        // if (min == disToMZ) return new Vector3(local.x, local.y, -0.5f);
+        // return new Vector3(0.5f, local.y, local.z);
     }
 
     public void updateBoundaries()
