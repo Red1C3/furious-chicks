@@ -551,12 +551,12 @@ public class BoxCullider : MonoBehaviour, Cullider
             else clampedPoint = new Vector3(local.x, local.y, -0.5f);
 
 
-            if (clampedPoint.x <= 0.5f && clampedPoint.x >= -0.5f &&
-            clampedPoint.y <= 0.5f && clampedPoint.y >= -0.5f &&
-            clampedPoint.z <= 0.5f && clampedPoint.z >= -0.5f)
+            if (clampedPoint.x <= 0.5f + 0.01f && clampedPoint.x >= -0.5f - 0.01f &&
+            clampedPoint.y <= 0.5f + 0.01f && clampedPoint.y >= -0.5f - 0.01f &&
+            clampedPoint.z <= 0.5f + 0.01f && clampedPoint.z >= -0.5f - 0.01f)
                 return clampedPoint;
         }
-        return  Vector3.zero;
+        return Vector3.zero;
 
         // float min = Mathf.Min(disToX, disToMX, disToY, disToMY, disToZ, disToMZ);
 
