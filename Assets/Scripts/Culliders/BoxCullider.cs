@@ -556,7 +556,7 @@ public class BoxCullider : MonoBehaviour, Cullider
             clampedPoint.z <= 0.5f + 0.01f && clampedPoint.z >= -0.5f - 0.01f)
                 return clampedPoint;
         }
-        return Vector3.zero;
+        return local;
 
         // float min = Mathf.Min(disToX, disToMX, disToY, disToMY, disToZ, disToMZ);
 
