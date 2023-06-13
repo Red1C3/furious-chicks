@@ -17,7 +17,7 @@ public class FCObject : RigidbodyDriver
         {
             return firstDamage();
         }
-        else if (speed < 50)
+        else if (speed < 30)
         {
             return secondDamage();
         }
