@@ -10,9 +10,11 @@ public class RandomGen : MonoBehaviour
     public GameObject[] blocksPrefabs;
     public float[] blocksPros;
     public int objectNumber;
-    private int copyNumber;
     public bool scaleX=true,scaleZ=true;
+    public GameObject pigPrefab;
+    public int pigsNumber;
     
+    private int copyNumber;
     Vector3 scale;
 
     List<List<float>> heights;
@@ -41,6 +43,20 @@ public class RandomGen : MonoBehaviour
             randPrefab.transform.localScale = scale;      
             randPrefab.GetComponent<RigidbodyDriver>().mass = calcMass(scale);
 
+        }
+        for(int i=0;i<pigsNumber;i++){
+            if(i>=groundScale*groundScale)
+                break;
+            int x = (int) Random.Range(0,groundScale);
+            int z = (int) Random.Range(0,groundScale);
+            float y = heights[x][z];
+            if(y<0){
+                i--;
+                continue;
+            }
+            Vector3 pos = new Vector3(x-(int) (groundScale/2.0f), heights[x][z]+0.5f, z-(int) (groundScale/2.0f))+ground.transform.position;
+            GameObject pig = Instantiate(pigPrefab, pos , Quaternion.identity);
+            heights[x][z]=-1;
         }
         
     }
@@ -138,7 +154,7 @@ public class RandomGen : MonoBehaviour
 
     private void initGround(){
         ground.transform.localScale = new Vector3(2*groundScale,0.1f,2*groundScale);
-        ground.transform.position = new Vector3(0,0,groundScale*3.0f/2.0f);
+        ground.transform.position = new Vector3(0,-1.0f,groundScale*3.0f/2.0f);
     }
 
     private void calcPros(){
