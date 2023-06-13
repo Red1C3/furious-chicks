@@ -55,7 +55,7 @@ public class RandomGen : MonoBehaviour
                 continue;
             }
             Vector3 pos = new Vector3(x-(int) (groundScale/2.0f), heights[x][z]+0.5f, z-(int) (groundScale/2.0f))+ground.transform.position;
-            GameObject pig = Instantiate(pigPrefab, pos , Quaternion.identity);
+            GameObject pig = Instantiate(pigPrefab, pos , Quaternion.Euler(0,180,0));
             heights[x][z]=-1;
         }
         
