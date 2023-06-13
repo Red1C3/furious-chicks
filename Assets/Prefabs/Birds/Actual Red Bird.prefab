@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6171975433177133607}
   - component: {fileID: 5101770587569943094}
   m_Layer: 0
-  m_Name: Simple Bird
+  m_Name: Actual Red Bird
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2683011126410115248
 MeshFilter:
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5c9e30ae5cf668ba598c6a69ea9b4f5a, type: 2}
+  - {fileID: 2100000, guid: 57a7ef6497bb63d99864e577323fe493, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
