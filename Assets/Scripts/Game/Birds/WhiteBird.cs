@@ -20,4 +20,12 @@ public class WhiteBird : BirdBase
             levelCtrlr.destroyFC(egg.GetComponent<FCObject>());
         }
     }
+    protected override int firstDamage()
+    {
+        return 15;
+    }
+    protected override int secondDamage()
+    {
+        return 30;
+    }
 }

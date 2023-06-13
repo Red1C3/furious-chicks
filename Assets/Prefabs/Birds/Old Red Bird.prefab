@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2683011126410115248}
   - component: {fileID: 2377468606089877827}
   - component: {fileID: 6171975433177133607}
-  - component: {fileID: 5101770587569943094}
+  - component: {fileID: -2741663266714686459}
   m_Layer: 0
   m_Name: Old Red Bird
   m_TagString: Player
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frictionCo: 0
   bouncinessCo: 0
---- !u!114 &5101770587569943094
+--- !u!114 &-2741663266714686459
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4040935626910586188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d8c8d77e838f1b7b9de0f630f1ae4c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b4b897200e9073bba46ed30eb955b02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   drag: 1
@@ -119,7 +119,7 @@ MonoBehaviour:
   freezeRX: 0
   freezeRY: 0
   freezeRZ: 0
-  startFrozen: 1
+  startFrozen: 0
   mass: 1
   useGravity: 0
   initialAngularVelocity: {x: 0, y: 0, z: 0}

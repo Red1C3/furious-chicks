@@ -53,4 +53,12 @@ public class BlueBird : BirdBase
                 levelCtrlr.destroyFC(children[1].GetComponent<FCObject>());
         }
     }
+    protected override int firstDamage()
+    {
+        return 5;
+    }
+    protected override int secondDamage()
+    {
+        return 20;
+    }
 }

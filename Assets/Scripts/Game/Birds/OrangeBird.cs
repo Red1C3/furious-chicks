@@ -29,4 +29,12 @@ public class OrangeBird : BirdBase
             GetComponent<SphereCullider>().updateRadius();
         }
     }
+    protected override int firstDamage()
+    {
+        return 5;
+    }
+    protected override int secondDamage()
+    {
+        return 20;
+    }
 }
