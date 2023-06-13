@@ -66,7 +66,7 @@ public class Throw : MonoBehaviour
                 float magnitude = distance.magnitude;
                 Vector3 direction = distance.normalized;
                 Vector3 Force = direction * magnitude * rigidbodyDriver.mass;
-                GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity, ForceMode.Force);
+                GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity*GetComponent<RigidbodyDriver>().mass, ForceMode.Force);
                 GetComponent<RigidbodyDriver>().addForce(Force * 500, ForceMode.Impulse);
                 lineRenderer.enabled = false;
             }

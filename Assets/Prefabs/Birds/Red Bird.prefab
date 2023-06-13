@@ -120,7 +120,7 @@ MonoBehaviour:
   freezeRY: 0
   freezeRZ: 0
   startFrozen: 0
-  mass: 1
+  mass: 0.9
   useGravity: 0
   initialAngularVelocity: {x: 0, y: 0, z: 0}
   initialVelocity: {x: 0, y: 0, z: 0}
