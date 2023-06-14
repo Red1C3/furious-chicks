@@ -23,4 +23,9 @@ public class SingleObstacleBase : FCObject
         return 0;
     }
 
+    protected override int secondDamage()
+    {
+        return 10;
+    }
+
 }
