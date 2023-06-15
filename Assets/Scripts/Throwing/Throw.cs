@@ -12,14 +12,19 @@ public class Throw : MonoBehaviour
     public LineRenderer lineRenderer;
     public float cameraAway = 3;
 
-    bool press = false, fired = false;
+    public bool fired{get; private set;}
+    private bool press = false,cameraNotSetOnStart=false;
 
     private RigidbodyDriver rigidbodyDriver;
     // Start is called before the first frame update
     void Start()
     {
+        fired = false; 
         transform.position = new Vector3(0, 0, -force);
-        LevelCtrlr.cam.transform.position = new Vector3(0, 0, -(force+cameraAway));
+        if(LevelCtrlr.playerView)
+            LevelCtrlr.cam.transform.position = new Vector3(0, 0, -(force+cameraAway));
+        else
+            cameraNotSetOnStart=true;
 
         rigidbodyDriver=GetComponent<RigidbodyDriver>();
         rigidbodyDriver.useGravity = false;
@@ -32,8 +37,12 @@ public class Throw : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!fired && LevelCtrlr.playerView)
+        if (LevelCtrlr.playerView && !fired)
         {
+            if (cameraNotSetOnStart){
+                LevelCtrlr.cam.transform.position = new Vector3(0, 0, -(force+cameraAway));
+                cameraNotSetOnStart=false;
+            }
             if (Input.GetMouseButtonDown(0))
                 press = true;
             if (Input.GetKey(KeyCode.Z))
@@ -71,8 +80,8 @@ public class Throw : MonoBehaviour
                 lineRenderer.enabled = false;
             }
         }
-        else if(LevelCtrlr.playerView){
-            LevelCtrlr.cam.transform.position = new Vector3(transform.position.x,transform.position.y,transform.position.z-cameraAway);
+        else if(fired){
+            LevelCtrlr.playerView=false;
         }
     }
     public bool hasFired(){

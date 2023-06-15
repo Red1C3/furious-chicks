@@ -16,7 +16,7 @@ public class LevelCtrlr : MonoBehaviour
     public CreateOctree engine { get; private set; }
     private int pigsCount;
     private int destroyedPigs = 0;
-    public static bool playerView { get; private set; }
+    public static bool playerView { get; set; }
     private bool once;
     public static Camera cam;
     Quaternion currentRotation;
@@ -63,7 +63,10 @@ public class LevelCtrlr : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            playerView = !playerView;
+            if(currentBirdThrow.fired)
+                playerView=false;
+            else
+                playerView = !playerView;
             once = true;
         }
 
@@ -79,7 +82,7 @@ public class LevelCtrlr : MonoBehaviour
         {
             currentRotation.eulerAngles = new Vector3(0, 90, 0);
             cam.transform.rotation = currentRotation;
-            Vector3 temp = new Vector3(-CreateOctree.maxZ / 2.0f, CreateOctree.maxZ / 10.0f, CreateOctree.maxZ / 2.0f);
+            Vector3 temp = new Vector3(-CreateOctree.ground.transform.position.z, CreateOctree.ground.transform.position.z / 5.0f, CreateOctree.ground.transform.position.z);
             cam.transform.position = temp;
             once = false;
         }
