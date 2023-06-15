@@ -52,7 +52,7 @@ public class RigidbodyDriver : MonoBehaviour
 
     public Vector3 acclumatedForces { get; private set; }
     private Vector3 acclumatedImpulses;
-    private VoxelGrid voxelGrid;
+    protected VoxelGrid voxelGrid;
     protected virtual void Start()
     {
         if (gameObject.tag != "Player")
