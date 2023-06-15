@@ -6,8 +6,7 @@ using UnityEngine.SceneManagement;
 public class LevelCtrlr : MonoBehaviour
 {
     [SerializeField]
-    private BirdBase[] birds;
-    private int currentBird = 0;
+    private GameObject[] birds;
     private bool throwingPhase = true;
     [SerializeField]
     private GameObject linePrefab;
@@ -21,13 +20,24 @@ public class LevelCtrlr : MonoBehaviour
     public static Camera cam;
     Quaternion currentRotation;
     Vector3 currentEulerAngles;
-
+    private BirdBase currentBird;
+    [SerializeField]
+    private bool randomBird = true;
+    private int currentBirdIndex = 0;
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
         engine = FindObjectOfType<CreateOctree>();
         pigsCount = FindObjectsOfType<PigBase>().Length;
-        engine.setPlayer(birds[currentBird].gameObject);
+        if (randomBird)
+        {
+            int rand = Random.Range(0, birds.Length);
+            currentBird = engine.setPlayer(birds[rand]);
+        }
+        else
+        {
+            currentBird = engine.setPlayer(birds[currentBirdIndex]);
+        }
         cam = FindObjectOfType<Camera>();
         playerView = true;
         once = true;
@@ -38,33 +48,41 @@ public class LevelCtrlr : MonoBehaviour
     {
         if (throwingPhase)
         {
-            currentBirdThrow = birds[currentBird].gameObject.AddComponent<Throw>();
+            currentBirdThrow = currentBird.gameObject.AddComponent<Throw>();
             currentBirdThrow.lineRenderer = line;
             currentBirdThrow.lineRenderer.enabled = true;
             throwingPhase = false;
         }
         else if (currentBirdThrow.hasFired())
         {
-            birds[currentBird].hasFired = true;
-            if (birds[currentBird].isDead())
+            currentBird.hasFired = true;
+            if (currentBird.isDead())
             {
-                Destroy(birds[currentBird].gameObject);
-                if (currentBird + 1 == birds.Length)
+                Destroy(currentBird.gameObject);
+                if (!randomBird && currentBirdIndex + 1 == birds.Length)
                 {
                     gameOver();
                 }
                 else
                 {
-                    currentBird++;
-                    engine.setPlayer(birds[currentBird].gameObject);
+                    if (randomBird)
+                    {
+                        int rand = Random.Range(0, birds.Length);
+                        currentBird = engine.setPlayer(birds[rand]);
+                    }
+                    else
+                    {
+                        currentBirdIndex++;
+                        currentBird = engine.setPlayer(birds[currentBirdIndex]);
+                    }
                     throwingPhase = true;
                 }
             }
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            if(currentBirdThrow.fired)
-                playerView=false;
+            if (currentBirdThrow.fired)
+                playerView = false;
             else
                 playerView = !playerView;
             once = true;
@@ -75,7 +93,7 @@ public class LevelCtrlr : MonoBehaviour
             currentRotation.eulerAngles = Vector3.zero;
             cam.transform.rotation = currentRotation;
 
-            cam.transform.position = new Vector3(birds[currentBird].transform.position.x, birds[currentBird].transform.position.y, -(currentBirdThrow.force + currentBirdThrow.cameraAway));
+            cam.transform.position = new Vector3(currentBird.transform.position.x, currentBird.transform.position.y, -(currentBirdThrow.force + currentBirdThrow.cameraAway));
             once = false;
         }
         else if (once)

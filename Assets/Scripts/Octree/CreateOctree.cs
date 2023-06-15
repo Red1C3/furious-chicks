@@ -59,6 +59,7 @@ public class CreateOctree : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (player.GetComponent<Cullider>().getFrameCulliders() == null) return;
         maxSpeed = 0;
         allObjectsN = 0;
         maxNodeObjectN = 0;
@@ -75,7 +76,8 @@ public class CreateOctree : MonoBehaviour
             rb.applyForces();
             maxSpeed = Mathf.Max(rb.velocity.magnitude, maxSpeed);
         }
-        if(cullidingObject.Count>0){
+        if (cullidingObject.Count > 0)
+        {
             octree.Update(cullidingObject, nodeMinSize);
             octree.search(player, solver);
             octree.search(ground, solver);
@@ -122,9 +124,12 @@ public class CreateOctree : MonoBehaviour
         else
             Time.fixedDeltaTime = threshhold;
     }
-    public void setPlayer(GameObject player)
+    public BirdBase setPlayer(GameObject player)
     {
+        LevelCtrlr.playerView = true;
+        player = Instantiate(player, Vector3.zero, Quaternion.identity);
         this.player = player;
+        return player.GetComponent<BirdBase>();
     }
     public void removeCullider(GameObject cullider)
     {
