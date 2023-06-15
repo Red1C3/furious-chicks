@@ -34,7 +34,6 @@ public class OctreeNode
 
     public void AddObj(GameObject go)
     {
-        CreateOctree.maxZ=Mathf.Max(CreateOctree.maxZ,go.transform.position.z);
         DivideAndAdd(go);
     }
 
