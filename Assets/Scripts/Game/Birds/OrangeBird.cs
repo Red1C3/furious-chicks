@@ -9,11 +9,11 @@ public class OrangeBird : BirdBase
     {
         base.Start();
         maxScale = transform.localScale.x;
-        updateRate = 1.0e-2f;
+        updateRate = 1.0e-1f;
     }
     protected override void ability()
     {
-        maxScale *= 4;
+        maxScale *= 10;
     }
 
     new protected void Update()
