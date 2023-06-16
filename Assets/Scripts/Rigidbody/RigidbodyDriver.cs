@@ -52,7 +52,7 @@ public class RigidbodyDriver : MonoBehaviour
 
     public Vector3 acclumatedForces { get; private set; }
     private Vector3 acclumatedImpulses;
-    protected VoxelGrid voxelGrid;
+    public VoxelGrid voxelGrid{get;protected set;}
     protected virtual void Start()
     {
         if (gameObject.tag != "Player")
@@ -242,5 +242,29 @@ public class RigidbodyDriver : MonoBehaviour
     }
     public virtual void onCullisionStay(Cullider other)
     {
+    }
+    public bool getDrag(){
+        return drag;
+    }
+    public bool getAngularDrag(){
+        return angularDrag;
+    }
+    public bool getFreezePX(){
+        return freezePX;
+    }
+    public bool getFreezePY(){
+        return freezePY;
+    }
+    public bool getFreezePZ(){
+        return freezePZ;
+    }
+    public bool getFreezeRX(){
+        return freezeRX;
+    }
+    public bool getFreezeRY(){
+        return freezeRY;
+    }
+    public bool getFreezeRZ(){
+        return freezeRZ;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class LvlUI : MonoBehaviour
 {
@@ -10,6 +11,14 @@ public class LvlUI : MonoBehaviour
     [SerializeField]
     private TMP_Dropdown rbDropdown;
     private GameObject selected;
+
+
+    [SerializeField]
+    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity;
+    [SerializeField]
+    private Slider friction, bounciness;
+    [SerializeField]
+    private TMP_InputField mass;
 
     private void Start()
     {
@@ -45,6 +54,33 @@ public class LvlUI : MonoBehaviour
         if (selected.TryGetComponent<Renderer>(out renderer))
         {
             renderer.material.SetColor("_Color", Color.red);
+        }
+        RigidbodyDriver rb = selected.GetComponent<RigidbodyDriver>();
+        drag.isOn = rb.getDrag();
+        angDrag.isOn = rb.getAngularDrag();
+        fPX.isOn = rb.getFreezePX();
+        fPY.isOn = rb.getFreezePY();
+        fPZ.isOn = rb.getFreezePZ();
+        fRX.isOn = rb.getFreezeRX();
+        fRY.isOn = rb.getFreezeRY();
+        fRZ.isOn = rb.getFreezeRZ();
+        resting.isOn = rb.psudoFreeze;
+        gravity.isOn = rb.useGravity;
+
+        if (rb.voxelGrid != null)
+        {
+            mass.text = rb.mass.ToString();
+            mass.DeactivateInputField(false);
+            friction.value = rb.voxelGrid.getFriction();
+            bounciness.value = rb.voxelGrid.getBounciness();
+        }
+        else
+        {
+            mass.ActivateInputField();
+            mass.text = rb.mass.ToString();
+            Cullider cullider = rb.GetComponent<Cullider>();
+            friction.value = cullider.getFrictionCo();
+            bounciness.value = cullider.getBouncinessCo();
         }
     }
     private void unselectItem(GameObject selected)

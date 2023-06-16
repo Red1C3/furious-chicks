@@ -559,4 +559,11 @@ public class VoxelGrid : MonoBehaviour
 
         return tensor;
     }
+
+    public float getFriction(){
+        return friction;
+    }
+    public float getBounciness(){
+        return bounciess;
+    }
 }
