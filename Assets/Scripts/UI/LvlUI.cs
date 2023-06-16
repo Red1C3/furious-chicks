@@ -32,6 +32,7 @@ public class LvlUI : MonoBehaviour
         fPX.onValueChanged.AddListener(onFPX);
         fPY.onValueChanged.AddListener(onFPY);
         fPZ.onValueChanged.AddListener(onFPZ);
+        resting.onValueChanged.AddListener(onResting);
     }
 
     private void updateOptionData()
@@ -78,13 +79,13 @@ public class LvlUI : MonoBehaviour
         if (rb.voxelGrid != null)
         {
             mass.text = rb.mass.ToString();
-            mass.interactable=false;
+            mass.interactable = false;
             friction.value = rb.voxelGrid.getFriction();
             bounciness.value = rb.voxelGrid.getBounciness();
         }
         else
         {
-            mass.interactable=true;
+            mass.interactable = true;
             mass.text = rb.mass.ToString();
             Cullider cullider = rb.GetComponent<Cullider>();
             friction.value = cullider.getFrictionCo();
@@ -130,5 +131,9 @@ public class LvlUI : MonoBehaviour
     public void onFRZ(bool val)
     {
         selected.GetComponent<RigidbodyDriver>().setFreezeRZ(val);
+    }
+    public void onResting(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setPsudoFreeze(val);
     }
 }

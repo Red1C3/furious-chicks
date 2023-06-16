@@ -291,4 +291,7 @@ public class RigidbodyDriver : MonoBehaviour
     public void setFreezeRZ(bool val){
         freezeRZ=val;
     }
+    public void setPsudoFreeze(bool val){
+        psudoFreeze=val;
+    }
 }
