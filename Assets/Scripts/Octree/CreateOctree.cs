@@ -126,7 +126,6 @@ public class CreateOctree : MonoBehaviour
     }
     public BirdBase setPlayer(GameObject player)
     {
-        LevelCtrlr.playerView = true;
         player = Instantiate(player, Vector3.zero, Quaternion.identity);
         this.player = player;
         return player.GetComponent<BirdBase>();
