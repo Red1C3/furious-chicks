@@ -4169,7 +4169,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1809507448}
-  m_Mesh: {fileID: 1998751296}
+  m_Mesh: {fileID: 1982359979}
 --- !u!4 &1809507453
 Transform:
   m_ObjectHideFlags: 0
@@ -4298,7 +4298,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1892369671}
   m_CullTransparentMesh: 1
---- !u!43 &1998751296
+--- !u!43 &1982359979
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4943,6 +4943,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2110930435}
     m_Modifications:
+    - target: {fileID: 2632987102250557943, guid: d0c9ee0cb738e9f14bd3106b840d61e9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3182521813633404540, guid: d0c9ee0cb738e9f14bd3106b840d61e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5027,9 +5031,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3410302308349133964, guid: d0c9ee0cb738e9f14bd3106b840d61e9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3967973591195118836, guid: d0c9ee0cb738e9f14bd3106b840d61e9, type: 3}
       propertyPath: m_Name
       value: LevelUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102655248268903435, guid: d0c9ee0cb738e9f14bd3106b840d61e9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6187896514634892605, guid: d0c9ee0cb738e9f14bd3106b840d61e9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902250937853137488, guid: d0c9ee0cb738e9f14bd3106b840d61e9, type: 3}
+      propertyPath: m_text
+      value: "\u200B"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
