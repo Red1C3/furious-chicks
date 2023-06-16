@@ -24,6 +24,14 @@ public class LvlUI : MonoBehaviour
     {
         updateOptionData();
         rbDropdown.onValueChanged.AddListener(onDropdownValueChange);
+        drag.onValueChanged.AddListener(onDragChange);
+        angDrag.onValueChanged.AddListener(onAngDragChange);
+        fRX.onValueChanged.AddListener(onFRX);
+        fRY.onValueChanged.AddListener(onFRY);
+        fRZ.onValueChanged.AddListener(onFRZ);
+        fPX.onValueChanged.AddListener(onFPX);
+        fPY.onValueChanged.AddListener(onFPY);
+        fPZ.onValueChanged.AddListener(onFPZ);
     }
 
     private void updateOptionData()
@@ -91,5 +99,36 @@ public class LvlUI : MonoBehaviour
             renderer.material.SetColor("_Color", Color.white);
         }
     }
-
+    public void onDragChange(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setDrag(val);
+    }
+    public void onAngDragChange(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setAngDrag(val);
+    }
+    public void onFPX(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setFreezePX(val);
+    }
+    public void onFPY(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setFreezePY(val);
+    }
+    public void onFPZ(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setFreezePZ(val);
+    }
+    public void onFRX(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setFreezeRX(val);
+    }
+    public void onFRY(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setFreezeRY(val);
+    }
+    public void onFRZ(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setFreezeRZ(val);
+    }
 }

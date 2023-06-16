@@ -267,4 +267,28 @@ public class RigidbodyDriver : MonoBehaviour
     public bool getFreezeRZ(){
         return freezeRZ;
     }
+    public void setDrag(bool val){
+        drag=val;
+    }
+    public void setAngDrag(bool val){
+        angularDrag=val;
+    }
+    public void setFreezePX(bool val){
+        freezePX=val;
+    }
+    public void setFreezePY(bool val){
+        freezePY=val;
+    }
+    public void setFreezePZ(bool val){
+        freezePZ=val;
+    }
+    public void setFreezeRX(bool val){
+        freezeRX=val;
+    }
+    public void setFreezeRY(bool val){
+        freezeRY=val;
+    }
+    public void setFreezeRZ(bool val){
+        freezeRZ=val;
+    }
 }
