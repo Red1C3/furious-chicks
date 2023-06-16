@@ -52,7 +52,7 @@ public class RigidbodyDriver : MonoBehaviour
 
     public Vector3 acclumatedForces { get; private set; }
     private Vector3 acclumatedImpulses;
-    public VoxelGrid voxelGrid{get;protected set;}
+    public VoxelGrid voxelGrid { get; protected set; }
     protected virtual void Start()
     {
         if (gameObject.tag != "Player")
@@ -243,55 +243,85 @@ public class RigidbodyDriver : MonoBehaviour
     public virtual void onCullisionStay(Cullider other)
     {
     }
-    public bool getDrag(){
+    public bool getDrag()
+    {
         return drag;
     }
-    public bool getAngularDrag(){
+    public bool getAngularDrag()
+    {
         return angularDrag;
     }
-    public bool getFreezePX(){
+    public bool getFreezePX()
+    {
         return freezePX;
     }
-    public bool getFreezePY(){
+    public bool getFreezePY()
+    {
         return freezePY;
     }
-    public bool getFreezePZ(){
+    public bool getFreezePZ()
+    {
         return freezePZ;
     }
-    public bool getFreezeRX(){
+    public bool getFreezeRX()
+    {
         return freezeRX;
     }
-    public bool getFreezeRY(){
+    public bool getFreezeRY()
+    {
         return freezeRY;
     }
-    public bool getFreezeRZ(){
+    public bool getFreezeRZ()
+    {
         return freezeRZ;
     }
-    public void setDrag(bool val){
-        drag=val;
+    public void setDrag(bool val)
+    {
+        drag = val;
     }
-    public void setAngDrag(bool val){
-        angularDrag=val;
+    public void setAngDrag(bool val)
+    {
+        angularDrag = val;
     }
-    public void setFreezePX(bool val){
-        freezePX=val;
+    public void setFreezePX(bool val)
+    {
+        freezePX = val;
     }
-    public void setFreezePY(bool val){
-        freezePY=val;
+    public void setFreezePY(bool val)
+    {
+        freezePY = val;
     }
-    public void setFreezePZ(bool val){
-        freezePZ=val;
+    public void setFreezePZ(bool val)
+    {
+        freezePZ = val;
     }
-    public void setFreezeRX(bool val){
-        freezeRX=val;
+    public void setFreezeRX(bool val)
+    {
+        freezeRX = val;
     }
-    public void setFreezeRY(bool val){
-        freezeRY=val;
+    public void setFreezeRY(bool val)
+    {
+        freezeRY = val;
     }
-    public void setFreezeRZ(bool val){
-        freezeRZ=val;
+    public void setFreezeRZ(bool val)
+    {
+        freezeRZ = val;
     }
-    public void setPsudoFreeze(bool val){
-        psudoFreeze=val;
+    public void setPsudoFreeze(bool val)
+    {
+        psudoFreeze = val;
+    }
+    public void setGravity(bool val)
+    {
+        useGravity = val;
+        if (GetComponent<Throw>() != null && !GetComponent<BirdBase>().hasFired) return;
+        if (val)
+        {
+            acclumatedForces += gravity * mass;
+        }
+        else
+        {
+            acclumatedForces -= gravity * mass;
+        }
     }
 }

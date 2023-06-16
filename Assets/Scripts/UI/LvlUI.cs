@@ -33,6 +33,7 @@ public class LvlUI : MonoBehaviour
         fPY.onValueChanged.AddListener(onFPY);
         fPZ.onValueChanged.AddListener(onFPZ);
         resting.onValueChanged.AddListener(onResting);
+        gravity.onValueChanged.AddListener(onGravity);
     }
 
     private void updateOptionData()
@@ -135,5 +136,9 @@ public class LvlUI : MonoBehaviour
     public void onResting(bool val)
     {
         selected.GetComponent<RigidbodyDriver>().setPsudoFreeze(val);
+    }
+    public void onGravity(bool val)
+    {
+        selected.GetComponent<RigidbodyDriver>().setGravity(val);
     }
 }
