@@ -9,6 +9,7 @@ public class LvlUI : MonoBehaviour
     private List<TMP_Dropdown.OptionData> optionDatas;
     [SerializeField]
     private TMP_Dropdown rbDropdown;
+    private GameObject selected;
 
     private void Start()
     {
@@ -29,7 +30,30 @@ public class LvlUI : MonoBehaviour
 
     public void onDropdownValueChange(int idx)
     {
+        if (selected != null) unselectItem(selected);
+        if (rigidbodies[idx] != null)
+        {
+            selectItem(rigidbodies[idx].gameObject);
+        }
         updateOptionData();
+    }
+
+    private void selectItem(GameObject selected)
+    {
+        this.selected = selected;
+        Renderer renderer;
+        if (selected.TryGetComponent<Renderer>(out renderer))
+        {
+            renderer.material.SetColor("_Color", Color.red);
+        }
+    }
+    private void unselectItem(GameObject selected)
+    {
+        Renderer renderer;
+        if (selected.TryGetComponent<Renderer>(out renderer))
+        {
+            renderer.material.SetColor("_Color", Color.white);
+        }
     }
 
 }
