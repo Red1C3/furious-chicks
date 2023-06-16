@@ -14,11 +14,11 @@ public class LvlUI : MonoBehaviour
 
 
     [SerializeField]
-    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity;
+    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity,isForce;
     [SerializeField]
     private Slider friction, bounciness;
     [SerializeField]
-    private TMP_InputField mass;
+    private TMP_InputField mass, forceX, forceY, forceZ;
 
     private void Start()
     {
@@ -194,6 +194,13 @@ public class LvlUI : MonoBehaviour
             {
                 cullider.setBouncinessCo(bounciness);
             }
+        }
+    }
+    public void addForce(){
+        if(isForce.isOn){
+            selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text),float.Parse(forceY.text),float.Parse(forceZ.text)),ForceMode.Force);
+        }else{
+            selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text),float.Parse(forceY.text),float.Parse(forceZ.text)),ForceMode.Impulse);
         }
     }
 }
