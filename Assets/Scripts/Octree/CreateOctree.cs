@@ -9,7 +9,7 @@ public class CreateOctree : MonoBehaviour
     public static GameObject ground { get; private set; }
     Octree octree;
     public static int nodeMinSize = 0;
-    public static float maxSpeed = 0, threshhold = 0.02f, maxZ = 0.0f;
+    public static float maxSpeed = 0, threshhold = 0.02f;
     public static int allObjectsN = 0, maxNodeObjectN = 0;
 
     bool lastActionIsShrink = false;
