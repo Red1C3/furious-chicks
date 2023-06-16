@@ -34,6 +34,7 @@ public class LvlUI : MonoBehaviour
         fPZ.onValueChanged.AddListener(onFPZ);
         resting.onValueChanged.AddListener(onResting);
         gravity.onValueChanged.AddListener(onGravity);
+        mass.onSubmit.AddListener(onMass);
     }
 
     private void updateOptionData()
@@ -140,5 +141,9 @@ public class LvlUI : MonoBehaviour
     public void onGravity(bool val)
     {
         selected.GetComponent<RigidbodyDriver>().setGravity(val);
+    }
+    public void onMass(string massString)
+    {
+        selected.GetComponent<RigidbodyDriver>().setMass(float.Parse(massString));
     }
 }

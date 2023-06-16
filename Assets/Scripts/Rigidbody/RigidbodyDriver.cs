@@ -118,47 +118,6 @@ public class RigidbodyDriver : MonoBehaviour
         return quat0;
     }
 
-    public void applyLinearMomentum(RigidbodyDriver other)
-    {
-        float alpha = (mass - other.mass) / (mass + other.mass);
-        float beta = other.mass / (mass + other.mass);
-        float gamma = mass / (mass + other.mass);
-
-        Vector3 newVelocity = alpha * velocity + 2 * beta * other.velocity;
-        Vector3 newOtherVelocity = 2 * gamma * velocity - alpha * other.velocity;
-
-        velocity = newVelocity;
-        other.velocity = newOtherVelocity;
-    }
-
-    public void applyAngularMomentum(RigidbodyDriver other)
-    {
-        float3 vecAngVelocity = new Vector3(angularVelocity.x, angularVelocity.y, angularVelocity.z);
-        float3 otherVecAngVelocity = new Vector3(other.angularVelocity.x,
-                                            other.angularVelocity.y, other.angularVelocity.z);
-
-
-        float3x3 inertiaTensor = shape.getTensorInertia();
-        float3x3 otherInertiaTensor = other.shape.getTensorInertia();
-
-        //Analogus implmentation
-        //float3x3 alpha = (inertiaTensor - otherInertiaTensor) * math.inverse(inertiaTensor + otherInertiaTensor);
-        //float3x3 beta = otherInertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
-        //float3x3 gamma = inertiaTensor * math.inverse(inertiaTensor + otherInertiaTensor);
-
-        //float3 newVelocity = math.mul(alpha, vecAngVelocity) + math.mul(2 * beta, otherVecAngVelocity);
-        //float3 newOtherVelocity = math.mul(2 * gamma, vecAngVelocity) - math.mul(alpha, otherVecAngVelocity);
-
-        //Issawi's implementation (it looks like it gives the same results as above :/)
-        float3 newOtherVelocity = math.mul(math.inverse(inertiaTensor + otherInertiaTensor),
-                                math.mul(otherInertiaTensor, otherVecAngVelocity) + math.mul(inertiaTensor, 2 * vecAngVelocity) -
-                                math.mul(inertiaTensor, otherVecAngVelocity));
-
-        float3 newVelocity = otherVecAngVelocity + newOtherVelocity - vecAngVelocity;
-
-        angularVelocity = new Quaternion(newVelocity.x, newVelocity.y, newVelocity.z, 0);
-        other.angularVelocity = new Quaternion(newOtherVelocity.x, newOtherVelocity.y, newOtherVelocity.z, 0);
-    }
 
     public void addAngularVelocity(Vector3 vector3)
     {
@@ -322,6 +281,24 @@ public class RigidbodyDriver : MonoBehaviour
         else
         {
             acclumatedForces -= gravity * mass;
+        }
+    }
+    public void setMass(float val)
+    {
+        if (voxelGrid != null) return;
+        float newMass = val;
+        if (useGravity)
+            addForce(gravity * (newMass - mass), ForceMode.Force);
+        mass = newMass;
+        BoxCullider box;
+        SphereCullider sphere;
+        if (TryGetComponent<BoxCullider>(out box))
+        {
+            box.updateLocalInertiaTensor();
+        }
+        if (TryGetComponent<SphereCullider>(out sphere))
+        {
+            sphere.updateLocalInertiaTensor();
         }
     }
 }

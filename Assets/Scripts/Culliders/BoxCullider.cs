@@ -742,4 +742,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         return stayedCulliders;
     }
+    public void updateLocalInertiaTensor(){
+        localInertiaTensor=calculateLocalInertiaTensor();
+    }
 }
