@@ -78,13 +78,13 @@ public class LvlUI : MonoBehaviour
         if (rb.voxelGrid != null)
         {
             mass.text = rb.mass.ToString();
-            mass.DeactivateInputField(false);
+            mass.interactable=false;
             friction.value = rb.voxelGrid.getFriction();
             bounciness.value = rb.voxelGrid.getBounciness();
         }
         else
         {
-            mass.ActivateInputField();
+            mass.interactable=true;
             mass.text = rb.mass.ToString();
             Cullider cullider = rb.GetComponent<Cullider>();
             friction.value = cullider.getFrictionCo();
