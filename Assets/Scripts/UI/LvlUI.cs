@@ -35,6 +35,8 @@ public class LvlUI : MonoBehaviour
         resting.onValueChanged.AddListener(onResting);
         gravity.onValueChanged.AddListener(onGravity);
         mass.onSubmit.AddListener(onMass);
+        friction.onValueChanged.AddListener(onFriction);
+        bounciness.onValueChanged.AddListener(onBounciness);
     }
 
     private void updateOptionData()
@@ -145,5 +147,53 @@ public class LvlUI : MonoBehaviour
     public void onMass(string massString)
     {
         selected.GetComponent<RigidbodyDriver>().setMass(float.Parse(massString));
+    }
+    public void onFriction(float friction)
+    {
+        if (selected.GetComponent<VoxelGrid>() == null)
+        {
+            BoxCullider box;
+            SphereCullider sphere;
+            if (selected.TryGetComponent<BoxCullider>(out box))
+            {
+                box.setFrictionCo(friction);
+            }
+            if (selected.TryGetComponent<SphereCullider>(out sphere))
+            {
+                sphere.setFrictionCo(friction);
+            }
+        }
+        else
+        {
+            VoxelCullider[] culliders = selected.GetComponentsInChildren<VoxelCullider>();
+            foreach (VoxelCullider cullider in culliders)
+            {
+                cullider.setFrictionCo(friction);
+            }
+        }
+    }
+    public void onBounciness(float bounciness)
+    {
+        if (selected.GetComponent<VoxelGrid>() == null)
+        {
+            BoxCullider box;
+            SphereCullider sphere;
+            if (selected.TryGetComponent<BoxCullider>(out box))
+            {
+                box.setBouncinessCo(bounciness);
+            }
+            if (selected.TryGetComponent<SphereCullider>(out sphere))
+            {
+                sphere.setBouncinessCo(bounciness);
+            }
+        }
+        else
+        {
+            VoxelCullider[] culliders = selected.GetComponentsInChildren<VoxelCullider>();
+            foreach (VoxelCullider cullider in culliders)
+            {
+                cullider.setBouncinessCo(bounciness);
+            }
+        }
     }
 }

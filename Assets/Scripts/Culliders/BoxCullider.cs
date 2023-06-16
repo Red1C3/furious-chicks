@@ -745,4 +745,10 @@ public class BoxCullider : MonoBehaviour, Cullider
     public void updateLocalInertiaTensor(){
         localInertiaTensor=calculateLocalInertiaTensor();
     }
+    public void setFrictionCo(float val){
+        frictionCo=val;
+    }
+    public void setBouncinessCo(float val){
+        bouncinessCo=val;
+    }
 }

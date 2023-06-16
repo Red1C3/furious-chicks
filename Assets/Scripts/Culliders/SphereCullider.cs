@@ -160,4 +160,10 @@ public class SphereCullider : MonoBehaviour, Cullider
     {
         inertiaTensor = calculateInertiaTensor();
     }
+    public void setFrictionCo(float val){
+        frictionCo=val;
+    }
+    public void setBouncinessCo(float val){
+        bouncinessCo=val;
+    }
 }
