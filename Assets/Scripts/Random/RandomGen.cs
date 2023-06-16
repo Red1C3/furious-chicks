@@ -20,7 +20,7 @@ public class RandomGen : MonoBehaviour
     List<List<float>> heights;
     [SerializeField]
     private GameObject solver, octree, levelctrlr;
-    void Awake()
+    public void Awake()
     {
         copyNumber = objectNumber;
 
