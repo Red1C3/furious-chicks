@@ -138,4 +138,7 @@ public class CreateOctree : MonoBehaviour
     {
         cullidingObject.Add(cullider);
     }
+    public int getCullidingObjectsNum(){
+        return cullidingObject.Count;
+    }
 }

@@ -14,11 +14,15 @@ public class LvlUI : MonoBehaviour
 
 
     [SerializeField]
-    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity,isForce;
+    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity, isForce;
     [SerializeField]
     private Slider friction, bounciness;
     [SerializeField]
     private TMP_InputField mass, forceX, forceY, forceZ;
+    private CreateOctree engine;
+    [SerializeField]
+    private TMP_Text minNodeSize, objectsNum,
+    maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps;
 
     private void Start()
     {
@@ -37,8 +41,30 @@ public class LvlUI : MonoBehaviour
         mass.onSubmit.AddListener(onMass);
         friction.onValueChanged.AddListener(onFriction);
         bounciness.onValueChanged.AddListener(onBounciness);
+        engine = FindObjectOfType<CreateOctree>();
+        StartCoroutine(updateOctreeVals());
+        StartCoroutine(updateTimeVals());
     }
-
+    IEnumerator updateOctreeVals()
+    {
+        while (true)
+        {
+            minNodeSize.text = CreateOctree.nodeMinSize.ToString();
+            objectsNum.text = CreateOctree.allObjectsN.ToString();
+            maxNodeObjectsNum.text = CreateOctree.maxNodeObjectN.ToString();
+            collidingObjectsNum.text = engine.getCullidingObjectsNum().ToString();
+            generatedCollisionsNum.text = CreateOctree.culls.Count.ToString();
+            yield return new WaitForSeconds(1);
+        }
+    }
+    IEnumerator updateTimeVals()
+    {
+        while (true)
+        {
+            timeStep.text = Time.fixedDeltaTime.ToString();
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
     private void updateOptionData()
     {
         rigidbodies = FindObjectsOfType<RigidbodyDriver>();
@@ -196,11 +222,15 @@ public class LvlUI : MonoBehaviour
             }
         }
     }
-    public void addForce(){
-        if(isForce.isOn){
-            selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text),float.Parse(forceY.text),float.Parse(forceZ.text)),ForceMode.Force);
-        }else{
-            selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text),float.Parse(forceY.text),float.Parse(forceZ.text)),ForceMode.Impulse);
+    public void addForce()
+    {
+        if (isForce.isOn)
+        {
+            selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text), float.Parse(forceY.text), float.Parse(forceZ.text)), ForceMode.Force);
+        }
+        else
+        {
+            selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text), float.Parse(forceY.text), float.Parse(forceZ.text)), ForceMode.Impulse);
         }
     }
 }
