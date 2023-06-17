@@ -233,4 +233,7 @@ public class LvlUI : MonoBehaviour
             selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text), float.Parse(forceY.text), float.Parse(forceZ.text)), ForceMode.Impulse);
         }
     }
+    private void OnDestroy(){
+        StopAllCoroutines();
+    }
 }
