@@ -62,6 +62,7 @@ public class LvlUI : MonoBehaviour
         while (true)
         {
             timeStep.text = Time.fixedDeltaTime.ToString();
+            fps.text=(1.0f/Time.deltaTime).ToString();
             yield return new WaitForSeconds(0.2f);
         }
     }
