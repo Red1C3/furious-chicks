@@ -10,6 +10,9 @@ public class RandLvlGenUI : MonoBehaviour
     [SerializeField]
     private GameObject[] dontDestroy;
     [SerializeField]
+    private GameObject lvlUi;
+    private GameObject lvUiInstance;
+    [SerializeField]
     private TMP_InputField groundScale, stoneProb, woodProb, iceProb, objNum, pigNum;
     [SerializeField]
     private Toggle scaleX, scaleZ;
@@ -21,6 +24,7 @@ public class RandLvlGenUI : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         randomGen = FindObjectOfType<RandomGen>();
+        lvUiInstance = Instantiate(lvlUi, dontDestroy[5].transform);
         SceneManager.sceneLoaded += onSceneLoad;
     }
 
@@ -38,12 +42,14 @@ public class RandLvlGenUI : MonoBehaviour
         randomGen.scaleX = scaleX.isOn;
         randomGen.scaleZ = scaleZ.isOn;
 
+        if (lvUiInstance != null) Destroy(lvUiInstance);
         SceneManager.LoadScene("empty");
     }
 
     private void onSceneLoad(Scene scene, LoadSceneMode mode)
     {
         randomGen.Awake();
+        lvUiInstance = Instantiate(lvlUi, dontDestroy[5].transform);
     }
 
 
