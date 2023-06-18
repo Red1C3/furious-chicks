@@ -16,14 +16,14 @@ public class BlueBird : BirdBase
     {
         children = new GameObject[2];
 
-        children[0] = Instantiate(birdPrefab, transform.position + 0.375f * transform.right,
+        children[0] = Instantiate(birdPrefab, transform.position + 0.5f * transform.right,
          Quaternion.identity);
         children[0].GetComponent<Throw>().enabled = false;
         children[0].GetComponent<RigidbodyDriver>().initialVelocity = velocity;
         children[0].GetComponent<RigidbodyDriver>().initialAngularVelocity = getAngularVelocity();
         levelCtrlr.engine.addCullider(children[0]);
 
-        children[1] = Instantiate(birdPrefab, transform.position - 0.375f * transform.right,
+        children[1] = Instantiate(birdPrefab, transform.position - 0.5f * transform.right,
          Quaternion.identity);
         children[1].GetComponent<Throw>().enabled = false;
         children[1].GetComponent<RigidbodyDriver>().initialVelocity = velocity;
