@@ -28,6 +28,8 @@ public class LevelCtrlr : MonoBehaviour
     private bool createlvlUI = false;
     [SerializeField]
     private GameObject lvlUiPrefab;
+    private OrbitCamera orbitCamera;
+    private float mouseSensitivity = 2.0f;
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
@@ -43,6 +45,7 @@ public class LevelCtrlr : MonoBehaviour
             currentBird = engine.setPlayer(birds[currentBirdIndex]);
         }
         cam = FindObjectOfType<Camera>();
+        orbitCamera = cam.GetComponent<OrbitCamera>();
         playerView = true;
         once = true;
 
@@ -108,10 +111,16 @@ public class LevelCtrlr : MonoBehaviour
         else if (once)
         {
             currentRotation.eulerAngles = new Vector3(0, 90, 0);
-            cam.transform.rotation = currentRotation;
+            //cam.transform.rotation = currentRotation;
             Vector3 temp = new Vector3(-CreateOctree.ground.transform.position.z, CreateOctree.ground.transform.position.z / 5.0f, CreateOctree.ground.transform.position.z);
-            cam.transform.position = temp;
+            //cam.transform.position = temp;
+            orbitCamera.setDistance(Vector3.Distance(cam.transform.position, CreateOctree.ground.transform.position));
             once = false;
+        }
+        if (currentBird.hasFired)
+        {
+            orbitCamera.orbitCameraUpdate();
+            orbitCamera.Move(Input.GetAxis("Mouse X") * mouseSensitivity, -Input.GetAxis("Mouse Y") * mouseSensitivity);
         }
     }
     public void destroyPig(PigBase pig)
