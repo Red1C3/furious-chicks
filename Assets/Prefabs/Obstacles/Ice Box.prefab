@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6dabcfddf8fc3ab8842ea3a4843bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frictionCo: 0
+  frictionCo: 0.2
   bouncinessCo: 0
 --- !u!114 &3757284565440735459
 MonoBehaviour:
