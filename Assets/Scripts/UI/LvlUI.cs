@@ -23,8 +23,9 @@ public class LvlUI : MonoBehaviour
     private CreateOctree engine;
     [SerializeField]
     private TMP_Text minNodeSize, objectsNum,
-    maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps;
-
+    maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps,
+    velocity, angularVelocity;
+    private RigidbodyDriver selectedRb;
     private void Start()
     {
         updateOptionData();
@@ -64,6 +65,17 @@ public class LvlUI : MonoBehaviour
         {
             timeStep.text = Time.fixedDeltaTime.ToString();
             fps.text = (1.0f / Time.deltaTime).ToString();
+            if (selectedRb != null)
+            { //Let's hope this is not a data race
+                velocity.text = "V :" + selectedRb.velocity.x.ToString("0.00") + " ," +
+                selectedRb.velocity.y.ToString("0.00") + " ,"
+                + selectedRb.velocity.z.ToString("0.00");
+                Vector3 angVel = selectedRb.getAngularVelocity();
+                angularVelocity.text = "AngV :" + angVel.x.ToString("0.00") + " ," +
+                angVel.y.ToString("0.00") + " ,"
+                + angVel.z.ToString("0.00");
+
+            }
             yield return new WaitForSeconds(0.2f);
         }
     }
@@ -131,6 +143,7 @@ public class LvlUI : MonoBehaviour
             friction.value = cullider.getFrictionCo();
             bounciness.value = cullider.getBouncinessCo();
         }
+        selectedRb = rb;
     }
     private void unselectItem(GameObject selected)
     {
