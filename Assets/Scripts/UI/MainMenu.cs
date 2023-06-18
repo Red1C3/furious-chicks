@@ -17,4 +17,9 @@ public class MainMenu:MonoBehaviour
     {
         SceneManager.LoadScene("Level-Gen");
     }
+    private void Update(){
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            Application.Quit();
+        }
+    }
 }
