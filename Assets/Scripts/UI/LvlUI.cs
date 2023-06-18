@@ -96,6 +96,14 @@ public class LvlUI : MonoBehaviour
         {
             renderer.material.SetColor("_Color", Color.red);
         }
+        VoxelGrid voxelGrid;
+        if (selected.TryGetComponent<VoxelGrid>(out voxelGrid))
+        {
+            foreach (Renderer renderer1 in selected.GetComponentsInChildren<Renderer>())
+            {
+                renderer1.material.SetColor("_Color", Color.red);
+            }
+        }
         RigidbodyDriver rb = selected.GetComponent<RigidbodyDriver>();
         drag.isOn = rb.getDrag();
         angDrag.isOn = rb.getAngularDrag();
@@ -130,6 +138,14 @@ public class LvlUI : MonoBehaviour
         if (selected.TryGetComponent<Renderer>(out renderer))
         {
             renderer.material.SetColor("_Color", Color.white);
+        }
+        VoxelGrid voxelGrid;
+        if (selected.TryGetComponent<VoxelGrid>(out voxelGrid))
+        {
+            foreach (Renderer renderer1 in selected.GetComponentsInChildren<Renderer>())
+            {
+                renderer1.material.SetColor("_Color", Color.white);
+            }
         }
     }
     public void onDragChange(bool val)
