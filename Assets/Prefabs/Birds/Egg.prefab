@@ -111,8 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a98285af2cb03c8f6ad8ce841fc1893d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drag: 0
-  angularDrag: 0
+  drag: 1
+  angularDrag: 1
   freezePX: 0
   freezePY: 0
   freezePZ: 0
