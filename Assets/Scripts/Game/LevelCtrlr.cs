@@ -24,6 +24,10 @@ public class LevelCtrlr : MonoBehaviour
     [SerializeField]
     private bool randomBird = true;
     private int currentBirdIndex = 0;
+    [SerializeField]
+    private bool createlvlUI = false;
+    [SerializeField]
+    private GameObject lvlUiPrefab;
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
@@ -41,6 +45,11 @@ public class LevelCtrlr : MonoBehaviour
         cam = FindObjectOfType<Camera>();
         playerView = true;
         once = true;
+
+        if (createlvlUI)
+        {
+            Instantiate(lvlUiPrefab, FindObjectOfType<Canvas>().transform);
+        }
     }
 
 
