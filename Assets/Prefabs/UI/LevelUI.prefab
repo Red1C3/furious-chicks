@@ -400,7 +400,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 10.1}
+  m_AnchoredPosition: {x: 0, y: 17.9}
   m_SizeDelta: {x: 100, y: 64.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &618099526512994650
@@ -975,8 +975,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -26.2, y: -80.6}
-  m_SizeDelta: {x: 44.5, y: 20}
+  m_AnchoredPosition: {x: -34.5, y: -80.6}
+  m_SizeDelta: {x: 60, y: 14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4370835835787993178
 MonoBehaviour:
@@ -1736,7 +1736,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1677060692563570371
 GameObject:
   m_ObjectHideFlags: 0
@@ -2001,8 +2001,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 26.9, y: -81.1}
-  m_SizeDelta: {x: 46, y: 15.2}
+  m_AnchoredPosition: {x: 19.2, y: -81.1}
+  m_SizeDelta: {x: 31.1, y: 8.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8945583066690479421
 CanvasRenderer:
@@ -2059,8 +2059,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13.3
-  m_fontSizeBase: 13.3
+  m_fontSize: 9
+  m_fontSizeBase: 9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2703,8 +2703,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 26.9, y: -120.2}
-  m_SizeDelta: {x: 46, y: 15.2}
+  m_AnchoredPosition: {x: 13.7, y: -113.4}
+  m_SizeDelta: {x: 22.58, y: 9.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2132290892401840813
 CanvasRenderer:
@@ -2761,8 +2761,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13.3
-  m_fontSizeBase: 13.3
+  m_fontSize: 9
+  m_fontSizeBase: 9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6877,7 +6877,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u200B"
+  m_text: "0\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7594,7 +7594,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5563231954212069904}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -8311,8 +8311,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -26.2, y: -99}
-  m_SizeDelta: {x: 44.5, y: 20}
+  m_AnchoredPosition: {x: -34.8, y: -99}
+  m_SizeDelta: {x: 60, y: 14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4155923331155185902
 MonoBehaviour:
@@ -9180,8 +9180,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 26.9, y: -99.49999}
-  m_SizeDelta: {x: 46, y: 15.2}
+  m_AnchoredPosition: {x: 19.2, y: -98.9}
+  m_SizeDelta: {x: 31.2, y: 9.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1180910913623043066
 CanvasRenderer:
@@ -9238,8 +9238,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13.3
-  m_fontSizeBase: 13.3
+  m_fontSize: 9
+  m_fontSizeBase: 9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -9894,8 +9894,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -24.7, y: -120.4}
-  m_SizeDelta: {x: 44.4, y: 19.800003}
+  m_AnchoredPosition: {x: -38, y: -113.6}
+  m_SizeDelta: {x: 73, y: 16.73}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &829659535675615630
 CanvasRenderer:
@@ -10021,7 +10021,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 
+  m_Text: 0
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
