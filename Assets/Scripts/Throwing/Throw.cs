@@ -80,8 +80,9 @@ public class Throw : MonoBehaviour
                 lineRenderer.enabled = false;
             }
         }
-        else if(fired){
+        else if(fired && LevelCtrlr.playerView){
             LevelCtrlr.playerView=false;
+            LevelCtrlr.once=true;
         }
     }
     public bool hasFired(){

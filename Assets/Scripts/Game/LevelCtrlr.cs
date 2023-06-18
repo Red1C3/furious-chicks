@@ -16,7 +16,7 @@ public class LevelCtrlr : MonoBehaviour
     private int pigsCount;
     private int destroyedPigs = 0;
     public static bool playerView { get; set; }
-    private bool once;
+    public static bool once;
     public static Camera cam;
     Quaternion currentRotation;
     Vector3 currentEulerAngles;
