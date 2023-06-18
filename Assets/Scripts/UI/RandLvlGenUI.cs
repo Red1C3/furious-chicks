@@ -51,6 +51,14 @@ public class RandLvlGenUI : MonoBehaviour
         randomGen.Awake();
         lvUiInstance = Instantiate(lvlUi, dontDestroy[5].transform);
     }
+    public void unload()
+    {
+        SceneManager.sceneLoaded -= onSceneLoad;
+        foreach (GameObject go in dontDestroy)
+        {
+            Destroy(go);
+        }
+    }
 
 
 }

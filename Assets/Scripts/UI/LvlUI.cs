@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LvlUI : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class LvlUI : MonoBehaviour
         while (true)
         {
             timeStep.text = Time.fixedDeltaTime.ToString();
-            fps.text=(1.0f/Time.deltaTime).ToString();
+            fps.text = (1.0f / Time.deltaTime).ToString();
             yield return new WaitForSeconds(0.2f);
         }
     }
@@ -234,7 +235,16 @@ public class LvlUI : MonoBehaviour
             selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text), float.Parse(forceY.text), float.Parse(forceZ.text)), ForceMode.Impulse);
         }
     }
-    private void OnDestroy(){
+    private void OnDestroy()
+    {
         StopAllCoroutines();
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            FindObjectOfType<RandLvlGenUI>()?.unload();
+            SceneManager.LoadScene("main menu");
+        }
     }
 }
