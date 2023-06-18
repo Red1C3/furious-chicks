@@ -110,10 +110,10 @@ public class LevelCtrlr : MonoBehaviour
         engine.removeCullider(pig.gameObject);
         Destroy(pig.gameObject);
         destroyedPigs++;
-        if (destroyedPigs == pigsCount)
-        {
-            gameOver();
-        }
+        // if (destroyedPigs == pigsCount)
+        // {
+        //     gameOver();
+        // }
     }
     public void destroyFC(FCObject fcObj)
     {
