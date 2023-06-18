@@ -19,7 +19,7 @@ public class LvlUI : MonoBehaviour
     [SerializeField]
     private Slider friction, bounciness;
     [SerializeField]
-    private TMP_InputField mass, forceX, forceY, forceZ;
+    private TMP_InputField mass, forceX, forceY, forceZ, veloX, veloY, veloZ, angVeloX, angVeloY, angVeloZ;
     private CreateOctree engine;
     [SerializeField]
     private TMP_Text minNodeSize, objectsNum,
@@ -263,6 +263,14 @@ public class LvlUI : MonoBehaviour
         {
             selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text), float.Parse(forceY.text), float.Parse(forceZ.text)), ForceMode.Impulse);
         }
+    }
+    public void addVeloicty()
+    {
+        selected.GetComponent<RigidbodyDriver>().addLinearVelocity(new Vector3(float.Parse(veloX.text), float.Parse(veloY.text), float.Parse(veloZ.text)));
+    }
+    public void addAngularVelocity()
+    {
+        selected.GetComponent<RigidbodyDriver>().addAngularVelocity(new Vector3(float.Parse(angVeloX.text), float.Parse(angVeloY.text), float.Parse(angVeloZ.text)));
     }
     private void OnDestroy()
     {
