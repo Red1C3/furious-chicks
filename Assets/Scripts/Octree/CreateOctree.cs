@@ -17,6 +17,7 @@ public class CreateOctree : MonoBehaviour
     private List<GameObject> cullidingObject;
     public static List<CullisionInfo> culls = new List<CullisionInfo>();
     private List<GameObject> cullidingObjectsCopy;
+    private Throw playerThrow;
 
     // Start is called before the first frame update
     void Start()
@@ -79,11 +80,11 @@ public class CreateOctree : MonoBehaviour
         if (cullidingObject.Count > 0)
         {
             octree.Update(cullidingObject, nodeMinSize);
-            if (player.TryGetComponent(out Throw birdThrow) && birdThrow.fired)
+            if (playerThrow.fired)
                 octree.search(player, solver);
             octree.search(ground, solver);
         }
-        if (player.TryGetComponent(out Throw throws) && throws.fired)
+        if (playerThrow.fired)
             octree.rootNode.checkCulliding(player.GetComponent<Cullider>(), ground.GetComponent<Cullider>());
 
         foreach (GameObject go in cullidingObject)
@@ -131,6 +132,9 @@ public class CreateOctree : MonoBehaviour
     {
         player = Instantiate(player, Vector3.zero, Quaternion.identity);
         this.player = player;
+        playerThrow = this.player.AddComponent<Throw>();
+        playerThrow.lineRenderer = LevelCtrlr.line;
+        playerThrow.lineRenderer.enabled = true;
         return player.GetComponent<BirdBase>();
     }
     public void removeCullider(GameObject cullider)
@@ -141,7 +145,8 @@ public class CreateOctree : MonoBehaviour
     {
         cullidingObject.Add(cullider);
     }
-    public int getCullidingObjectsNum(){
+    public int getCullidingObjectsNum()
+    {
         return cullidingObject.Count;
     }
 }

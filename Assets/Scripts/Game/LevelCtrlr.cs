@@ -10,7 +10,7 @@ public class LevelCtrlr : MonoBehaviour
     private bool throwingPhase = true;
     [SerializeField]
     private GameObject linePrefab;
-    private LineRenderer line;
+    public static LineRenderer line{get;private set;}
     public Throw currentBirdThrow { get; private set; }
     public CreateOctree engine { get; private set; }
     private int pigsCount;
@@ -61,9 +61,7 @@ public class LevelCtrlr : MonoBehaviour
     {
         if (throwingPhase)
         {
-            currentBirdThrow = currentBird.gameObject.AddComponent<Throw>();
-            currentBirdThrow.lineRenderer = line;
-            currentBirdThrow.lineRenderer.enabled = true;
+            currentBirdThrow = currentBird.gameObject.GetComponent<Throw>();
             throwingPhase = false;
         }
         else if (currentBirdThrow.hasFired())
