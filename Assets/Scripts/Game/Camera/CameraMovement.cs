@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-   
+
 public class CameraMovement : MonoBehaviour
 {
     private Transform cameraTransform;
@@ -17,6 +17,8 @@ public class CameraMovement : MonoBehaviour
     public float OrbitalAngle = 0f;
 
     private Vector3 desiredPosition;
+    [SerializeField]
+    private float mouseSensitivity = 2.0f;
 
     void Awake()
     {
@@ -48,27 +50,34 @@ public class CameraMovement : MonoBehaviour
 
     void GetPlayerInput()
     {
+        float mouseX = -Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        float mouseScroll = Input.mouseScrollDelta.y;
+        ElevationAngle = Mathf.Min(ElevationAngle + mouseY, MaxElevationAngle);
+        OrbitalAngle += mouseX;
+        OrbitalAngle %= 360.0f;
+        FollowDistance = Mathf.Max(FollowDistance - mouseScroll, MinFollowDistance);
         if (Input.GetKey(KeyCode.W))
         {
-            ElevationAngle=Mathf.Min(ElevationAngle + 1.0f , MaxElevationAngle);
+            ElevationAngle = Mathf.Min(ElevationAngle + 1.0f, MaxElevationAngle);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            ElevationAngle=Mathf.Max(ElevationAngle - 1.0f , MinElevationAngle);
+            ElevationAngle = Mathf.Max(ElevationAngle - 1.0f, MinElevationAngle);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            OrbitalAngle+=1.0f;
-            OrbitalAngle%=360.0f;
+            OrbitalAngle += 1.0f;
+            OrbitalAngle %= 360.0f;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            OrbitalAngle-=1.0f;
-            OrbitalAngle%=360.0f;
+            OrbitalAngle -= 1.0f;
+            OrbitalAngle %= 360.0f;
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            FollowDistance = Mathf.Max(FollowDistance - 0.1f , MinFollowDistance);
+            FollowDistance = Mathf.Max(FollowDistance - 0.1f, MinFollowDistance);
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
