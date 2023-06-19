@@ -24,7 +24,7 @@ public class LvlUI : MonoBehaviour
     [SerializeField]
     private TMP_Text minNodeSize, objectsNum,
     maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps,
-    velocity, angularVelocity;
+    velocity, angularVelocity, voxelsCount;
     private RigidbodyDriver selectedRb;
     private void Start()
     {
@@ -134,6 +134,7 @@ public class LvlUI : MonoBehaviour
             mass.interactable = false;
             friction.value = rb.voxelGrid.getFriction();
             bounciness.value = rb.voxelGrid.getBounciness();
+            voxelsCount.text ="Voxels #: "+ rb.transform.childCount.ToString();
         }
         else
         {
@@ -142,6 +143,7 @@ public class LvlUI : MonoBehaviour
             Cullider cullider = rb.GetComponent<Cullider>();
             friction.value = cullider.getFrictionCo();
             bounciness.value = cullider.getBouncinessCo();
+            voxelsCount.text ="Voxels #: 0";
         }
         selectedRb = rb;
     }
