@@ -97,12 +97,37 @@ public class Throw : MonoBehaviour
     }
     private void updateRoute()
     {
-        Vector3 forward = transform.forward;
-        float3x3 T = float3x3.LookRotationSafe(new Vector3(forward.x, 0, forward.z), Vector3.up);
-
         Vector3 distance = -transform.position;
         float magnitude = distance.magnitude;
         Vector3 direction = distance.normalized;
         Vector3 Force = direction * magnitude * rigidbodyDriver.mass;
+        Force *= 500;
+
+        float4x4 T = float4x4.LookAt(transform.position,
+        transform.position + new Vector3(direction.x, 0, direction.z), Vector3.up);
+
+        Vector3 acceleration = Force / rigidbodyDriver.mass;
+        Vector3 velocity = acceleration * Time.fixedDeltaTime;
+
+        Vector3 velocityT = math.mul(math.inverse(T), new float4(velocity, 0)).xyz;
+
+
+        //y = -(g*x^2 / 2*v0^2*cos^2(α)) + x*tan(α)
+        float alpha = Mathf.Deg2Rad * Vector3.Angle(Vector3.forward, velocityT);
+        float[] x = new float[10];
+        x[0] = math.mul(math.inverse(T), new float4(transform.position, 1)).z;
+        for (int i = 1; i < 10; i++)
+        {
+            x[i] = x[i - 1] + 1;
+        }
+        float[] y = new float[10];
+        for (int i = 0; i < 10; i++)
+        {
+            y[i] = -(9.8f * x[i] * x[i] / 2 * velocityT.sqrMagnitude * Mathf.Cos(alpha) * Mathf.Cos(alpha)) + x[i] * Mathf.Tan(alpha);
+
+            Vector3 localVec=new Vector3(0,y[i],x[i]);
+            Vector3 globalVec=math.mul(T,new float4(localVec,1)).xyz;
+        }
+
     }
 }
