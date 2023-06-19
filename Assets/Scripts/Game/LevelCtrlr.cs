@@ -10,7 +10,7 @@ public class LevelCtrlr : MonoBehaviour
     private bool throwingPhase = true;
     [SerializeField]
     private GameObject linePrefab;
-    public static LineRenderer line{get;private set;}
+    public static LineRenderer line { get; private set; }
     public Throw currentBirdThrow { get; private set; }
     public CreateOctree engine { get; private set; }
     private int pigsCount;
@@ -28,9 +28,10 @@ public class LevelCtrlr : MonoBehaviour
     private bool createlvlUI = false;
     [SerializeField]
     private GameObject lvlUiPrefab;
-    
+
     public static float MovementSmoothingValue = 25f;
     public static Vector3 currentVelocity = Vector3.zero;
+    private CameraMovement cameraMovement;
 
     private void Start()
     {
@@ -47,6 +48,7 @@ public class LevelCtrlr : MonoBehaviour
             currentBird = engine.setPlayer(birds[currentBirdIndex]);
         }
         cam = FindObjectOfType<Camera>();
+        cameraMovement = cam.GetComponent<CameraMovement>();
         playerView = true;
         once = true;
 
@@ -105,17 +107,17 @@ public class LevelCtrlr : MonoBehaviour
             currentRotation.eulerAngles = Vector3.zero;
             cam.transform.rotation = currentRotation;
 
-            cam.transform.position = playerViewPos;        
+            cam.transform.position = playerViewPos;
             once = false;
         }
         else if (!playerView && once)
         {
-            cam.GetComponent<CameraMovement>().FollowDistance = CreateOctree.ground.transform.position.magnitude;
-            once=false;
+            cameraMovement.FollowDistance = CreateOctree.ground.transform.position.magnitude;
+            once = false;
         }
         else if (!playerView)
         {
-            cam.GetComponent<CameraMovement>().Move();
+            cameraMovement.Move();
         }
     }
     public void destroyPig(PigBase pig)
