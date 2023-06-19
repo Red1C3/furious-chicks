@@ -19,7 +19,8 @@ public class LvlUI : MonoBehaviour
     [SerializeField]
     private Slider friction, bounciness;
     [SerializeField]
-    private TMP_InputField mass, forceX, forceY, forceZ, veloX, veloY, veloZ, angVeloX, angVeloY, angVeloZ;
+    private TMP_InputField mass, forceX, forceY, forceZ, veloX, veloY, veloZ, angVeloX, angVeloY, angVeloZ,
+    health;
     private CreateOctree engine;
     [SerializeField]
     private TMP_Text minNodeSize, objectsNum,
@@ -41,6 +42,7 @@ public class LvlUI : MonoBehaviour
         resting.onValueChanged.AddListener(onResting);
         gravity.onValueChanged.AddListener(onGravity);
         mass.onSubmit.AddListener(onMass);
+        health.onSubmit.AddListener(onHealth);
         friction.onValueChanged.AddListener(onFriction);
         bounciness.onValueChanged.AddListener(onBounciness);
         engine = FindObjectOfType<CreateOctree>();
@@ -134,7 +136,7 @@ public class LvlUI : MonoBehaviour
             mass.interactable = false;
             friction.value = rb.voxelGrid.getFriction();
             bounciness.value = rb.voxelGrid.getBounciness();
-            voxelsCount.text ="Voxels #: "+ rb.transform.childCount.ToString();
+            voxelsCount.text = "Voxels #: " + rb.transform.childCount.ToString();
         }
         else
         {
@@ -143,9 +145,20 @@ public class LvlUI : MonoBehaviour
             Cullider cullider = rb.GetComponent<Cullider>();
             friction.value = cullider.getFrictionCo();
             bounciness.value = cullider.getBouncinessCo();
-            voxelsCount.text ="Voxels #: 0";
+            voxelsCount.text = "Voxels #: 0";
         }
         selectedRb = rb;
+        int healthVal = getSelectedHealth();
+        if (healthVal != -1)
+        {
+            health.interactable = true;
+            health.text = healthVal.ToString();
+        }
+        else
+        {
+            health.interactable = false;
+            health.text = "N/A";
+        }
     }
     private void unselectItem(GameObject selected)
     {
@@ -285,5 +298,43 @@ public class LvlUI : MonoBehaviour
             FindObjectOfType<RandLvlGenUI>()?.unload();
             SceneManager.LoadScene("main menu");
         }
+    }
+    private void onHealth(string val)
+    {
+        if (selected == null) return;
+        SingleObstacleBase singleObstacleBase;
+        PigBase pigBase;
+        MultiObstacleBase multiObstacleBase;
+        if (selected.TryGetComponent<SingleObstacleBase>(out singleObstacleBase))
+        {
+            singleObstacleBase.setHealth(int.Parse(val));
+        }
+        if (selected.TryGetComponent<PigBase>(out pigBase))
+        {
+            pigBase.setHealth(int.Parse(val));
+        }
+        if (selected.TryGetComponent<MultiObstacleBase>(out multiObstacleBase))
+        {
+            multiObstacleBase.setHealth(int.Parse(val));
+        }
+    }
+    private int getSelectedHealth()
+    {
+        SingleObstacleBase singleObstacleBase;
+        PigBase pigBase;
+        MultiObstacleBase multiObstacleBase;
+        if (selected.TryGetComponent<SingleObstacleBase>(out singleObstacleBase))
+        {
+            return singleObstacleBase.getHealth();
+        }
+        if (selected.TryGetComponent<PigBase>(out pigBase))
+        {
+            return pigBase.getHealth();
+        }
+        if (selected.TryGetComponent<MultiObstacleBase>(out multiObstacleBase))
+        {
+            return pigBase.getHealth();
+        }
+        return -1;
     }
 }

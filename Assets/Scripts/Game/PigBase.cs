@@ -21,4 +21,10 @@ public class PigBase : FCObject
     {
         return 0;
     }
+    public void setHealth(int val){
+        health=val;
+    }
+    public int getHealth(){
+        return health;
+    }
 }

@@ -27,5 +27,10 @@ public class SingleObstacleBase : FCObject
     {
         return 10;
     }
-
+    public void setHealth(int val){
+        health=val;
+    }
+    public int getHealth(){
+        return health;
+    }
 }

@@ -30,4 +30,10 @@ public class MultiObstacleBase : FCObject
     {
         return 0;
     }
+    public void setHealth(int value){
+        health=value;
+    }
+    public int getHealth(){
+        return health;
+    }
 }
