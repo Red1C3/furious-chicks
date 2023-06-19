@@ -17,6 +17,8 @@ public class Throw : MonoBehaviour
     private bool press = false, cameraNotSetOnStart = false;
 
     private RigidbodyDriver rigidbodyDriver;
+    private int maxSamples;
+    private float[] samplesX, samplesY;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +35,14 @@ public class Throw : MonoBehaviour
         lineRenderer.SetPosition(0, new Vector3(-1, 0, 0));
         lineRenderer.SetPosition(1, transform.position);
         lineRenderer.SetPosition(2, new Vector3(1, 0, 0));
+        maxSamples = Mathf.FloorToInt(CreateOctree.ground.transform.localScale.z * 2 + Mathf.Abs(transform.transform.position.z));
+        samplesX = new float[maxSamples];
+        samplesY = new float[maxSamples];
+        parabolaRenderer.positionCount = maxSamples;
+        for (int i = 0; i < maxSamples; i++)
+        {
+            samplesX[i] = i;
+        }
     }
 
     // Update is called once per frame
@@ -103,29 +113,27 @@ public class Throw : MonoBehaviour
         Vector3 Force = direction * magnitude * rigidbodyDriver.mass;
         Force *= 500;
 
+        direction.y = 0;
         float4x4 T = float4x4.LookAt(transform.position,
-        transform.position + new Vector3(direction.x, 0, direction.z), Vector3.up);
+        transform.position + direction, Vector3.up);
 
         Vector3 acceleration = Force / rigidbodyDriver.mass;
-        Vector3 velocity = acceleration * Time.fixedDeltaTime;
+        Vector4 velocity = acceleration * Time.fixedDeltaTime;
 
-        Vector3 velocityT = math.mul(math.inverse(T), new float4(velocity, 0)).xyz;
+        Vector3 velocityT = math.mul(math.inverse(T), velocity).xyz;
 
 
-        //y = -(g*x^2 / 2*v0^2*cos^2(α)) + x*tan(α)
         float alpha = Mathf.Deg2Rad * Vector3.Angle(Vector3.forward, velocityT);
-        float[] x = new float[10];
-        for (int i = 0; i < 10; i++)
+        float cosA2 = Mathf.Pow(Mathf.Cos(alpha), 2);
+        float tanA = Mathf.Tan(alpha);
+        float veloSqrMag = velocity.sqrMagnitude;
+
+        for (int i = 0; i < maxSamples; i++)
         {
-            x[i] = i;
-        }
-        float[] y = new float[10];
-        parabolaRenderer.positionCount = 10;
-        for (int i = 0; i < 10; i++)
-        {
-            y[i] = -(9.8f * x[i] * x[i] / (2 * velocity.sqrMagnitude * Mathf.Cos(alpha) * Mathf.Cos(alpha))) + x[i] * Mathf.Tan(alpha);
-            Vector3 localVec = new Vector3(0, y[i], x[i]);
-            Vector3 globalVec = math.mul(T, new float4(localVec, 1)).xyz;
+            samplesY[i] = -(9.8f * samplesX[i] * samplesX[i] / (2 * veloSqrMag * cosA2)) + samplesX[i] * tanA;
+            Vector4 localVec = new Vector3(0, samplesY[i], samplesX[i]);
+            localVec.w = 1;
+            Vector3 globalVec = math.mul(T, localVec).xyz;
 
             parabolaRenderer.SetPosition(i, globalVec);
         }
