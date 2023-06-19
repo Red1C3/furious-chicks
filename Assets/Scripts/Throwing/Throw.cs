@@ -76,11 +76,11 @@ public class Throw : MonoBehaviour
             {
                 force = 1.0f;
             }
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
             {
                 force = Mathf.Max(0.1f, force - 0.1f);
             }
-            else if (Input.GetKey(KeyCode.DownArrow))
+            else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
                 force += 0.1f;
             if (Input.GetKeyDown(KeyCode.E))
             {
