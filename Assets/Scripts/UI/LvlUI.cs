@@ -333,7 +333,7 @@ public class LvlUI : MonoBehaviour
         }
         if (selected.TryGetComponent<MultiObstacleBase>(out multiObstacleBase))
         {
-            return pigBase.getHealth();
+            return multiObstacleBase.getHealth();
         }
         return -1;
     }
