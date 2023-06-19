@@ -5,7 +5,7 @@ public class CameraMovement : MonoBehaviour
 {
     private Transform cameraTransform;
 
-    public Transform CameraTarget;
+    private Transform CameraTarget;
 
     public float FollowDistance = 30.0f;
     public float MinFollowDistance = 2.0f;
@@ -35,6 +35,7 @@ public class CameraMovement : MonoBehaviour
 
     public void Move()
     {
+        CameraTarget = CreateOctree.ground.transform;
         GetPlayerInput();
 
 
