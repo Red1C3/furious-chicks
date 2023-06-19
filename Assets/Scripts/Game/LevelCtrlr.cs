@@ -28,8 +28,10 @@ public class LevelCtrlr : MonoBehaviour
     private bool createlvlUI = false;
     [SerializeField]
     private GameObject lvlUiPrefab;
-    private OrbitCamera orbitCamera;
-    private float mouseSensitivity = 2.0f;
+    
+    public static float MovementSmoothingValue = 25f;
+    public static Vector3 currentVelocity = Vector3.zero;
+
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
@@ -45,7 +47,6 @@ public class LevelCtrlr : MonoBehaviour
             currentBird = engine.setPlayer(birds[currentBirdIndex]);
         }
         cam = FindObjectOfType<Camera>();
-        orbitCamera = cam.GetComponent<OrbitCamera>();
         playerView = true;
         once = true;
 
@@ -100,27 +101,22 @@ public class LevelCtrlr : MonoBehaviour
             once = true;
         }
 
-        if (playerView && once)
+        Vector3 playerViewPos = new Vector3(currentBird.transform.position.x, currentBird.transform.position.y, -(currentBirdThrow.force + currentBirdThrow.cameraAway));
+        if (playerView && (cam.transform.position-playerViewPos).magnitude>1e-8)
         {
             currentRotation.eulerAngles = Vector3.zero;
             cam.transform.rotation = currentRotation;
 
-            cam.transform.position = new Vector3(currentBird.transform.position.x, currentBird.transform.position.y, -(currentBirdThrow.force + currentBirdThrow.cameraAway));
-            once = false;
+            cam.transform.position = Vector3.SmoothDamp(cam.transform.position, playerViewPos, ref currentVelocity, MovementSmoothingValue * Time.fixedDeltaTime);        
         }
-        else if (once)
+        else if (!playerView && once)
         {
-            currentRotation.eulerAngles = new Vector3(0, 90, 0);
-            //cam.transform.rotation = currentRotation;
-            Vector3 temp = new Vector3(-CreateOctree.ground.transform.position.z, CreateOctree.ground.transform.position.z / 5.0f, CreateOctree.ground.transform.position.z);
-            //cam.transform.position = temp;
-            orbitCamera.setDistance(Vector3.Distance(cam.transform.position, CreateOctree.ground.transform.position));
-            once = false;
+            cam.GetComponent<CameraMovement>().FollowDistance = CreateOctree.ground.transform.position.magnitude;
+            once=false;
         }
-        if (currentBird.hasFired)
+        else if (!playerView)
         {
-            orbitCamera.orbitCameraUpdate();
-            orbitCamera.Move(Input.GetAxis("Mouse X") * mouseSensitivity, -Input.GetAxis("Mouse Y") * mouseSensitivity);
+            cam.GetComponent<CameraMovement>().Move();
         }
     }
     public void destroyPig(PigBase pig)
@@ -128,10 +124,6 @@ public class LevelCtrlr : MonoBehaviour
         engine.removeCullider(pig.gameObject);
         Destroy(pig.gameObject);
         destroyedPigs++;
-        // if (destroyedPigs == pigsCount)
-        // {
-        //     gameOver();
-        // }
     }
     public void destroyFC(FCObject fcObj)
     {
