@@ -102,12 +102,13 @@ public class LevelCtrlr : MonoBehaviour
         }
 
         Vector3 playerViewPos = new Vector3(currentBird.transform.position.x, currentBird.transform.position.y, -(currentBirdThrow.force + currentBirdThrow.cameraAway));
-        if (playerView && (cam.transform.position-playerViewPos).magnitude>1e-8)
+        if (playerView && once)
         {
             currentRotation.eulerAngles = Vector3.zero;
             cam.transform.rotation = currentRotation;
 
-            cam.transform.position = Vector3.SmoothDamp(cam.transform.position, playerViewPos, ref currentVelocity, MovementSmoothingValue * Time.fixedDeltaTime);        
+            cam.transform.position = playerViewPos;        
+            once = false;
         }
         else if (!playerView && once)
         {
