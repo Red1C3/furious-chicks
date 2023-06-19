@@ -82,7 +82,7 @@ public class Throw : MonoBehaviour
             }
             else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
                 force += 0.1f;
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))
             {
                 fired = true;
                 rigidbodyDriver.useGravity = true;

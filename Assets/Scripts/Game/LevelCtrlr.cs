@@ -121,6 +121,14 @@ public class LevelCtrlr : MonoBehaviour
         {
             cameraMovement.Move();
         }
+
+        if(Input.GetKeyDown(KeyCode.V)){
+            if(Cursor.lockState==CursorLockMode.None){
+                Cursor.lockState=CursorLockMode.Locked;
+            }else{
+                Cursor.lockState=CursorLockMode.None;
+            }
+        }
     }
     public void destroyPig(PigBase pig)
     {
