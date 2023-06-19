@@ -28,6 +28,10 @@ public class LevelCtrlr : MonoBehaviour
     private bool createlvlUI = false;
     [SerializeField]
     private GameObject lvlUiPrefab;
+    
+    public static float MovementSmoothingValue = 25f;
+    public static Vector3 currentVelocity = Vector3.zero;
+
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
@@ -97,21 +101,23 @@ public class LevelCtrlr : MonoBehaviour
             once = true;
         }
 
+        Vector3 playerViewPos = new Vector3(currentBird.transform.position.x, currentBird.transform.position.y, -(currentBirdThrow.force + currentBirdThrow.cameraAway));
         if (playerView && once)
         {
             currentRotation.eulerAngles = Vector3.zero;
             cam.transform.rotation = currentRotation;
 
-            cam.transform.position = new Vector3(currentBird.transform.position.x, currentBird.transform.position.y, -(currentBirdThrow.force + currentBirdThrow.cameraAway));
+            cam.transform.position = playerViewPos;        
             once = false;
         }
-        else if (once)
+        else if (!playerView && once)
         {
-            currentRotation.eulerAngles = new Vector3(0, 90, 0);
-            cam.transform.rotation = currentRotation;
-            Vector3 temp = new Vector3(-CreateOctree.ground.transform.position.z, CreateOctree.ground.transform.position.z / 5.0f, CreateOctree.ground.transform.position.z);
-            cam.transform.position = temp;
-            once = false;
+            cam.GetComponent<CameraMovement>().FollowDistance = CreateOctree.ground.transform.position.magnitude;
+            once=false;
+        }
+        else if (!playerView)
+        {
+            cam.GetComponent<CameraMovement>().Move();
         }
     }
     public void destroyPig(PigBase pig)
@@ -119,10 +125,6 @@ public class LevelCtrlr : MonoBehaviour
         engine.removeCullider(pig.gameObject);
         Destroy(pig.gameObject);
         destroyedPigs++;
-        // if (destroyedPigs == pigsCount)
-        // {
-        //     gameOver();
-        // }
     }
     public void destroyFC(FCObject fcObj)
     {

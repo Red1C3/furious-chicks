@@ -79,10 +79,13 @@ public class CreateOctree : MonoBehaviour
         if (cullidingObject.Count > 0)
         {
             octree.Update(cullidingObject, nodeMinSize);
-            octree.search(player, solver);
+            if (player.TryGetComponent(out Throw birdThrow) && birdThrow.fired)
+                octree.search(player, solver);
             octree.search(ground, solver);
         }
-        octree.rootNode.checkCulliding(player.GetComponent<Cullider>(), ground.GetComponent<Cullider>());
+        if (player.TryGetComponent(out Throw throws) && throws.fired)
+            octree.rootNode.checkCulliding(player.GetComponent<Cullider>(), ground.GetComponent<Cullider>());
+
         foreach (GameObject go in cullidingObject)
         {
             octree.search(go, solver);
