@@ -9,8 +9,9 @@ public class LevelCtrlr : MonoBehaviour
     private GameObject[] birds;
     private bool throwingPhase = true;
     [SerializeField]
-    private GameObject linePrefab;
+    private GameObject linePrefab, parabolaPrefab;
     public static LineRenderer line { get; private set; }
+    public static LineRenderer parabola { get; private set; }
     public Throw currentBirdThrow { get; private set; }
     public CreateOctree engine { get; private set; }
     private int pigsCount;
@@ -36,6 +37,7 @@ public class LevelCtrlr : MonoBehaviour
     private void Start()
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
+        parabola = Instantiate(parabolaPrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
         engine = FindObjectOfType<CreateOctree>();
         pigsCount = FindObjectsOfType<PigBase>().Length;
         if (randomBird)

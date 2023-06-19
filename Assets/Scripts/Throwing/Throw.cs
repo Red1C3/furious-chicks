@@ -10,7 +10,7 @@ public class Throw : MonoBehaviour
     private float angleX;
     private float angleY;
     private float angleZ;
-    public LineRenderer lineRenderer;
+    public LineRenderer lineRenderer, parabolaRenderer;
     public float cameraAway = 3;
 
     public bool fired { get; private set; }
@@ -115,18 +115,19 @@ public class Throw : MonoBehaviour
         //y = -(g*x^2 / 2*v0^2*cos^2(α)) + x*tan(α)
         float alpha = Mathf.Deg2Rad * Vector3.Angle(Vector3.forward, velocityT);
         float[] x = new float[10];
-        x[0] = math.mul(math.inverse(T), new float4(transform.position, 1)).z;
-        for (int i = 1; i < 10; i++)
-        {
-            x[i] = x[i - 1] + 1;
-        }
-        float[] y = new float[10];
         for (int i = 0; i < 10; i++)
         {
-            y[i] = -(9.8f * x[i] * x[i] / 2 * velocityT.sqrMagnitude * Mathf.Cos(alpha) * Mathf.Cos(alpha)) + x[i] * Mathf.Tan(alpha);
+            x[i] = i;
+        }
+        float[] y = new float[10];
+        parabolaRenderer.positionCount = 10;
+        for (int i = 0; i < 10; i++)
+        {
+            y[i] = -(9.8f * x[i] * x[i] / (2 * velocity.sqrMagnitude * Mathf.Cos(alpha) * Mathf.Cos(alpha))) + x[i] * Mathf.Tan(alpha);
+            Vector3 localVec = new Vector3(0, y[i], x[i]);
+            Vector3 globalVec = math.mul(T, new float4(localVec, 1)).xyz;
 
-            Vector3 localVec=new Vector3(0,y[i],x[i]);
-            Vector3 globalVec=math.mul(T,new float4(localVec,1)).xyz;
+            parabolaRenderer.SetPosition(i, globalVec);
         }
 
     }

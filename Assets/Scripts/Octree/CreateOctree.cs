@@ -135,6 +135,8 @@ public class CreateOctree : MonoBehaviour
         playerThrow = this.player.AddComponent<Throw>();
         playerThrow.lineRenderer = LevelCtrlr.line;
         playerThrow.lineRenderer.enabled = true;
+        playerThrow.parabolaRenderer=LevelCtrlr.parabola;
+        playerThrow.parabolaRenderer.enabled=true;
         return player.GetComponent<BirdBase>();
     }
     public void removeCullider(GameObject cullider)
