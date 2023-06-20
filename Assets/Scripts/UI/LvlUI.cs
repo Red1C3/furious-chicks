@@ -23,7 +23,7 @@ public class LvlUI : MonoBehaviour
     health;
     private CreateOctree engine;
     [SerializeField]
-    private TMP_Text minNodeSize, objectsNum,
+    private TMP_Text minNodeSize, 
     maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps,
     velocity, angularVelocity, voxelsCount;
     private RigidbodyDriver selectedRb;
@@ -54,7 +54,6 @@ public class LvlUI : MonoBehaviour
         while (true)
         {
             minNodeSize.text = CreateOctree.nodeMinSize.ToString();
-            objectsNum.text = CreateOctree.allObjectsN.ToString();
             maxNodeObjectsNum.text = CreateOctree.maxNodeObjectN.ToString();
             collidingObjectsNum.text = engine.getCullidingObjectsNum().ToString();
             generatedCollisionsNum.text = CreateOctree.culls.Count.ToString();
