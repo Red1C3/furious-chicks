@@ -23,7 +23,7 @@ public class LvlUI : MonoBehaviour
     health;
     private CreateOctree engine;
     [SerializeField]
-    private TMP_Text minNodeSize, 
+    private TMP_Text minNodeSize,
     maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps,
     velocity, angularVelocity, voxelsCount;
     private RigidbodyDriver selectedRb;
@@ -177,50 +177,62 @@ public class LvlUI : MonoBehaviour
     }
     public void onDragChange(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setDrag(val);
     }
     public void onAngDragChange(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setAngDrag(val);
     }
     public void onFPX(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setFreezePX(val);
     }
     public void onFPY(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setFreezePY(val);
     }
     public void onFPZ(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setFreezePZ(val);
     }
     public void onFRX(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setFreezeRX(val);
     }
     public void onFRY(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setFreezeRY(val);
     }
     public void onFRZ(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setFreezeRZ(val);
     }
     public void onResting(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setPsudoFreeze(val);
     }
     public void onGravity(bool val)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setGravity(val);
     }
     public void onMass(string massString)
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().setMass(float.Parse(massString));
     }
     public void onFriction(float friction)
     {
+        if (selected == null) return;
         if (selected.GetComponent<VoxelGrid>() == null)
         {
             BoxCullider box;
@@ -245,6 +257,7 @@ public class LvlUI : MonoBehaviour
     }
     public void onBounciness(float bounciness)
     {
+        if (selected == null) return;
         if (selected.GetComponent<VoxelGrid>() == null)
         {
             BoxCullider box;
@@ -269,6 +282,7 @@ public class LvlUI : MonoBehaviour
     }
     public void addForce()
     {
+        if (selected == null) return;
         if (isForce.isOn)
         {
             selected.GetComponent<RigidbodyDriver>().addForce(new Vector3(float.Parse(forceX.text), float.Parse(forceY.text), float.Parse(forceZ.text)), ForceMode.Force);
@@ -280,10 +294,12 @@ public class LvlUI : MonoBehaviour
     }
     public void addVeloicty()
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().addLinearVelocity(new Vector3(float.Parse(veloX.text), float.Parse(veloY.text), float.Parse(veloZ.text)));
     }
     public void addAngularVelocity()
     {
+        if (selected == null) return;
         selected.GetComponent<RigidbodyDriver>().addAngularVelocity(new Vector3(float.Parse(angVeloX.text), float.Parse(angVeloY.text), float.Parse(angVeloZ.text)));
     }
     private void OnDestroy()
@@ -319,6 +335,7 @@ public class LvlUI : MonoBehaviour
     }
     private int getSelectedHealth()
     {
+        if (selected == null) return -1;
         SingleObstacleBase singleObstacleBase;
         PigBase pigBase;
         MultiObstacleBase multiObstacleBase;
