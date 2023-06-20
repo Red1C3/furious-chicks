@@ -228,7 +228,9 @@ public class LvlUI : MonoBehaviour
     public void onMass(string massString)
     {
         if (selected == null) return;
-        selected.GetComponent<RigidbodyDriver>().setMass(float.Parse(massString));
+        float massFloat = float.Parse(massString);
+        massFloat = Mathf.Clamp(massFloat, 1e-5f, 1e7f);
+        selected.GetComponent<RigidbodyDriver>().setMass(massFloat);
     }
     public void onFriction(float friction)
     {
