@@ -457,7 +457,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         float3x3 tensor = float3x3.identity;
         float mass = rigidbodyDriver.mass;
-        float h = transform.localScale.y; //FIXME in case of voxels, multply by parents scale
+        float h = transform.localScale.y; 
         float d = transform.localScale.z;
         float w = transform.localScale.x;
 
