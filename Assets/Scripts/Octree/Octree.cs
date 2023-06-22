@@ -47,8 +47,8 @@ public class Octree
         float maxSize = Mathf.Max(new float[] {bounds.size.x,bounds.size.y,bounds.size.z});
         Vector3 sizeVector = new Vector3(maxSize,maxSize,maxSize) * 0.5f;
         bounds.SetMinMax(bounds.center - sizeVector,bounds.center+sizeVector);
-        CreateOctree.nodeMinSize = (int)(maxSize/2.0f) + 1;
-        rootNode = new OctreeNode(bounds,CreateOctree.nodeMinSize);
+        Engine.nodeMinSize = (int)(maxSize/2.0f) + 1;
+        rootNode = new OctreeNode(bounds,Engine.nodeMinSize);
         AddObj(world);
     }
 }

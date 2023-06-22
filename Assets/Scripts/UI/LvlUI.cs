@@ -21,7 +21,7 @@ public class LvlUI : MonoBehaviour
     [SerializeField]
     private TMP_InputField mass, forceX, forceY, forceZ, veloX, veloY, veloZ, angVeloX, angVeloY, angVeloZ,
     health;
-    private CreateOctree engine;
+    private Engine engine;
     [SerializeField]
     private TMP_Text minNodeSize,
     maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps,
@@ -46,7 +46,7 @@ public class LvlUI : MonoBehaviour
         friction.onValueChanged.AddListener(onFriction);
         bounciness.onValueChanged.AddListener(onBounciness);
         scale.onValueChanged.AddListener(onScale);
-        engine = FindObjectOfType<CreateOctree>();
+        engine = FindObjectOfType<Engine>();
         StartCoroutine(updateOctreeVals());
         StartCoroutine(updateTimeVals());
     }
@@ -54,10 +54,10 @@ public class LvlUI : MonoBehaviour
     {
         while (true)
         {
-            minNodeSize.text = CreateOctree.nodeMinSize.ToString();
-            maxNodeObjectsNum.text = CreateOctree.maxNodeObjectN.ToString();
+            minNodeSize.text = Engine.nodeMinSize.ToString();
+            maxNodeObjectsNum.text = Engine.maxNodeObjectN.ToString();
             collidingObjectsNum.text = engine.getCullidingObjectsNum().ToString();
-            generatedCollisionsNum.text = CreateOctree.culls.Count.ToString();
+            generatedCollisionsNum.text = Engine.culls.Count.ToString();
             yield return new WaitForSeconds(1);
         }
     }

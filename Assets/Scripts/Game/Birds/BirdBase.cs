@@ -51,7 +51,7 @@ public class BirdBase : FCObject
     public virtual bool isDead()
     {
         return hasStopped || Input.GetKeyDown(KeyCode.Q)
-        || shape.center().y < CreateOctree.ground.transform.position.y - 10.0f;
+        || shape.center().y < Engine.ground.transform.position.y - 10.0f;
     }
     public override void onCullisionEnter(Cullider other)
     {

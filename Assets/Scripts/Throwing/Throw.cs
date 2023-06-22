@@ -35,7 +35,7 @@ public class Throw : MonoBehaviour
         lineRenderer.SetPosition(0, new Vector3(-1, 0, 0));
         lineRenderer.SetPosition(1, transform.position);
         lineRenderer.SetPosition(2, new Vector3(1, 0, 0));
-        maxSamples = Mathf.FloorToInt(CreateOctree.ground.transform.localScale.z * 2 + Mathf.Abs(transform.transform.position.z));
+        maxSamples = Mathf.FloorToInt(Engine.ground.transform.localScale.z * 2 + Mathf.Abs(transform.transform.position.z));
         samplesX = new float[maxSamples];
         samplesY = new float[maxSamples];
         parabolaRenderer.positionCount = maxSamples;

@@ -37,11 +37,11 @@ public class Generate : MonoBehaviour
         
         }
         if(dynamicStart)
-            CreateOctree.nodeMinSize=0;
+            Engine.nodeMinSize=0;
         else if(shrink)
-            CreateOctree.nodeMinSize=100;
+            Engine.nodeMinSize=100;
         else
-            CreateOctree.nodeMinSize=1;
+            Engine.nodeMinSize=1;
     }
 
 

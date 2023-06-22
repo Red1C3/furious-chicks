@@ -35,7 +35,7 @@ public class CameraMovement : MonoBehaviour
 
     public void Move()
     {
-        CameraTarget = CreateOctree.ground.transform;
+        CameraTarget = Engine.ground.transform;
         GetPlayerInput();
 
 

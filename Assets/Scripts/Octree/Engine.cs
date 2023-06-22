@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateOctree : MonoBehaviour
+public class Engine : MonoBehaviour
 {
     public Solver solver;
     GameObject player;
