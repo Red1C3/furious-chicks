@@ -17,7 +17,7 @@ public class LvlUI : MonoBehaviour
     [SerializeField]
     private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity, isForce;
     [SerializeField]
-    private Slider friction, bounciness, scale;
+    private Slider friction, bounciness;
     [SerializeField]
     private TMP_InputField mass, forceX, forceY, forceZ, veloX, veloY, veloZ, angVeloX, angVeloY, angVeloZ,
     health;
@@ -45,7 +45,6 @@ public class LvlUI : MonoBehaviour
         health.onSubmit.AddListener(onHealth);
         friction.onValueChanged.AddListener(onFriction);
         bounciness.onValueChanged.AddListener(onBounciness);
-        scale.onValueChanged.AddListener(onScale);
         engine = FindObjectOfType<Engine>();
         StartCoroutine(updateOctreeVals());
         StartCoroutine(updateTimeVals());
@@ -282,10 +281,6 @@ public class LvlUI : MonoBehaviour
                 cullider.setBouncinessCo(bounciness);
             }
         }
-    }
-    public void onScale(float scale)
-    {
-        FindObjectOfType<CanvasScaler>().scaleFactor = scale;
     }
     public void addForce()
     {
