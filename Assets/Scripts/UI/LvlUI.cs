@@ -15,7 +15,8 @@ public class LvlUI : MonoBehaviour
 
 
     [SerializeField]
-    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity, isForce;
+    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity, isForce,
+    physicsPanelToggle, infoPanelToggle, healthPanelToggle, randomPanelToggle;
     [SerializeField]
     private Slider friction, bounciness;
     [SerializeField]
@@ -27,6 +28,8 @@ public class LvlUI : MonoBehaviour
     maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps,
     velocity, angularVelocity, voxelsCount;
     private RigidbodyDriver selectedRb;
+    [SerializeField]
+    private RectTransform rbPanel, infoPanel, healthPanel, rbdd;
     private void Start()
     {
         updateOptionData();
@@ -45,6 +48,17 @@ public class LvlUI : MonoBehaviour
         health.onSubmit.AddListener(onHealth);
         friction.onValueChanged.AddListener(onFriction);
         bounciness.onValueChanged.AddListener(onBounciness);
+        physicsPanelToggle.onValueChanged.AddListener(togglePhysicsPanel);
+        infoPanelToggle.onValueChanged.AddListener(toggleInfoPanel);
+        healthPanelToggle.onValueChanged.AddListener(toggleHealthPanel);
+        if (FindObjectOfType<RandLvlGenUI>() != null)
+        {
+            randomPanelToggle.onValueChanged.AddListener(toggleRandomPanel);
+        }
+        else
+        {
+            randomPanelToggle.gameObject.SetActive(false);
+        }
         engine = FindObjectOfType<Engine>();
         StartCoroutine(updateOctreeVals());
         StartCoroutine(updateTimeVals());
@@ -354,5 +368,23 @@ public class LvlUI : MonoBehaviour
             return multiObstacleBase.getHealth();
         }
         return -1;
+    }
+    public void togglePhysicsPanel(bool val)
+    {
+        GetComponent<Image>().enabled = val;
+        rbdd.gameObject.SetActive(val);
+        rbPanel.gameObject.SetActive(val);
+    }
+    public void toggleInfoPanel(bool val)
+    {
+        infoPanel.gameObject.SetActive(val);
+    }
+    public void toggleHealthPanel(bool val)
+    {
+        healthPanel.gameObject.SetActive(val);
+    }
+    public void toggleRandomPanel(bool val)
+    {
+        FindObjectOfType<RandLvlGenUI>(true).gameObject.SetActive(val);
     }
 }
