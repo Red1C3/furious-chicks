@@ -59,6 +59,5 @@ public class BirdBase : FCObject
     }
     protected virtual void ability()
     {
-        Debug.Log("ABILITY");
     }
 }
