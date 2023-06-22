@@ -76,7 +76,7 @@ public class LevelCtrlr : MonoBehaviour
                 Destroy(currentBird.gameObject);
                 if (!randomBird && currentBirdIndex + 1 == birds.Length)
                 {
-                    gameOver();
+                    //Should end game but got removed for demoenstration reasons
                 }
                 else
                 {
@@ -150,9 +150,5 @@ public class LevelCtrlr : MonoBehaviour
             engine.removeCullider(voxelCullider.gameObject);
         }
         Destroy(multi.gameObject);
-    }
-    private void gameOver()
-    {
-        SceneManager.LoadScene("Gameover");
     }
 }
