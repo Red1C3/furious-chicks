@@ -68,7 +68,7 @@ public class LvlUI : MonoBehaviour
             timeStep.text = Time.fixedDeltaTime.ToString();
             fps.text = (1.0f / Time.deltaTime).ToString();
             if (selectedRb != null)
-            { //Let's hope this is not a data race
+            {
                 velocity.text = "V :" + selectedRb.velocity.x.ToString("0.00") + " ," +
                 selectedRb.velocity.y.ToString("0.00") + " ,"
                 + selectedRb.velocity.z.ToString("0.00");

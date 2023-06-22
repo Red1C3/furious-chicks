@@ -19,7 +19,6 @@ public class Throw : MonoBehaviour
     private RigidbodyDriver rigidbodyDriver;
     private int maxSamples;
     private float[] samplesX, samplesY;
-    // Start is called before the first frame update
     void Start()
     {
         fired = false;
@@ -45,7 +44,6 @@ public class Throw : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (LevelCtrlr.playerView && !fired)
