@@ -1,5 +1,5 @@
 # furious-chicks
-An Angry Birds clone made with Unity as its renderer, a made-from-scratch 3D physics engine and psudorandom levels.
+An Angry Birds clone made with Unity (2022.2.15) as its renderer, a made-from-scratch 3D physics engine and psudorandom levels.
 
 ## [Demo Video](https://youtu.be/nao3CMXM5Fw)
 
