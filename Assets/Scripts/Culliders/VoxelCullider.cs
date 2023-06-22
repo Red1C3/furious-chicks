@@ -15,10 +15,6 @@ public class VoxelCullider : BoxCullider
         gridRigidbodyDriver = voxel.grid.GetComponent<RigidbodyDriver>();
         updateBoundaries();
     }
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
 
     public override float3x3 getTensorInertia()
     {

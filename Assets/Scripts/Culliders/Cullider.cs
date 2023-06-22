@@ -66,8 +66,6 @@ public struct CullisionInfo
                     bool hasContactPointB, Vector3[] contactPointsA, Vector3[] contactPointsB,
                     Cullider first, Cullider second)
     {
-        bool debug = false;
-
         normalImpulseSum = 0.0f;
         tangentImpulseSum1 = 0.0f;
         tangentImpulseSum2 = 0.0f;
@@ -94,13 +92,6 @@ public struct CullisionInfo
         t1 = t1.normalized;
         t2 = Vector3.Cross(this.normal, t1);
 
-        if (debug)
-        {
-            if (cullided)
-            {
-                Debug.Log(ToString());
-            }
-        }
         if (cullided)
         {
             first.getFrameCulliders().Add(second);
