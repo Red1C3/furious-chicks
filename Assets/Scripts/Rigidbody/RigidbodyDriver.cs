@@ -76,13 +76,6 @@ public class RigidbodyDriver : MonoBehaviour
 
     public void physicsUpdate()
     {
-        //Debug.Log(string.Format("{0}, {1}, {2}, {3}",angularVelocity.x,angularVelocity.y,angularVelocity.z,angularVelocity.w));
-        //
-        //Faulty since lacking Reaction force
-        //if (rb.useGravity)
-        //    velocity += gravity * Time.fixedDeltaTime;
-        //Vector3 appliedVelocity=transform.InverseTransformVector(velocity);
-
         transform.position += velocity * Time.fixedDeltaTime;
 
         transform.rotation = quatQuatAdd(transform.rotation,
