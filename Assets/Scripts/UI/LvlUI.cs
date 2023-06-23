@@ -393,4 +393,16 @@ public class LvlUI : MonoBehaviour
     {
         FindObjectOfType<RandLvlGenUI>(true).gameObject.SetActive(val);
     }
+    public Toggle getRbPanelToggle(){
+        return physicsPanelToggle;
+    }
+    public Toggle getInfoPanelToggle(){
+        return infoPanelToggle;
+    }
+    public Toggle getHealthPanelToggle(){
+        return healthPanelToggle;
+    }
+    public Toggle getRandomPanelToggle(){
+        return randomPanelToggle;
+    }
 }

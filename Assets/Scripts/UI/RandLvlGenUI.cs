@@ -17,6 +17,7 @@ public class RandLvlGenUI : MonoBehaviour
     [SerializeField]
     private Toggle scaleX, scaleZ;
     private RandomGen randomGen;
+    private bool physicsPanel, infoPanel, healthPanel;
     private void Start()
     {
         foreach (GameObject gameObject in dontDestroy)
@@ -42,7 +43,13 @@ public class RandLvlGenUI : MonoBehaviour
         randomGen.scaleX = scaleX.isOn;
         randomGen.scaleZ = scaleZ.isOn;
 
-        if (lvUiInstance != null) Destroy(lvUiInstance);
+        if (lvUiInstance != null)
+        {
+            physicsPanel = lvUiInstance.GetComponent<LvlUI>().getRbPanelToggle().isOn;
+            infoPanel = lvUiInstance.GetComponent<LvlUI>().getInfoPanelToggle().isOn;
+            healthPanel = lvUiInstance.GetComponent<LvlUI>().getHealthPanelToggle().isOn;
+            Destroy(lvUiInstance);
+        }
         SceneManager.LoadScene("empty");
     }
 
@@ -50,6 +57,10 @@ public class RandLvlGenUI : MonoBehaviour
     {
         randomGen.Awake();
         lvUiInstance = Instantiate(lvlUi, dontDestroy[5].transform);
+        lvUiInstance.GetComponent<LvlUI>().getHealthPanelToggle().isOn = healthPanel;
+        lvUiInstance.GetComponent<LvlUI>().getInfoPanelToggle().isOn = infoPanel;
+        lvUiInstance.GetComponent<LvlUI>().getRbPanelToggle().isOn = physicsPanel;
+        lvUiInstance.GetComponent<LvlUI>().getRandomPanelToggle().isOn=true;
     }
     public void unload()
     {
@@ -59,6 +70,4 @@ public class RandLvlGenUI : MonoBehaviour
             Destroy(go);
         }
     }
-
-
 }
