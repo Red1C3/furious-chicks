@@ -326,7 +326,7 @@ public class LvlUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            FindObjectOfType<RandLvlGenUI>()?.unload();
+            FindObjectOfType<RandLvlGenUI>(true)?.unload();
             SceneManager.LoadScene("main menu");
         }
     }
