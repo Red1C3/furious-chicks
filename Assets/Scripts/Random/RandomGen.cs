@@ -65,7 +65,7 @@ public class RandomGen : MonoBehaviour
 
         Instantiate(solver);
         Instantiate(levelctrlr);
-        Instantiate(octree).GetComponent<CreateOctree>().solver = solver.GetComponent<Solver>();
+        Instantiate(octree).GetComponent<Engine>().solver = solver.GetComponent<Solver>();
     }
 
     private int getRandOdd()

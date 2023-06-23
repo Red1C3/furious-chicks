@@ -80,7 +80,7 @@ public class VoxelGrid : MonoBehaviour
 
         calculateInitialInertiaTensor();
 
-        removeOfType(Voxel.Type.INTERIOR);// I guess we can do something similar to the inertia tensor thing
+        removeOfType(Voxel.Type.INTERIOR);
         removeOfType(Voxel.Type.SURFACE);
 
         addCulliderToQuantized();
@@ -108,10 +108,6 @@ public class VoxelGrid : MonoBehaviour
 
     private void addCulliderToQuantized()
     {
-        // foreach (Voxel v in surfaceVoxels)
-        // {
-        //     v.gameObject.AddComponent<VoxelCullider>();
-        // }
         for (int i = 0; i < quantizedVoxels.Count; i++)
         {
             var cullider = quantizedVoxels[i].gameObject.AddComponent<VoxelCullider>();
@@ -164,28 +160,12 @@ public class VoxelGrid : MonoBehaviour
                 quantizedVoxels.Add(g.GetComponent<Voxel>());
             }
         }
-
-        //TODO turn remaining voxels into sphere colliders
-        // foreach (Voxel v in surfaceVoxels)
-        // {
-        //     if (visited[v.coords.x, v.coords.y, v.coords.z]) continue;
-        //     var region = merge(v, visited);
-
-        //     var g = Instantiate(voxelPrefab, v.transform.position, Quaternion.identity, transform);
-        //     g.transform.localScale = v.transform.localScale;
-        //     g.GetComponent<Voxel>().init(displayVoxels);
-        //     g.GetComponent<Voxel>().type = Voxel.Type.SURFACE;
-        //     g.GetComponent<Voxel>().grid = this;
-        //     g.GetComponent<Voxel>().coords=v.coords;
-        //     quantizedVoxels.Add(g.GetComponent<Voxel>());
-        // } 
     }
 
     private Mesh decimate(Mesh mesh)
     {
         int facesCount = (int)math.round(mesh.triangles.Length / 3.0f);
         var conditions = new TargetConditions();
-        //conditions.faceCount = 100;
         conditions.maxMetrix = VOLUME_FACTOR * (1.0f / math.sqrt(getApproxAABBVolume())) +
                                 FACE_COUNT_FACTOR * (1.0f / math.sqrt(facesCount));
 
@@ -512,20 +492,6 @@ public class VoxelGrid : MonoBehaviour
     public Vector3 getVoxelsCenter()
     {
         return transform.TransformPoint(localCenter);
-        /*Vector3 avg = Vector3.zero;
-        int count = 0;
-        foreach (Voxel v in surfaceVoxels)
-        {
-            avg += v.transform.position;
-            count++;
-        }
-        foreach (Voxel v in interiorVoxels)
-        {
-            avg += v.transform.position;
-            count++;
-        }
-        avg /= count;
-        return avg;*/
     }
 
     private void calculateInitialInertiaTensor()

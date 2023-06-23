@@ -15,18 +15,21 @@ public class LvlUI : MonoBehaviour
 
 
     [SerializeField]
-    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity, isForce;
+    private Toggle drag, angDrag, fRX, fRY, fRZ, fPX, fPY, fPZ, resting, gravity, isForce,
+    physicsPanelToggle, infoPanelToggle, healthPanelToggle, randomPanelToggle;
     [SerializeField]
-    private Slider friction, bounciness, scale;
+    private Slider friction, bounciness;
     [SerializeField]
     private TMP_InputField mass, forceX, forceY, forceZ, veloX, veloY, veloZ, angVeloX, angVeloY, angVeloZ,
     health;
-    private CreateOctree engine;
+    private Engine engine;
     [SerializeField]
     private TMP_Text minNodeSize,
     maxNodeObjectsNum, collidingObjectsNum, generatedCollisionsNum, timeStep, fps,
     velocity, angularVelocity, voxelsCount;
     private RigidbodyDriver selectedRb;
+    [SerializeField]
+    private RectTransform rbPanel, infoPanel, healthPanel, rbdd;
     private void Start()
     {
         updateOptionData();
@@ -45,8 +48,18 @@ public class LvlUI : MonoBehaviour
         health.onSubmit.AddListener(onHealth);
         friction.onValueChanged.AddListener(onFriction);
         bounciness.onValueChanged.AddListener(onBounciness);
-        scale.onValueChanged.AddListener(onScale);
-        engine = FindObjectOfType<CreateOctree>();
+        physicsPanelToggle.onValueChanged.AddListener(togglePhysicsPanel);
+        infoPanelToggle.onValueChanged.AddListener(toggleInfoPanel);
+        healthPanelToggle.onValueChanged.AddListener(toggleHealthPanel);
+        if (FindObjectOfType<RandLvlGenUI>() != null)
+        {
+            randomPanelToggle.onValueChanged.AddListener(toggleRandomPanel);
+        }
+        else
+        {
+            randomPanelToggle.gameObject.SetActive(false);
+        }
+        engine = FindObjectOfType<Engine>();
         StartCoroutine(updateOctreeVals());
         StartCoroutine(updateTimeVals());
     }
@@ -54,10 +67,10 @@ public class LvlUI : MonoBehaviour
     {
         while (true)
         {
-            minNodeSize.text = CreateOctree.nodeMinSize.ToString();
-            maxNodeObjectsNum.text = CreateOctree.maxNodeObjectN.ToString();
+            minNodeSize.text = Engine.nodeMinSize.ToString();
+            maxNodeObjectsNum.text = Engine.maxNodeObjectN.ToString();
             collidingObjectsNum.text = engine.getCullidingObjectsNum().ToString();
-            generatedCollisionsNum.text = CreateOctree.culls.Count.ToString();
+            generatedCollisionsNum.text = Engine.culls.Count.ToString();
             yield return new WaitForSeconds(1);
         }
     }
@@ -68,7 +81,7 @@ public class LvlUI : MonoBehaviour
             timeStep.text = Time.fixedDeltaTime.ToString();
             fps.text = (1.0f / Time.deltaTime).ToString();
             if (selectedRb != null)
-            { //Let's hope this is not a data race
+            {
                 velocity.text = "V :" + selectedRb.velocity.x.ToString("0.00") + " ," +
                 selectedRb.velocity.y.ToString("0.00") + " ,"
                 + selectedRb.velocity.z.ToString("0.00");
@@ -283,10 +296,6 @@ public class LvlUI : MonoBehaviour
             }
         }
     }
-    public void onScale(float scale)
-    {
-        FindObjectOfType<CanvasScaler>().scaleFactor = scale;
-    }
     public void addForce()
     {
         if (selected == null) return;
@@ -359,5 +368,23 @@ public class LvlUI : MonoBehaviour
             return multiObstacleBase.getHealth();
         }
         return -1;
+    }
+    public void togglePhysicsPanel(bool val)
+    {
+        GetComponent<Image>().enabled = val;
+        rbdd.gameObject.SetActive(val);
+        rbPanel.gameObject.SetActive(val);
+    }
+    public void toggleInfoPanel(bool val)
+    {
+        infoPanel.gameObject.SetActive(val);
+    }
+    public void toggleHealthPanel(bool val)
+    {
+        healthPanel.gameObject.SetActive(val);
+    }
+    public void toggleRandomPanel(bool val)
+    {
+        FindObjectOfType<RandLvlGenUI>(true).gameObject.SetActive(val);
     }
 }

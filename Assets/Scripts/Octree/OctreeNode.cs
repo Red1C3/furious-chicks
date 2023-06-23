@@ -42,8 +42,8 @@ public class OctreeNode
         if (nodeBounds.size.y <= minSize)
         {
             gos.Add(go);
-            CreateOctree.allObjectsN += 1;
-            CreateOctree.maxNodeObjectN = Math.Max(CreateOctree.maxNodeObjectN, gos.Count);
+            Engine.allObjectsN += 1;
+            Engine.maxNodeObjectN = Math.Max(Engine.maxNodeObjectN, gos.Count);
             return;
         }
         if (child == null)
@@ -109,13 +109,13 @@ public class OctreeNode
     {
         if (!firstGo.getBounds().Intersects(secondGo.getBounds()) || !secondGo.getBounds().Intersects(firstGo.getBounds()))
             return;
-        if (isNull(CreateOctree.culls.Find(x => (x.first == secondGo && firstGo == x.second)))
-        && isNull(CreateOctree.culls.Find(x => (x.first == firstGo && secondGo == x.second))))
+        if (isNull(Engine.culls.Find(x => (x.first == secondGo && firstGo == x.second)))
+        && isNull(Engine.culls.Find(x => (x.first == firstGo && secondGo == x.second))))
         {
             CullisionInfo returned = firstGo.cullideWith(secondGo);
             if (!isNull(returned))
             {
-                CreateOctree.culls.Add(returned);
+                Engine.culls.Add(returned);
                 if (!returned.first.getRigidbodyDriver().psudoFreeze ||
                             !returned.second.getRigidbodyDriver().psudoFreeze)
                 {

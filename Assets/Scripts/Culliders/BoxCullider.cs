@@ -49,24 +49,8 @@ public class BoxCullider : MonoBehaviour, Cullider
     }
     public virtual Bounds getBounds()
     {
-        //REQUIRES mesh,otherwise use the commented code
+        //Requires mesh renderer with box mesh, otherwise use getBoxBounds
         return GetComponent<Renderer>().bounds;
-        /*float minX,maxX,minY,maxY,minZ,maxZ;
-        minX=minY=minZ=float.MaxValue;
-        maxX=maxY=maxZ=float.MinValue;
-        for(int i=0;i<vertices.Length;i++){
-            if(vertices[i].x<minX) minX=vertices[i].x;
-            if(vertices[i].x>maxX) maxX=vertices[i].x;
-            if(vertices[i].y<minY) minY=vertices[i].y;
-            if(vertices[i].y>maxY) maxY=vertices[i].y;
-            if(vertices[i].z<minZ) minZ=vertices[i].z;
-            if(vertices[i].z>maxZ) maxZ=vertices[i].z;
-        }
-
-        Bounds bounds=new Bounds();
-        bounds.center=new Vector3((minX+maxX)/2.0f,(minY+maxY)/2.0f,(minZ+maxZ)/2.0f);
-        bounds.extents=(new Vector3(maxX,maxY,maxZ))-bounds.center;
-        return bounds;*/
     }
 
     public virtual Bounds getBoxBounds()
@@ -105,8 +89,6 @@ public class BoxCullider : MonoBehaviour, Cullider
                 }
             }
             cullisionInfo = cullideWithBox(other as BoxCullider);
-            if (cullisionInfo.cullided == false) return cullisionInfo;
-            //return addContactPoint(cullisionInfo);
             return cullisionInfo;
         }
         if (other is SphereCullider)
@@ -124,56 +106,16 @@ public class BoxCullider : MonoBehaviour, Cullider
             cullisionInfo.contactPointsA = cullisionInfo.contactPointsB;
             cullisionInfo.hasContactPointB = hasContactPointB;
             cullisionInfo.contactPointsB = contactPointsB;
-            //addContactPoint(cullisionInfo);
             return cullisionInfo;
         }
         return CullisionInfo.NO_CULLISION;
     }
-    private CullisionInfo addContactPoint(CullisionInfo ci)
-    {
-        /*Voxel voxel;
-        if (TryGetComponent<Voxel>(out voxel))
-        {
-            ci.hasContactPointA = true;
-            ci.contactPointA = center;
-        }
-        if (ci.second is BoxCullider && (ci.second as BoxCullider).TryGetComponent<Voxel>(out voxel))
-        {
-            ci.hasContactPointB = true;
-            ci.contactPointB = (ci.second as BoxCullider).center;
-        }*/
-        /*ci.hasContactPointA = true;
-        ci.contactPointA = getDeepestVertex(ci.first as BoxCullider, ci.second as BoxCullider);
-        ci.hasContactPointB = true;
-        ci.contactPointB = getDeepestVertex(ci.second as BoxCullider, ci.first as BoxCullider);*/
-        return ci;
-    }
 
-    private Vector3 getDeepestVertex(BoxCullider from, BoxCullider inside)
-    {
-        Vector3[] fromVertices = from.vertices;
-        Vector3 insideCenter = inside.boxCenter;
-        Vector3 deepestVertex = fromVertices[0];
-        float depth = float.MaxValue;
-
-        foreach (Vector3 vertex in fromVertices)
-        {
-            float distance = Vector3.Distance(vertex, insideCenter);
-            if (distance < depth)
-            {
-                depth = distance;
-                deepestVertex = vertex;
-            }
-        }
-
-        return deepestVertex;
-    }
     private CullisionInfo cullideWithBox(BoxCullider other)
     {
         Vector3 axis = Vector3.zero;
         bool thisOwnsReferenceFace = true;
         bool isEdgeContact = false;
-        //Vector3 centeralContactPoint = Vector3.zero;
         float overlap = float.MaxValue;
         float faceOverlap = float.MaxValue, edgeOverlap = float.MaxValue;
         Side side = Side.LEN;
@@ -242,8 +184,6 @@ public class BoxCullider : MonoBehaviour, Cullider
                         isEdgeContact = true;
                         overlap = tempOverlap;
                         edgeOverlap = overlap;
-                        //thisEdge = edges[i];
-                        //otherEdge = other.edges[j];
                         contactEdges.Add(new Tuple<Edge, Edge>(edges[i], other.edges[j]));
                     }
                 }
@@ -271,29 +211,9 @@ public class BoxCullider : MonoBehaviour, Cullider
             contactPoints.AddRange(incidentFacePoints);
             axis = Face.normal(referenceFace);
             overlap = faceOverlap;
-            //     if (isEdgeContact)
-            //     {
-            //         Vector3 edgeAxis = Vector3.Cross(contactEdges[0].Item1.vec(), contactEdges[0].Item2.vec());
-            //         if (Vector3.Dot(fixAxis(other, faceOverlap, axis).normalized, fixAxis(other, edgeOverlap, edgeAxis).normalized) < 1.0f - math.EPSILON)
-            //         {
-            //            // Debug.Log("Edge contact 0");
-            //             axis = edgeAxis;
-            //             overlap = edgeOverlap;
-            //             contactPoints.Clear();
-            //             foreach (Tuple<Edge, Edge> tuple in contactEdges)
-            //             {
-            //                 Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
-            //                 Vector3 contactPointB = tuple.Item2.closestPoint(tuple.Item1);
-
-            //                 contactPoints.Add((contactPointA + contactPointB) / 2.0f);
-            //             }
-            //         }
-
-            //     }
         }
         else if (isEdgeContact)
         {
-            // Debug.Log("Edge contact 1");
             foreach (Tuple<Edge, Edge> tuple in contactEdges)
             {
                 Vector3 contactPointA = tuple.Item1.closestPoint(tuple.Item2);
@@ -339,10 +259,6 @@ public class BoxCullider : MonoBehaviour, Cullider
                 contactPoint = box.facesMats[i].inverse * (new Vector4(contactPoint.x, contactPoint.y, contactPoint.z, 1));
                 if (contactPoint.x >= -1 && contactPoint.x <= 1 && contactPoint.z >= -1 && contactPoint.z <= 1) //Error this
                 {
-                    // Debug.Log(faceCenter);
-                    // Debug.Log(faceNormal);
-                    // Debug.Log(edge);
-
                     return true;
                 }
             }
@@ -367,139 +283,6 @@ public class BoxCullider : MonoBehaviour, Cullider
         }
         return new Face(incidentFaceMat);
     }
-    private CullisionInfo cullideWithBoxOld(BoxCullider other)
-    {
-        float overlap = float.MaxValue;
-        //From other to base
-        Vector3 axis = Vector3.zero;
-        float tempOverlap;
-
-        if ((tempOverlap = calculateOverlap(other, right)) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = right;
-        }
-        if ((tempOverlap = calculateOverlap(other, up)) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = up;
-        }
-        if ((tempOverlap = calculateOverlap(other, forward)) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = forward;
-        }
-        if ((tempOverlap = calculateOverlap(other, other.right)) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = other.right;
-        }
-        if ((tempOverlap = calculateOverlap(other, other.up)) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = other.up;
-        }
-        if ((tempOverlap = calculateOverlap(other, other.forward)) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = other.forward;
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(right, other.right))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(right, other.right);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(right, other.up))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(right, other.up);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(right, other.forward))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(right, other.forward);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(up, other.right))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(up, other.right);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(up, other.up))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(up, other.up);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(up, other.forward))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(up, other.forward);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(forward, other.right))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(forward, other.right);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(forward, other.up))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(forward, other.up);
-        }
-        if ((tempOverlap = calculateOverlap(other, Vector3.Cross(forward, other.forward))) < 0)
-            return CullisionInfo.NO_CULLISION;
-        else if (tempOverlap < overlap)
-        {
-            overlap = tempOverlap;
-            axis = Vector3.Cross(forward, other.forward);
-        }
-        Vector3 BinALocal = transform.InverseTransformPoint(other.boxCenter);
-
-        Vector3 closestB = new Vector3(
-            Mathf.Max(-0.5f, Mathf.Min(BinALocal.x, 0.5f)),
-            Mathf.Max(-0.5f, Mathf.Min(BinALocal.y, 0.5f)),
-            Mathf.Max(-0.5f, Mathf.Min(BinALocal.z, 0.5f))
-        );
-
-        Vector3 AinBLocal = other.transform.InverseTransformPoint(boxCenter);
-
-        Vector3 closestA = new Vector3(
-            Mathf.Max(-0.5f, Mathf.Min(AinBLocal.x, 0.5f)),
-            Mathf.Max(-0.5f, Mathf.Min(AinBLocal.y, 0.5f)),
-            Mathf.Max(-0.5f, Mathf.Min(AinBLocal.z, 0.5f))
-        );
-
-        //Side Note: May cause problems if one box's center got inside the other, report if happened
-        return new CullisionInfo(true, fixAxis(other, overlap, axis), overlap, false, false,
-                                 transform.TransformPoint(closestB) * 0, other.transform.TransformPoint(closestA) * 0, this, other);
-    }
-
     private float calculateOverlap(BoxCullider other, Vector3 axis)
     {
         // Handles the cross product = {0,0,0} case
@@ -564,16 +347,6 @@ public class BoxCullider : MonoBehaviour, Cullider
                 return clampedPoint;
         }
         return local;
-
-        // float min = Mathf.Min(disToX, disToMX, disToY, disToMY, disToZ, disToMZ);
-
-        // if (min == disToX) return new Vector3(0.5f, local.y, local.z);
-        // if (min == disToMX) return new Vector3(-0.5f, local.y, local.z);
-        // if (min == disToY) return new Vector3(local.x, 0.5f, local.z);
-        // if (min == disToMY) return new Vector3(local.x, -0.5f, local.z);
-        // if (min == disToZ) return new Vector3(local.x, local.y, 0.5f);
-        // if (min == disToMZ) return new Vector3(local.x, local.y, -0.5f);
-        // return new Vector3(0.5f, local.y, local.z);
     }
 
     public void updateBoundaries()
@@ -669,11 +442,6 @@ public class BoxCullider : MonoBehaviour, Cullider
             return axis;
         return -axis;
     }
-    public bool isVoxel()
-    {
-        Voxel voxel;
-        return TryGetComponent<Voxel>(out voxel);
-    }
 
     public override string ToString()
     {
@@ -689,7 +457,7 @@ public class BoxCullider : MonoBehaviour, Cullider
     {
         float3x3 tensor = float3x3.identity;
         float mass = rigidbodyDriver.mass;
-        float h = transform.localScale.y; //FIXME in case of voxels, multply by parents scale
+        float h = transform.localScale.y; 
         float d = transform.localScale.z;
         float w = transform.localScale.x;
 

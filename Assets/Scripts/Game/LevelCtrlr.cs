@@ -13,7 +13,7 @@ public class LevelCtrlr : MonoBehaviour
     public static LineRenderer line { get; private set; }
     public static LineRenderer parabola { get; private set; }
     public Throw currentBirdThrow { get; private set; }
-    public CreateOctree engine { get; private set; }
+    public Engine engine { get; private set; }
     private int pigsCount;
     private int destroyedPigs = 0;
     public static bool playerView { get; set; }
@@ -38,7 +38,7 @@ public class LevelCtrlr : MonoBehaviour
     {
         line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
         parabola = Instantiate(parabolaPrefab, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
-        engine = FindObjectOfType<CreateOctree>();
+        engine = FindObjectOfType<Engine>();
         pigsCount = FindObjectsOfType<PigBase>().Length;
         if (randomBird)
         {
@@ -76,7 +76,7 @@ public class LevelCtrlr : MonoBehaviour
                 Destroy(currentBird.gameObject);
                 if (!randomBird && currentBirdIndex + 1 == birds.Length)
                 {
-                    gameOver();
+                    //Should end game but got removed for demoenstration reasons
                 }
                 else
                 {
@@ -114,7 +114,7 @@ public class LevelCtrlr : MonoBehaviour
         }
         else if (!playerView && once)
         {
-            cameraMovement.FollowDistance = CreateOctree.ground.transform.position.magnitude;
+            cameraMovement.FollowDistance = Engine.ground.transform.position.magnitude;
             once = false;
         }
         else if (!playerView)
@@ -150,9 +150,5 @@ public class LevelCtrlr : MonoBehaviour
             engine.removeCullider(voxelCullider.gameObject);
         }
         Destroy(multi.gameObject);
-    }
-    private void gameOver()
-    {
-        SceneManager.LoadScene("Gameover");
     }
 }

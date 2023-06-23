@@ -14,7 +14,7 @@ public class MultiObstacleBase : FCObject
     }
     protected void Update()
     {
-        if (voxelGrid.getVoxelsCenter().y < CreateOctree.ground.transform.position.y - 10.0f)
+        if (voxelGrid.getVoxelsCenter().y < Engine.ground.transform.position.y - 10.0f)
             levelCtrlr.destroyMulti(this);
     }
     public override void onCullisionEnter(Cullider other)

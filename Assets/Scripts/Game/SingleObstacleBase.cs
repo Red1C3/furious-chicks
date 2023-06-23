@@ -15,7 +15,7 @@ public class SingleObstacleBase : FCObject
     }
     protected void Update()
     {
-        if (shape.center().y < CreateOctree.ground.transform.position.y-10.0f)
+        if (shape.center().y < Engine.ground.transform.position.y-10.0f)
             levelCtrlr.destroyFC(this);
     }
     protected override int firstDamage()
