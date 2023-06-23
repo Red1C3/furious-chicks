@@ -45,12 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   birds:
-  - {fileID: 4040935626910586188, guid: c244c427f3c845528b33b89fe582ac9c, type: 3}
-  - {fileID: 5650259897848095610, guid: 16bf657b7d6c6d08380fdb27e81cb6e8, type: 3}
-  - {fileID: 4040935626910586188, guid: 4d6f3742cde1ed0b1b07d567bf5b7f05, type: 3}
-  - {fileID: 4040935626910586188, guid: a08ee3027bfb5bb46aa33a47ce730d93, type: 3}
-  - {fileID: 4040935626910586188, guid: e11cb566dbfb7fa4694df6d4522a4ec1, type: 3}
   - {fileID: 4040935626910586188, guid: 144bdb57e8f01ba4299ba5ae9179ab3f, type: 3}
+  - {fileID: 4040935626910586188, guid: a08ee3027bfb5bb46aa33a47ce730d93, type: 3}
+  - {fileID: 5650259897848095610, guid: 16bf657b7d6c6d08380fdb27e81cb6e8, type: 3}
+  - {fileID: 4040935626910586188, guid: e11cb566dbfb7fa4694df6d4522a4ec1, type: 3}
+  - {fileID: 4040935626910586188, guid: c244c427f3c845528b33b89fe582ac9c, type: 3}
+  - {fileID: 4040935626910586188, guid: 4d6f3742cde1ed0b1b07d567bf5b7f05, type: 3}
   linePrefab: {fileID: 4307702781597451159, guid: ca04df7254ca2720a9724b48cc575355, type: 3}
   parabolaPrefab: {fileID: 2647769370049775131, guid: 356b0449421dff23ca195e315e93c697, type: 3}
   randomBird: 1
