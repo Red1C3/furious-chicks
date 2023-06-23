@@ -48,12 +48,18 @@ public class LvlUI : MonoBehaviour
         health.onSubmit.AddListener(onHealth);
         friction.onValueChanged.AddListener(onFriction);
         bounciness.onValueChanged.AddListener(onBounciness);
+
+
         physicsPanelToggle.onValueChanged.AddListener(togglePhysicsPanel);
+        togglePhysicsPanel(physicsPanelToggle.isOn);
         infoPanelToggle.onValueChanged.AddListener(toggleInfoPanel);
+        toggleInfoPanel(infoPanelToggle.isOn);
         healthPanelToggle.onValueChanged.AddListener(toggleHealthPanel);
+        toggleHealthPanel(healthPanelToggle.isOn);
         if (FindObjectOfType<RandLvlGenUI>() != null)
         {
             randomPanelToggle.onValueChanged.AddListener(toggleRandomPanel);
+            toggleRandomPanel(randomPanelToggle.isOn);
         }
         else
         {
