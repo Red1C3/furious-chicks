@@ -1,9 +1,16 @@
 # furious-chicks
-An Angry Birds clone made with Unity (2022.2.15) as its renderer, a made-from-scratch 3D physics engine and psudorandom levels.
+An Angry Birds clone made with Unity as its renderer, a made-from-scratch 3D physics engine and psudorandom levels.
 
 ## [Demo Video](https://youtu.be/nao3CMXM5Fw)
 
 This project is a demo of the physics engine underneath, some stuff are left techinal (like the levels cannot be won or lost, and you have an infinite number of birds in hand).
+
+## Requirements
+### For running binaries
+None
+### For development
+- Unity 2022.2.15 or later (using a later version could prevent compatablility with the mentioned version and hence pull requests cannot be accepted unless they accomodate to the mentioned version).
+- Api Compatibility Level set to ".Net Framework" in Project Settings.
 
 ## Game Controls
 ### In Throwing Phase:
