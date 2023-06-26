@@ -61,6 +61,7 @@ public class SpaceRandomGen : MonoBehaviour
             }
             Vector3 pos = new Vector3(x - (int)(groundScale / 2.0f), heights[x][z] + 0.5f, z - (int)(groundScale / 2.0f)) + ground.transform.position;
             GameObject pig = Instantiate(pigPrefab, pos, Quaternion.Euler(0, 180, 0));
+            pig.GetComponent<RigidbodyDriver>().useGravity=false;
             heights[x][z] = -1;
         }
 
@@ -151,6 +152,7 @@ public class SpaceRandomGen : MonoBehaviour
         GameObject pilier = Instantiate(blocksPrefabs[randomPrefabIndex()], pos, Quaternion.identity);
         pilier.transform.localScale = pilierScale;
         pilier.GetComponent<RigidbodyDriver>().mass = calcMass(pilierScale);
+        pilier.GetComponent<RigidbodyDriver>().useGravity = false;
 
         pilier.tag = "Pilier";
         copyNumber--;
