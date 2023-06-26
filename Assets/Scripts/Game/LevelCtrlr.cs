@@ -33,6 +33,7 @@ public class LevelCtrlr : MonoBehaviour
     public static float MovementSmoothingValue = 25f;
     public static Vector3 currentVelocity = Vector3.zero;
     private CameraMovement cameraMovement;
+    public static bool spaceLvl { get; private set; }
 
     private void Start()
     {
@@ -58,6 +59,7 @@ public class LevelCtrlr : MonoBehaviour
         {
             Instantiate(lvlUiPrefab, FindObjectOfType<Canvas>().transform);
         }
+        spaceLvl = FindObjectOfType<SpaceRandomGen>() != null;
     }
 
 
@@ -122,11 +124,15 @@ public class LevelCtrlr : MonoBehaviour
             cameraMovement.Move();
         }
 
-        if(Input.GetKeyDown(KeyCode.V)){
-            if(Cursor.lockState==CursorLockMode.None){
-                Cursor.lockState=CursorLockMode.Locked;
-            }else{
-                Cursor.lockState=CursorLockMode.None;
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            if (Cursor.lockState == CursorLockMode.None)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
             }
         }
     }

@@ -23,7 +23,8 @@ public class OrangeBird : BirdBase
         {
             transform.localScale += new Vector3(1, 1, 1) * updateRate;
             float newMass = mass + updateRate * mass;
-            addForce(gravity * updateRate * mass, ForceMode.Force);
+            if (!LevelCtrlr.spaceLvl)
+                addForce(gravity * updateRate * mass, ForceMode.Force);
             mass = newMass;
             levelCtrlr.currentBirdThrow.cameraAway += 2 * updateRate;
             GetComponent<SphereCullider>().updateRadius();

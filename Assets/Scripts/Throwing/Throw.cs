@@ -83,12 +83,15 @@ public class Throw : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))
             {
                 fired = true;
-                rigidbodyDriver.useGravity = true;
                 Vector3 distance = -transform.position;
                 float magnitude = distance.magnitude;
                 Vector3 direction = distance.normalized;
                 Vector3 Force = direction * magnitude * rigidbodyDriver.mass;
-                GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity * GetComponent<RigidbodyDriver>().mass, ForceMode.Force);
+                if (!LevelCtrlr.spaceLvl)
+                {
+                    GetComponent<RigidbodyDriver>().addForce(RigidbodyDriver.gravity * GetComponent<RigidbodyDriver>().mass, ForceMode.Force);
+                    rigidbodyDriver.useGravity = true;
+                }
                 GetComponent<RigidbodyDriver>().addForce(Force * 500, ForceMode.Impulse);
                 lineRenderer.enabled = false;
             }
@@ -128,7 +131,14 @@ public class Throw : MonoBehaviour
 
         for (int i = 0; i < maxSamples; i++)
         {
-            samplesY[i] = -(9.8f * samplesX[i] * samplesX[i] / (2 * veloSqrMag * cosA2)) + samplesX[i] * tanA;
+            if (LevelCtrlr.spaceLvl)
+            {
+                samplesY[i] = samplesX[i] * tanA;
+            }
+            else
+            {
+                samplesY[i] = -(9.8f * samplesX[i] * samplesX[i] / (2 * veloSqrMag * cosA2)) + samplesX[i] * tanA;
+            }
             Vector4 localVec = new Vector3(0, samplesY[i], samplesX[i]);
             localVec.w = 1;
             Vector3 globalVec = math.mul(T, localVec).xyz;

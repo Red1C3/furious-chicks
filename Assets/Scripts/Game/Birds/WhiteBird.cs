@@ -12,11 +12,17 @@ public class WhiteBird : BirdBase
     {
         Vector3 eggPos = transform.position + (-0.5f * transform.up + 0.2f * transform.forward);
         egg = Instantiate(eggPrefab, eggPos, Quaternion.identity);
+        if (LevelCtrlr.spaceLvl)
+        {
+            egg.GetComponent<RigidbodyDriver>().useGravity = false;
+        }
         levelCtrlr.engine.addCullider(egg);
     }
 
-    private void OnDestroy(){
-        if(egg!=null){
+    private void OnDestroy()
+    {
+        if (egg != null)
+        {
             levelCtrlr.destroyFC(egg.GetComponent<FCObject>());
         }
     }
