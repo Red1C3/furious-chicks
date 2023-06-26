@@ -82,9 +82,10 @@ public class Engine : MonoBehaviour
             octree.Update(cullidingObject, nodeMinSize);
             if (playerThrow.fired)
                 octree.search(player, solver);
+            if(ground!=null)
             octree.search(ground, solver);
         }
-        if (playerThrow.fired)
+        if (playerThrow.fired && ground!=null)
             octree.rootNode.checkCulliding(player.GetComponent<Cullider>(), ground.GetComponent<Cullider>());
 
         foreach (GameObject go in cullidingObject)
