@@ -18,6 +18,7 @@ public class Engine : MonoBehaviour
     public static List<CullisionInfo> culls = new List<CullisionInfo>();
     private List<GameObject> cullidingObjectsCopy;
     private Throw playerThrow;
+    private bool groundHasCullider;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +49,9 @@ public class Engine : MonoBehaviour
             octree = new Octree(cullidingObject, nodeMinSize);
 
         Cullider.clonedStayed = new List<Cullider>(cullidingObject.Count + 16);
+
+        Cullider groundCullider;
+        groundHasCullider = ground.TryGetComponent<Cullider>(out groundCullider);
     }
 
     void OnDrawGizmos()
@@ -82,10 +86,10 @@ public class Engine : MonoBehaviour
             octree.Update(cullidingObject, nodeMinSize);
             if (playerThrow.fired)
                 octree.search(player, solver);
-            if(ground!=null)
-            octree.search(ground, solver);
+            if (groundHasCullider)
+                octree.search(ground, solver);
         }
-        if (playerThrow.fired && ground!=null)
+        if (playerThrow.fired && groundHasCullider)
             octree.rootNode.checkCulliding(player.GetComponent<Cullider>(), ground.GetComponent<Cullider>());
 
         foreach (GameObject go in cullidingObject)
@@ -136,8 +140,8 @@ public class Engine : MonoBehaviour
         playerThrow = this.player.AddComponent<Throw>();
         playerThrow.lineRenderer = LevelCtrlr.line;
         playerThrow.lineRenderer.enabled = true;
-        playerThrow.parabolaRenderer=LevelCtrlr.parabola;
-        playerThrow.parabolaRenderer.enabled=true;
+        playerThrow.parabolaRenderer = LevelCtrlr.parabola;
+        playerThrow.parabolaRenderer.enabled = true;
         return player.GetComponent<BirdBase>();
     }
     public void removeCullider(GameObject cullider)

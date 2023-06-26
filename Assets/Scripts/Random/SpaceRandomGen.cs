@@ -172,6 +172,7 @@ public class SpaceRandomGen : MonoBehaviour
 
     private void initGround()
     {
+        ground.transform.localScale = new Vector3(2 * groundScale, 0.1f, 2 * groundScale);
         ground.transform.position = new Vector3(0, -1.0f, groundScale * 3.0f / 2.0f);
     }
 
