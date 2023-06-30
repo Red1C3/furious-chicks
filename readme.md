@@ -1,7 +1,8 @@
 # furious-chicks
 An Angry Birds clone made with Unity as its renderer, a made-from-scratch 3D physics engine and psudorandom levels.
 
-## [Demo Video](https://youtu.be/nao3CMXM5Fw)
+## [Engine Demo](https://youtu.be/FErDYkAas68)
+## [Game Demo](https://youtu.be/nao3CMXM5Fw)
 
 This project is a demo of the physics engine underneath, some stuff are left techinal (like the levels cannot be won or lost, and you have an infinite number of birds in hand).
 
